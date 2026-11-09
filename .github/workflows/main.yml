@@ -31,9 +31,47 @@ jobs:
 
     - name: Esegui lo script meteo
       run: |
-        # Sincronizza i file freschi cancellando la vecchia cache del server
-        git fetch --all
-        git reset --hard origin/main
+        # Creiamo direttamente qui il file script.py corretto per distruggere la cache del server
+        cat << 'EOF' > script.py
+        import os
+        import time
+        from datetime import datetime
+        import requests
+
+        def ottieni_temperatura_wttr(nome_citta):
+            citta_formattata = nome_citta.replace(" ", "+")
+            url = "https://wttr.in" + citta_formattata + "?format=j1"
+            try:
+                print("Interrogazione API wttr.in per " + nome_citta + "...")
+                response = requests.get(url, timeout=12)
+                if response.status_code == 200:
+                    dati = response.json()
+                    temp = dati["current_condition"][0]["temp_C"]
+                    return temp + "°C"
+                else:
+                    print("-> Server ko: " + str(response.status_code))
+            except Exception as e:
+                print("-> Errore: " + str(e))
+            return None
+
+        localita = ["Roccaraso", "Castel di Sangro", "Rivisondoli"]
+        orario = datetime.now().strftime("%d/%m/%Y %H:%M")
+        righe = []
+        for i, c in enumerate(localita):
+            res = ottieni_temperatura_wttr(c)
+            if res:
+                riga = "[" + orario + "] " + c + ": " + res + "\n"
+                riges.append(riga)
+                print("-> OK: " + riga.strip())
+            if i < len(localita) - 1:
+                time.sleep(2)
+        if righe:
+            with open("Dati_meteo.txt", "a", encoding="utf-8") as f:
+                f.writelines(righe)
+            print("Scrittura completata.")
+        EOF
+        
+        # Avviamo il file appena generato
         python script.py
 
     - name: Pubblica i dati aggiornati su GitHub
@@ -41,5 +79,5 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action Meteo"
         git add Dati_meteo.txt
-        git commit -m "Aggiornato diario meteo automatico" || echo "Nessuna modifica da salvare"
+        git commit -m "Aggiornato diario meteo comprensorio" || echo "Nessuna modifica da salvare"
         git push origin main
