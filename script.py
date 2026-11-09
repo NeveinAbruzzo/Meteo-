@@ -3,39 +3,49 @@ import requests
 
 
 def test_meteo_singolo():
-    url_base = "https://open-meteo.com"
+    # URL ufficiale completo
+    url = "https://open-meteo.com"
 
-    # Coordinate geografiche precise di Roccaraso
+    # Parametri espliciti per Roccaraso
     parametri = {
         "latitude": 41.8487,
         "longitude": 14.0785,
         "current": "temperature_2m",
-    }
-
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        "format": "json",  # Forza il formato JSON in uscita
     }
 
     orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
 
     try:
         print("Interrogazione API di Open-Meteo per Roccaraso...")
-        response = requests.get(
-            url_base, params=parametri, headers=headers, timeout=15
-        )
-        response.raise_for_status()
+
+        # Facciamo una richiesta pulita senza header personalizzati che possono insospettire i server
+        response = requests.get(url, params=parametri, timeout=15)
+
+        # Se l'API risponde con un errore (es. 403 o 404), questo lo intercetta subito
+        if response.status_code != 200:
+            print(
+                f"-> Il server ha risposto con codice {response.status_code}. Contenuto: {response.text[:100]}"
+            )
+            return
 
         dati = response.json()
-        temperatura = dati["current"]["temperature_2m"]
-        unita = dati["current_units"]["temperature_2m"]
 
-        riga = f"[{orario_locale}] Roccaraso: {temperatura}{unita}\n"
+        if "current" in dati:
+            temperatura = dati["current"]["temperature_2m"]
+            unita = dati["current_units"]["temperature_2m"]
 
-        # Scrittura diretta sul file con la "D" maiuscola
-        with open("Dati_meteo.txt", "a", encoding="utf-8") as file:
-            file.write(riga)
+            riga = f"[{orario_locale}] Roccaraso: {temperatura}{unita}\n"
 
-        print(f"-> SCRITTURA RIUSCITA: {riga.strip()}")
+            # Scrittura sul file con la D maiuscola
+            with open("Dati_meteo.txt", "a", encoding="utf-8") as file:
+                file.write(riga)
+
+            print(f"-> SCRITTURA RIUSCITA: {riga.strip()}")
+        else:
+            print(
+                f"-> Struttura JSON imprevista. Chiavi ricevute: {list(dati.keys())}"
+            )
 
     except Exception as e:
         print(f"-> ERRORE CRITICO: {e}")
