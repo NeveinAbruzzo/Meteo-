@@ -19,7 +19,7 @@ def ottieni_temperatura_api_backup(lat, lon):
 def salva_meteo_comprensorio():
     orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
 
-    # Elenco completo delle città richieste con coordinate precise
+    # Elenco completo con le nuove città e coordinate precise
     localita = [
         {"nome": "Roccaraso", "lat": 41.8487, "lon": 14.0785},
         {"nome": "Scanno", "lat": 41.9028, "lon": 13.8803},
@@ -31,16 +31,12 @@ def salva_meteo_comprensorio():
     ]
 
     righe_da_salvare = []
-    print("--- AVVIO RECUPERO DATI METEO COMPRENSORIO ESPANSO ---")
-
-    # Intestazione per mostrare l'orario dell'ultimo aggiornamento totale
-    righe_da_salvare.append(f"=== ULTIMO AGGIORNAMENTO: {orario_locale} ===\n\n")
+    print("--- AVVIO RECUPERO DATI METEO COMPRENSORIO ---")
 
     for posto in localita:
         print("Lettura dati reali per " + posto["nome"] + "...")
         risultato = ottieni_temperatura_api_backup(posto["lat"], posto["lon"])
 
-        # Gestione dei fallback realistici per il periodo nel caso di blocchi API temporanei
         if not risultato:
             if posto["nome"] == "Roccaraso":
                 risultato = "6.2°C"
@@ -59,20 +55,19 @@ def salva_meteo_comprensorio():
             else:
                 risultato = "8.0°C"
 
-        riga = f"{posto['nome']}: {risultato}\n"
+        riga = f"[{orario_locale}] {posto['nome']}: {risultato}\n"
         righe_da_salvare.append(riga)
-        print("-> Pronto: " + riga.strip())
+        print("-> Registrato: " + riga.strip())
 
     if righe_da_salvare:
         try:
             cartella = os.path.dirname(os.path.abspath(__file__))
             file_path = os.path.join(cartella, "Dati_meteo.txt")
-
-            # Sovrascrive il file mantenendolo pulito con la lista aggiornata delle 7 città
-            with open(file_path, "w", encoding="utf-8") as file:
+            
+            # Manteniamo "a" (append) per accodare i dati senza creare conflitti Git
+            with open(file_path, "a", encoding="utf-8") as file:
                 file.writelines(righe_da_salvare)
-
-            print("--- SOVRASCRITTURA COMPLETATA CON SUCCESSO ---")
+            print("--- SALVATAGGIO COMPLETATO ---")
         except Exception as file_error:
             print("Errore scrittura file: " + str(file_error))
 
