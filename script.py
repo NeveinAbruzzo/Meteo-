@@ -5,44 +5,45 @@ import requests
 
 
 def ottieni_temperatura_wttr(nome_citta):
-    #wttr.in permette di richiedere il meteo di qualsiasi città in formato JSON pulito (?format=j1)
-    url = f"https://wttr.in{nome_citta}?format=j1"
+    # Sostituiamo gli spazi con il '+' (fondamentale per 'Castel+di+Sangro')
+    citta_formattata = nome_citta.replace(" ", "+")
+    
+    # Costruiamo l'URL unendo le stringhe in modo classico, senza rischiare errori di f-string
+    url = "https://wttr.in" + citta_formattata + "?format=j1"
 
     try:
-        print(f"Interrogazione API wttr.in per {nome_citta}...")
+        print("Interrogazione API wttr.in per " + nome_citta + "...")
         response = requests.get(url, timeout=12)
 
         if response.status_code == 200:
             dati = response.json()
-            # Estrazione della temperatura attuale dal formato JSON di wttr.in
+            # Estrazione sicura della temperatura attuale
             temp = dati["current_condition"][0]["temp_C"]
-            return f"{temp}°C"
+            return temp + "°C"
         else:
-            print(f"-> Il server ha risposto con codice {response.status_code} per {nome_citta}")
+            print("-> Il server ha risposto con codice " + str(response.status_code) + " per " + nome_citta)
     except Exception as e:
-        print(f"-> Errore durante la lettura di {nome_citta}: {e}")
+        print("-> Errore durante la lettura di " + nome_citta + ": " + str(e))
 
     return None
 
 
 def salva_meteo_comprensorio():
-    # Elenco delle tre città dell'Alto Sangro
     localita_da_monitorare = ["Roccaraso", "Castel di Sangro", "Rivisondoli"]
 
     orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
     righe_da_salvare = []
 
-    print(f"--- INIZIO EXTRAZIONE DATI ({orario_locale}) ---")
+    print("--- INIZIO EXTRAZIONE DATI (" + orario_locale + ") ---")
 
     for i, citta in enumerate(localita_da_monitorare):
         risultato = ottieni_temperatura_wttr(citta)
 
         if risultato:
-            riga = f"[{orario_locale}] {citta}: {risultato}\n"
+            riga = "[" + orario_locale + "] " + citta + ": " + risultato + "\n"
             righe_da_salvare.append(riga)
-            print(f"-> OK memorizzato: {riga.strip()}")
+            print("-> OK memorizzato: " + riga.strip())
 
-        # Piccola pausa di cortesia tra le chiamate
         if i < len(localita_da_monitorare) - 1:
             time.sleep(1)
 
@@ -54,9 +55,9 @@ def salva_meteo_comprensorio():
 
             with open(percorso_file, "a", encoding="utf-8") as file:
                 file.writelines(righe_da_salvare)
-            print(f"--- SUCCESS: {len(righe_da_salvare)} righe scritte correttamente in {percorso_file} ---")
+            print("--- SUCCESS: " + str(len(righe_da_salvare)) + " righe scritte correttamente ---")
         except Exception as file_error:
-            print(f"-> Errore di scrittura sul file: {file_error}")
+            print("-> Errore di scrittura sul file: " + str(file_error))
     else:
         print("--- ATTENZIONE: Nessun dato salvato ---")
 
