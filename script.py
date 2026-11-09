@@ -1,6 +1,6 @@
 from datetime import datetime
 import requests
-
+ 
 
 def salva_meteo_multiplo():
     # URL CORRETTO per interrogare l'API di Open-Meteo
