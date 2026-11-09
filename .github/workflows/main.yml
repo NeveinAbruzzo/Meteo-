@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Questo ti permette di avviare l'automazione a mano con un pulsante!
+  workflow_dispatch:
 
 jobs:
   aggiorna-meteo:
@@ -13,6 +13,8 @@ jobs:
     steps:
     - name: Scarica il repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Scarica tutta la cronologia fresca per evitare vecchi file in cache
 
     - name: Configura Python
       uses: actions/setup-python@v5
@@ -25,13 +27,14 @@ jobs:
         pip install requests
 
     - name: Esegui lo script meteo
-      run: python script.py
+      run: |
+        git pull origin main # Forza l'aggiornamento dei file un attimo prima di avviare Python
+        python script.py
 
-      - name: Pubblica i dati aggiornati su GitHub
+    - name: Pubblica i dati aggiornati su GitHub
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action Meteo"
         git add Dati_meteo.txt
-        # Il comando qui sotto sincronizza i file prima di fare il push ed evita l'errore
         git pull --rebase origin main
         git diff --quiet && git diff --staged --quiet || (git commit -m "Aggiornato diario meteo automatico" && git push)
