@@ -3,10 +3,8 @@ import requests
 
 
 def salva_meteo_comprensorio():
-    # URL ufficiale corretto per Open-Meteo
     url = "https://open-meteo.com"
 
-    # Elenco delle 3 località richieste con le rispettive coordinate geografiche
     localita_da_monitorare = [
         {"nome": "Roccaraso", "lat": 41.8487, "lon": 14.0785},
         {"nome": "Castel di Sangro", "lat": 41.7850, "lon": 14.1047},
@@ -37,29 +35,33 @@ def salva_meteo_comprensorio():
 
             dati = response.json()
 
-            if "current" in dati:
+            if "current" in dati and "temperature_2m" in dati["current"]:
                 temperatura = dati["current"]["temperature_2m"]
-                unita = dati["current_units"]["temperature_2m"]
+                
+                # Estrazione sicura dell'unità di misura, altrimenti usa °C di default
+                try:
+                    unita = dati["current_units"]["temperature_2m"]
+                except Exception:
+                    unita = "°C"
 
                 riga = f"[{orario_locale}] {posto['nome']}: {temperatura}{unita}\n"
                 righe_da_salvare.append(riga)
-                print(f"-> Recuperato: {riga.strip()}")
+                print(f"-> Recuperato con successo: {riga.strip()}")
             else:
                 print(f"-> Struttura JSON non valida per {posto['nome']}")
 
         except Exception as e:
-            print(f"-> Errore di rete con {posto['nome']}: {e}")
+            print(f"-> Errore con {posto['nome']}: {e}")
 
-    # Scrittura cumulativa per evitare di aprire e chiudere il file più volte
     if righe_da_salvare:
         try:
             with open("Dati_meteo.txt", "a", encoding="utf-8") as file:
                 file.writelines(righe_da_salvare)
             print(f"--- SUCCESS: {len(righe_da_salvare)} righe scritte su Dati_meteo.txt ---")
         except Exception as file_error:
-            print(f"-> Errore critico di scrittura sul file: {file_error}")
+            print(f"-> Errore di scrittura sul file: {file_error}")
     else:
-        print("--- ATTENZIONE: Nessun dato salvato in questa sessione ---")
+        print("--- ATTENZIONE: Nessun dato salvato ---")
 
 
 if __name__ == "__main__":
