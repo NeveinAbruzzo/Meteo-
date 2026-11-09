@@ -45,7 +45,7 @@ def salva_meteo_multiplo():
 
     if righe_da_salvare:
         # Scrive nel file mantenendo la D maiuscola come da tua struttura
-        with open("dati_meteo.txt", "a", encoding="utf-8") as file:
+        with open("Dati_meteo.txt", "a", encoding="utf-8") as file:
             file.writelines(righe_da_salvare)
         print(f"Scritte {len(righe_da_salvare)} righe su Dati_meteo.txt")
     else:
