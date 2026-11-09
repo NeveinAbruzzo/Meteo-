@@ -4,13 +4,7 @@ import requests
 
 
 def ottieni_temperatura_api_backup(lat, lon):
-    url = (
-        "https://open-meteo.com"
-        + str(lat)
-        + "&longitude="
-        + str(lon)
-        + "&current_weather=true"
-    )
+    url = f"https://open-meteo.com{lat}&longitude={lon}&current_weather=true"
     try:
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
@@ -22,46 +16,51 @@ def ottieni_temperatura_api_backup(lat, lon):
     return None
 
 
-def invia_email_via_http(contenuto_html):
-    # Recuperiamo le credenziali dai Secrets
-    api_key_brevo = os.environ.get("BREVO_API_KEY")
-    email_destinatario = os.environ.get("BLOGGER_EMAIL_SECRET")
-    email_mittente = os.environ.get("MITTENTE_EMAIL")
+def aggiorna_post_blogger_diretto(contenuto_html):
+    # Recuperiamo gli ID e il Token salvati nei Secrets di GitHub
+    blog_id = os.environ.get("BLOGGER_ID")
+    post_id = os.environ.get("BLOGGER_POST_ID")
+    access_token = os.environ.get("BLOGGER_ACCESS_TOKEN")
 
-    if not api_key_brevo or not email_destinatario or not email_mittente:
+    if not blog_id or not post_id or not access_token:
         print(
-            "-> Invio a Blogger ignorato: Mancano le chiavi nei Secrets di GitHub."
+            "-> Invio a Blogger ignorato: Mancano BLOGGER_ID, BLOGGER_POST_ID o BLOGGER_ACCESS_TOKEN nei Secrets."
         )
         return
 
-    # Usiamo l'endpoint HTTP ufficiale di Brevo per mandare mail senza usare SMTP
-    url = "https://brevo.com"
+    # URL ufficiale di Google per modificare un post esistente tramite ID
+    url = f"https://googleapis.com{blog_id}/posts/{post_id}"
 
+    # Autorizzazione sicura tramite Token OAuth2 nell'header, accettata nativamente da GitHub
     headers = {
-        "accept": "application/json",
-        "api-key": api_key_brevo,
-        "content-type": "application/json",
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
     }
 
+    # Prepariamo l'aggiornamento (Mantiene lo stesso titolo, aggiorna solo il testo HTML interno)
     payload = {
-        "sender": {"email": email_mittente, "name": "Stazione Meteo GitHub"},
-        "to": [{"email": email_destinatario}],
-        "subject": "Meteo Comprensorio in Tempo Reale",
-        "htmlContent": contenuto_html,
+        "kind": "blogger#post",
+        "id": post_id,
+        "blog": {"id": blog_id},
+        "title": "Meteo Comprensorio in Tempo Reale",
+        "content": contenuto_html,
     }
 
     try:
-        print("Invio e-mail tramite chiamata HTTP (Bypass blocco server cloud)...")
-        response = requests.post(url, headers=headers, json=payload, timeout=15)
+        print(
+            f"Invio HTTP PATCH in corso per aggiornare il post {post_id}..."
+        )
+        # Usiamo PATCH o PUT per aggiornare il post esistente senza crearne uno nuovo
+        response = requests.patch(url, headers=headers, json=payload, timeout=15)
 
-        if response.status_code in:
-            print("🎉 EMAIL INVIATA CON SUCCESSO TRAMITE HTTP!")
+        if response.status_code == 200:
+            print("🎉 POST AGGIORNATO CON SUCCESSO SU BLOGGER VIA API DIRETTA!")
         else:
             print(
-                f"🚨 Errore del server mail ({response.status_code}): {response.text}"
+                f"🚨 Errore API Blogger ({response.status_code}): {response.text}"
             )
     except Exception as e:
-        print("🚨 Impossibile completare la chiamata HTTP: " + str(e))
+        print(f"🚨 Impossibile connettersi alle API di Google: {e}")
 
 
 def salva_meteo_comprensorio():
@@ -81,16 +80,12 @@ def salva_meteo_comprensorio():
     html_blogger = (
         '<div style="font-family: Arial, sans-serif; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; max-width: 500px;">'
         + '<h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px; margin-top: 0;">📅 Ultimo Aggiornamento Automatico</h3>'
-        + '<p style="font-size: 16px; font-weight: bold; color: #7f8c8d;">Data e Ora: '
-        + orario_locale
-        + "</p>"
+        + f'<p style="font-size: 16px; font-weight: bold; color: #7f8c8d;">Data e Ora: {orario_locale}</p>'
         + '<ul style="list-style-type: none; padding-left: 0; font-size: 15px; line-height: 1.8;">'
     )
 
     print("--- AVVIO RECUPERO DATI METEO COMPRENSORIO ---")
-    righe_da_salvare.append(
-        "=== ULTIMO AGGIORNAMENTO: " + orario_locale + " ===\n\n"
-    )
+    righe_da_salvare.append(f"=== ULTIMO AGGIORNAMENTO: {orario_locale} ===\n\n")
 
     for posto in localita:
         print("Lettura dati reali per " + posto["nome"] + "...")
@@ -130,7 +125,7 @@ def salva_meteo_comprensorio():
     html_blogger += (
         "</ul>"
         + '<hr style="border: 0; height: 1px; background: #ddd; margin: 15px 0;">'
-        + '<p style="font-size: 12px; color: #95a5a6; font-style: italic; margin-bottom: 0; text-align: center;">⚙️ Stazione aggiornata con GitHub Actions.</p>'
+        + '<p style="font-size: 12px; color: #95a5a6; font-style: italic; margin-bottom: 0; text-align: center;">⚙️ Aggiornato in tempo reale via API.</p>'
         + "</div>"
     )
 
@@ -144,7 +139,8 @@ def salva_meteo_comprensorio():
         except Exception as file_error:
             print("Errore scrittura file: " + str(file_error))
 
-    invia_email_via_http(html_blogger)
+    # Chiamata alla funzione diretta per Blogger
+    aggiorna_post_blogger_diretto(html_blogger)
 
 
 if __name__ == "__main__":
