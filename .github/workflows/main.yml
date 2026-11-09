@@ -27,9 +27,11 @@ jobs:
     - name: Esegui lo script meteo
       run: python script.py
 
-    - name: Pubblica i dati aggiornati su GitHub
+      - name: Pubblica i dati aggiornati su GitHub
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action Meteo"
         git add Dati_meteo.txt
+        # Il comando qui sotto sincronizza i file prima di fare il push ed evita l'errore
+        git pull --rebase origin main
         git diff --quiet && git diff --staged --quiet || (git commit -m "Aggiornato diario meteo automatico" && git push)
