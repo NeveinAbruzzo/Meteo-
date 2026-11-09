@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - main
-  schedule:
-    - cron: '0 * * * *' # Controlla i dati in automatico ogni ora
+  workflow_dispatch: # Questo ti permette di avviare l'automazione a mano con un pulsante!
 
 jobs:
   aggiorna-meteo:
@@ -32,6 +31,5 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action Meteo"
-        git add diario_meteo.txt
+        git add Dati_meteo.txt
         git diff --quiet && git diff --staged --quiet || (git commit -m "Aggiornato diario meteo automatico" && git push)
-
