@@ -32,7 +32,7 @@ jobs:
           from datetime import datetime
 
           # Recupera il meteo (Latitudine e Longitudine di Roma)
-          url_meteo = "https://open-meteo.com"
+          url_meteo = "https://api.open-meteo.com/v1/forecast?latitude=41.8487&longitude=14.0785&current=temperature_2m"
           meteo = requests.get(url_meteo).json()
           temp = meteo['current']['temperature_2m']
           umidita = meteo['current']['relative_humidity_2m']
