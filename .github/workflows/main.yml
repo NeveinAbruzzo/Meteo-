@@ -5,9 +5,8 @@ on:
     branches:
       - main
   workflow_dispatch:
-  # ATTIVAZIONE TIMER AD ALTA FREQUENZA
   schedule:
-    - cron: '*/5 * * * *' # Dice a GitHub di provare ad eseguire lo script ogni 5 minuti
+    - cron: '*/5 * * * *'
 
 permissions:
   contents: write
@@ -39,5 +38,7 @@ jobs:
         git config --local user.name "GitHub Action Meteo"
         git add Dati_meteo.txt
         git commit -m "Aggiornato diario meteo automatico [skip ci]" || echo "Nessuna modifica"
-        git pull --rebase origin main
+        
+        # RISOLUZIONE DEL CONFLITTO: Forziamo Git a dare la precedenza totale alla sovrascrittura di Python
+        git pull --rebase -X theirs origin main
         git push origin main
