@@ -39,3 +39,4 @@ jobs:
         git pull --rebase origin main
         git diff --quiet && git diff --staged --quiet || (git commit -m "Aggiornato diario meteo automatico" && git push)
 
+Dati_meteo.txt
