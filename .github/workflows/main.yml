@@ -1,5 +1,24 @@
 name: Genera Post Meteo Automatico
+import requests
 
+# Sostituisci con il tuo URL effettivo
+url = "https://esempio.com" 
+
+response = requests.get(url)
+
+# 1. Verifica che non ci siano errori HTTP (es. 404, 500)
+response.raise_for_status() 
+
+try:
+    # 2. Prova a decodificare il JSON
+    dati = response.json() 
+except requests.exceptions.JSONDecodeError:
+    # 3. Se fallisce, stampa cosa ha risposto davvero il server per capire il problema
+    print("Il server non ha restituito un JSON valido!")
+    print("Contenuto ricevuto:", response.text)
+    raise
+
+    
 on:
   schedule:
     - cron: '0 7 * * *'
