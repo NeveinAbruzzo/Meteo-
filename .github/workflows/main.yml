@@ -16,13 +16,15 @@ jobs:
     steps:
     - name: Scarica il repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Scarica tutta la cronologia per evitare disallineamenti di Git
 
     - name: Configura Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
-    - name: Installa requests
+    - name: Installa la libreria requests
       run: pip install requests
 
     - name: Esegui lo script meteo
@@ -33,5 +35,12 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action Meteo"
         git add Dati_meteo.txt
-        git commit -m "Meteo aggiornato" || echo "Nessuna modifica"
+        
+        # Facciamo il commit delle eventuali modifiche locali
+        git commit -m "Aggiornato diario meteo automatico" || echo "Nessuna modifica"
+        
+        # RISOLUZIONE ERRORE REJECTED: Integra le modifiche remote prima del push
+        git pull --rebase origin main
+        
+        # Spinge i dati in sicurezza sulla repository online
         git push origin main
