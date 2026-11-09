@@ -19,7 +19,6 @@ def ottieni_temperatura_api_backup(lat, lon):
 def salva_meteo_comprensorio():
     orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
 
-    # Elenco completo con le nuove città e coordinate precise
     localita = [
         {"nome": "Roccaraso", "lat": 41.8487, "lon": 14.0785},
         {"nome": "Scanno", "lat": 41.9028, "lon": 13.8803},
@@ -32,6 +31,9 @@ def salva_meteo_comprensorio():
 
     righe_da_salvare = []
     print("--- AVVIO RECUPERO DATI METEO COMPRENSORIO ---")
+
+    # Intestazione con la data dell'ultimo controllo totale
+    righe_da_salvare.append(f"=== ULTIMO AGGIORNAMENTO: {orario_locale} ===\n\n")
 
     for posto in localita:
         print("Lettura dati reali per " + posto["nome"] + "...")
@@ -55,19 +57,19 @@ def salva_meteo_comprensorio():
             else:
                 risultato = "8.0°C"
 
-        riga = f"[{orario_locale}] {posto['nome']}: {risultato}\n"
+        riga = f"{posto['nome']}: {risultato}\n"
         righe_da_salvare.append(riga)
-        print("-> Registrato: " + riga.strip())
+        print("-> Pronto: " + riga.strip())
 
     if righe_da_salvare:
         try:
             cartella = os.path.dirname(os.path.abspath(__file__))
             file_path = os.path.join(cartella, "Dati_meteo.txt")
             
-            # Manteniamo "a" (append) per accodare i dati senza creare conflitti Git
-            with open(file_path, "a", encoding="utf-8") as file:
+            # "w" svuota lo schermo prima di riscrivere le 7 righe pulite
+            with open(file_path, "w", encoding="utf-8") as file:
                 file.writelines(righe_da_salvare)
-            print("--- SALVATAGGIO COMPLETATO ---")
+            print("--- SOVRASCRITTURA COMPLETATA CON SUCCESSO ---")
         except Exception as file_error:
             print("Errore scrittura file: " + str(file_error))
 
