@@ -5,7 +5,7 @@ import requests
 def salva_meteo_multiplo():
     url_base = "https://open-meteo.com"
 
-    # 1. Elenco delle città che vuoi monitorare. Puoi aggiungerne quante ne vuoi!
+    # Elenco delle città
     citta_da_monitorare = [
         {"nome": "Pescasseroli", "lat": 41.8487, "lon": 14.0785},
         {"nome": "Roma", "lat": 41.8919, "lon": 12.5113},
@@ -16,11 +16,9 @@ def salva_meteo_multiplo():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
     }
 
-    # Otteniamo l'orario attuale una sola volta per tutte le letture
     orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
     righe_da_salvare = []
 
-    # 2. Il ciclo gira per ogni città presente nella lista
     for citta in citta_da_monitorare:
         parametri = {
             "latitude": citta["lat"],
@@ -32,35 +30,29 @@ def salva_meteo_multiplo():
             response = requests.get(
                 url_base, params=parametri, headers=headers, timeout=15
             )
+            # Verifica che la chiamata HTTP sia andata a buon fine (Stato 200)
             response.raise_for_status()
 
-            if "application/json" not in response.headers.get(
-                "Content-Type", ""
-            ):
-                print(
-                    f"Errore: Risposta non valida per la città {citta['nome']}"
-                )
-                continue
-
+            # Convertiamo direttamente in JSON (il controllo rigido è stato rimosso)
             dati = response.json()
 
-            # Estraiamo la temperatura
+            # Estraiamo la temperatura e l'unità di misura
             temperatura = dati["current"]["temperature_2m"]
             unita = dati["current_units"]["temperature_2m"]
 
-            # Prepariamo la riga includendo il NOME della città
+            # Prepariamo la riga per il file di testo
             riga = f"[{orario_locale}] {citta['nome']}: {temperatura}{unita}\n"
             righe_da_salvare.append(riga)
-            print(f"Recuperato: {riga.strip()}")
+            print(f"Recuperato con successo: {riga.strip()}")
 
         except Exception as e:
             print(f"Errore con la città {citta['nome']}: {e}")
 
-    # 3. Scriviamo tutte le letture nel file Dati_meteo.txt in un colpo solo
+    # Scriviamo i dati nel file dello storico
     if righe_da_salvare:
         with open("Dati_meteo.txt", "a", encoding="utf-8") as file:
             file.writelines(righe_da_salvare)
-        print("Tutte le città sono state salvate con successo!")
+        print("Tutte le città sono state salvate nel file Dati_meteo.txt!")
 
 
 if __name__ == "__main__":
