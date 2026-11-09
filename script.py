@@ -28,14 +28,15 @@ def salva_meteo_comprensorio():
     righe_da_salvare = []
     print("--- AVVIO RECUPERO DATI METEO COMPRENSORIO ---")
 
-    # Intestazione carina che mostra quando è avvenuto l'ultimo aggiornamento totale
+    # Intestazione per mostrare l'ultimo aggiornamento totale
     righe_da_salvare.append(f"=== ULTIMO AGGIORNAMENTO: {orario_locale} ===\n\n")
 
     for posto in localita:
         print("Lettura dati reali per " + posto["nome"] + "...")
         risultato = ottieni_temperatura_api_backup(posto["lat"], posto["lon"])
 
-        if not resultado:
+        # CORRETTO: adesso usa 'risultato' scritto bene in italiano
+        if not risultato:
             if posto["nome"] == "Roccaraso":
                 risultato = "6.2°C"
             elif posto["nome"] == "Castel di Sangro":
@@ -52,7 +53,7 @@ def salva_meteo_comprensorio():
             cartella = os.path.dirname(os.path.abspath(__file__))
             file_path = os.path.join(cartella, "Dati_meteo.txt")
             
-            # USIAMO "w" AL POSTO DI "a": cancella tutto il vecchio contenuto e scrive da zero
+            # Modalità "w" per ripulire la schermata e sovrascrivere
             with open(file_path, "w", encoding="utf-8") as file:
                 file.writelines(righe_da_salvare)
                 
