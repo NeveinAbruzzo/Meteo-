@@ -1,0 +1,14 @@
+name: Il Mio Primo Flusso Automatico
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  saluto:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stampa un messaggio nel terminale
+        run: |
+          echo "Ciao! Questo è un messaggio generato in automatico dai server di GitHub."
+          echo "L'automazione funziona correttamente! 🎉"
