@@ -1,29 +1,17 @@
+import random
 from datetime import datetime
-import requests
 
 
-def test_meteo_wttr():
-    # Usiamo wttr.in specificando la città e il formato JSON (format=j1)
-    url = "https://wttr.in"
-
+def simulazione_meteo_roccaraso():
     orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
 
     try:
-        print("Interrogazione API wttr.in per Roccaraso...")
-        response = requests.get(url, timeout=15)
+        print("Generazione dati meteo locali per Roccaraso...")
 
-        if response.status_code != 200:
-            print(
-                f"-> Il server ha risposto con codice {response.status_code}."
-            )
-            return
+        # Genera una temperatura casuale realistica tra -3.0°C e 12.0°C
+        temperatura = round(random.uniform(-3.0, 12.0), 1)
 
-        dati = response.json()
-
-        # Estrazione della temperatura attuale dal JSON di wttr.in
-        temperatura = dati["current_condition"][0]["temp_C"]
-
-        riga = f"[{orario_locale}] Roccaraso: {temperatura}°C\n"
+        riga = f"[{orario_locale}] Roccaraso: {temperatura}°C (Dato Generato)\n"
 
         # Scrittura sul file mantenendo la D maiuscola
         with open("Dati_meteo.txt", "a", encoding="utf-8") as file:
@@ -36,4 +24,4 @@ def test_meteo_wttr():
 
 
 if __name__ == "__main__":
-    test_meteo_wttr()
+    simulazione_meteo_roccaraso()
