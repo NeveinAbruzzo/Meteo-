@@ -3,7 +3,6 @@ import requests
 
 
 def salva_meteo_multiplo():
-    # URL corretto per l'endpoint delle previsioni API
     url_base = "https://open-meteo.com"
 
     citta_da_monitorare = [
@@ -19,7 +18,6 @@ def salva_meteo_multiplo():
     orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
     righe_da_salvare = []
 
-    # Ciclo for per interrogare l'API singolarmente per ogni città
     for citta in citta_da_monitorare:
         parametri = {
             "latitude": citta["lat"],
@@ -33,11 +31,11 @@ def salva_meteo_multiplo():
             )
             response.raise_for_status()
 
+            # Estrazione diretta del JSON senza filtri di tipo
             dati = response.json()
             temperatura = dati["current"]["temperature_2m"]
             unita = dati["current_units"]["temperature_2m"]
 
-            # Formattazione della riga con il nome della città specifico
             riga = f"[{orario_locale}] {citta['nome']}: {temperatura}{unita}\n"
             righe_da_salvare.append(riga)
             print(f"Salvato con successo: {riga.strip()}")
@@ -45,7 +43,6 @@ def salva_meteo_multiplo():
         except Exception as e:
             print(f"Errore con la città {citta['nome']}: {e}")
 
-    # Scrittura di tutte le righe raccolte nel file di testo
     if righe_da_salvare:
         with open("Dati_meteo.txt", "a", encoding="utf-8") as file:
             file.writelines(righe_da_salvare)
