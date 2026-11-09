@@ -2,45 +2,39 @@ name: Genera Post Meteo Automatico
 
 on:
   schedule:
-    # Si attiva da solo ogni giorno alle 07:00 del mattino (ora UTC)
     - cron: '0 7 * * *'
-  workflow_dispatch: # Ti permette di farlo partire subito a mano con un pulsante
+  workflow_dispatch: 
 
 jobs:
   crea-articolo:
     runs-on: ubuntu-latest
     steps:
-      # 1. Scarica il codice del tuo repository sul server
       - name: Scarica repository
         uses: actions/checkout@v4
 
-      # 2. Configura Python
       - name: Configura Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # 3. Installa la libreria per scaricare il meteo
       - name: Installa librerie
         run: pip install requests
 
-      # 4. Esegue lo script che crea il post del giorno
       - name: Scarica Meteo e Scrivi File
         run: |
           python - <<EOF
           import requests
           from datetime import datetime
 
-          # Recupera il meteo (Latitudine e Longitudine di Roma)
-          url_meteo = "https://api.open-meteo.com"
+          # Questo è il link corretto che contiene le API tecniche per estrarre i dati
+          url_meteo = "https://open-meteo.com"
           meteo = requests.get(url_meteo).json()
+          
           temp = meteo['current']['temperature_2m']
           umidita = meteo['current']['relative_humidity_2m']
 
-          # Crea la data di oggi in formato leggibile (es. 2026-11-09)
           data_oggi = datetime.now().strftime("%Y-%m-%d")
 
-          # Prepara il testo dell'articolo in formato Markdown
           testo_articolo = f"""# Meteo del {data_oggi}
 
           Buongiorno! Questo articolo è stato generato automaticamente dai server di GitHub.
@@ -52,7 +46,6 @@ jobs:
           *Aggiornato automaticamente grazie a GitHub Actions.*
           """
 
-          # Salva l'articolo come un file di testo nella cartella 'posts'
           nome_file = f"posts/meteo-{data_oggi}.md"
           with open(nome_file, "w", encoding="utf-8") as f:
               f.write(testo_articolo)
@@ -60,7 +53,6 @@ jobs:
           print(f"File {nome_file} creato con successo!")
           EOF
 
-      # 5. Prende il file appena creato e lo salva permanentemente nel tuo repository
       - name: Salva il post nel repository
         run: |
           git config --global user.name "GitHub Actions Bot"
