@@ -7,7 +7,6 @@ def salva_meteo_comprensorio():
     orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
 
     # URL statici separati e completi al 100%, scritti a mano uno per uno
-    # Usiamo una chiamata geocodificata nativa che restituisce solo JSON pulito
     urls = {
         "Roccaraso": "https://open-meteo.com",
         "Castel di Sangro": "https://open-meteo.com",
