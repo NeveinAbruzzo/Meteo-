@@ -38,7 +38,7 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action Meteo"
-        git add Dati_meteo.txt
+        git add dati_meteo.txt
         
         # Facciamo il commit solo se ci sono reali modifiche nel file
         if ! git diff --cached --quiet; then
