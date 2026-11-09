@@ -4,10 +4,8 @@ import requests
 
 
 def ottieni_temperatura_api_backup(lat, lon):
-    # Endpoint alternativo geocodificato stabile che non blocca GitHub Actions
     url = f"https://open-meteo.com{lat}&longitude={lon}&current_weather=true"
     try:
-        # Inviamo parametri minimali (current_weather=true) che non attivano i firewall dell'API
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
             dati = response.json()
@@ -30,13 +28,14 @@ def salva_meteo_comprensorio():
     righe_da_salvare = []
     print("--- AVVIO RECUPERO DATI METEO COMPRENSORIO ---")
 
+    # Intestazione carina che mostra quando è avvenuto l'ultimo aggiornamento totale
+    righe_da_salvare.append(f"=== ULTIMO AGGIORNAMENTO: {orario_locale} ===\n\n")
+
     for posto in localita:
         print("Lettura dati reali per " + posto["nome"] + "...")
         risultato = ottieni_temperatura_api_backup(posto["lat"], posto["lon"])
 
-        # Se l'API principale fa i capricci dal server GitHub, usiamo il fallback istituzionale automatico
-        if not risultato:
-            # Fallback a temperature medie reali del periodo per l'Alto Sangro a novembre (Roccaraso ~ 6°C, Castel di Sangro ~ 8°C)
+        if not resultado:
             if posto["nome"] == "Roccaraso":
                 risultato = "6.2°C"
             elif posto["nome"] == "Castel di Sangro":
@@ -44,17 +43,20 @@ def salva_meteo_comprensorio():
             else:
                 risultato = "5.8°C"
 
-        riga = "[" + orario_locale + "] " + posto["nome"] + ": " + risultato + "\n"
+        riga = f"{posto['nome']}: {risultato}\n"
         righe_da_salvare.append(riga)
-        print("-> Registrato: " + riga.strip())
+        print("-> Pronto: " + riga.strip())
 
     if righe_da_salvare:
         try:
             cartella = os.path.dirname(os.path.abspath(__file__))
             file_path = os.path.join(cartella, "Dati_meteo.txt")
-            with open(file_path, "a", encoding="utf-8") as file:
+            
+            # USIAMO "w" AL POSTO DI "a": cancella tutto il vecchio contenuto e scrive da zero
+            with open(file_path, "w", encoding="utf-8") as file:
                 file.writelines(righe_da_salvare)
-            print("--- SALVATAGGIO REALE COMPLETATO ---")
+                
+            print("--- SOVRASCRITTURA COMPLETATA CON SUCCESSO ---")
         except Exception as file_error:
             print("Errore scrittura file: " + str(file_error))
 
