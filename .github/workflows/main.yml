@@ -28,7 +28,6 @@ jobs:
 
     - name: Esegui lo script meteo
       run: |
-        git pull origin main
         python script.py
 
     - name: Pubblica i dati aggiornati su GitHub
@@ -36,5 +35,12 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action Meteo"
         git add Dati_meteo.txt
-        git pull --rebase origin main
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Aggiornato diario meteo automatico" && git push)
+        # Eseguiamo il commit locale della modifica prima di qualsiasi operazione con il server remoto
+        if ! git diff --cached --quiet; then
+          git commit -m "Aggiornato diario meteo automatico"
+          # Tiriamo su eventuali modifiche remote integrando il nostro commit in coda
+          git pull --rebase origin main
+          git push
+        else
+          echo "Nessuna modifica riscontrata nel file Dati_meteo.txt"
+        fi
