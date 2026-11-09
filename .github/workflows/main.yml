@@ -32,10 +32,9 @@ jobs:
     - name: Esegui lo script meteo
       run: python script.py
       env:
-        # Passiamo i parametri email segreti presi dalle impostazioni di GitHub
-        BLOGGER_EMAIL_SECRET: ${{ secrets.BLOGGER_EMAIL_SECRET }}
-        MITTENTE_EMAIL: ${{ secrets.MITTENTE_EMAIL }}
-        MITTENTE_PASSWORD: ${{ secrets.MITTENTE_PASSWORD }}
+        BLOGGER_ID: ${{ secrets.5866549180112140631 }}
+        BLOGGER_POST_ID: ${{ secrets.8471992786634549178 }}
+        BLOGGER_ACCESS_TOKEN: ${{ secrets.ya29.a0AehfTOmfW5w9btQM21FfXTT2Y-Nw8eOZJT2ezVP1X-GUn4W2oLP7mr4nmFHQ-SXno0lBEXMdp5G9nHUvpTvY17KsqrGNme5LhRBzFWXfkM9EMZukYnYBe__s0sWJ6vT0gy5bDZ1iYUL1xhxqvDmGRw3iFVaHBYYDwklRfYVkcLmRMWfvmzWXY95pYBBpsF4o_U6m1cgaCgYKAQUSARYSFQHGX2MidCeygfIzcBENBoS_6kBU_g0206 }}
 
     - name: Pubblica i dati aggiornati su GitHub
       run: |
