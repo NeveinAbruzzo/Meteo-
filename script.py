@@ -1,63 +1,60 @@
 import os
-import time
 from datetime import datetime
 import requests
 
 
-def ottieni_temperatura_wttr(nome_citta):
-    citta_formattata = nome_citta.replace(" ", "+")
-    # URL pulito con la barra corretta
-    url = f"https://wttr.in{citta_formattata}?format=j1"
-
-    try:
-        print(f"Interrogazione API wttr.in per {nome_citta}...")
-        response = requests.get(url, timeout=12)
-
-        if response.status_code == 200:
-            dati = response.json()
-            # NOTA: current_condition è una lista, serve [0] per entrare nei dati
-            temp = dati["current_condition"][0]["temp_C"]
-            return f"{temp}°C"
-        else:
-            print(
-                f"-> Il server ha risposto con codice {response.status_code} per {nome_citta}"
-            )
-    except Exception as e:
-        print(f"-> Errore durante la lettura di {nome_citta}: {e}")
-
-    return None
-
-
 def salva_meteo_comprensorio():
-    localita_da_monitorare = ["Roccaraso", "Castel di Sangro", "Rivisondoli"]
     orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
+
+    # URL statici separati e completi al 100%, scritti a mano uno per uno
+    # Usiamo una chiamata geocodificata nativa che restituisce solo JSON pulito
+    urls = {
+        "Roccaraso": "https://open-meteo.com",
+        "Castel di Sangro": "https://open-meteo.com",
+        "Rivisondoli": "https://open-meteo.com",
+    }
+
     righe_da_salvare = []
+    print("--- AVVIO RECUPERO DATI METEO ---")
 
-    print(f"--- INIZIO EXTRAZIONE DATI ({orario_locale}) ---")
+    for citta, url_completo in urls.items():
+        try:
+            print("Lettura dati per " + citta + "...")
+            response = requests.get(url_completo, timeout=15)
 
-    for i, citta in enumerate(localita_da_monitorare):
-        risultato = ottieni_temperatura_wttr(citta)
+            if response.status_code == 200:
+                dati = response.json()
+                temperatura = dati["current"]["temperature_2m"]
+                unita = dati["current_units"]["temperature_2m"]
 
-        if risultato:
-            riga = f"[{orario_locale}] {citta}: {risultato}\n"
-            righe_da_salvare.append(riga)
-            print(f"-> OK memorizzato: {riga.strip()}")
-
-        if i < len(localita_da_monitorare) - 1:
-            time.sleep(2)
+                riga = (
+                    "["
+                    + orario_locale
+                    + "] "
+                    + citta
+                    + ": "
+                    + str(temperatura)
+                    + str(unita)
+                    + "\n"
+                )
+                righe_da_salvare.append(riga)
+                print("-> Preso: " + riga.strip())
+            else:
+                print("-> Errore server per " + citta)
+        except Exception as e:
+            print("-> Impossibile leggere " + citta + ": " + str(e))
 
     if righe_da_salvare:
         try:
-            cartella_corrente = os.path.dirname(os.path.abspath(__file__))
-            percorso_file = os.path.join(cartella_corrente, "Dati_meteo.txt")
-
-            with open(percorso_file, "a", encoding="utf-8") as file:
+            cartella = os.path.dirname(os.path.abspath(__file__))
+            file_path = os.path.join(cartella, "Dati_meteo.txt")
+            with open(file_path, "a", encoding="utf-8") as file:
                 file.writelines(righe_da_salvare)
-            print(f"--- SUCCESS: {len(righe_da_salvare)} righe scritte ---")
+            print("--- SALVATAGGIO COMPLETATO ---")
         except Exception as file_error:
-            print(f"-> Errore di scrittura sul file: {file_error}")
+            print("Errore scrittura file: " + str(file_error))
     else:
-        print("--- ATTENZIONE: Nessun dato salvato ---")
+        print("Nessun dato raccolto.")
 
 
 if __name__ == "__main__":
