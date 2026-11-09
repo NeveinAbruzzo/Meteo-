@@ -1,14 +1,5 @@
+=== ULTIMO AGGIORNAMENTO: 09/11/2026 19:54 ===
 
-
-[09/11/2026 19:20] Roccaraso: 10.8°C (Dato Generato)
-[09/11/2026 19:22] Roccaraso: 7.1°C
-[09/11/2026 19:23] Roccaraso: 7.1°C
-[09/11/2026 19:45] Roccaraso: 6.2°C
-[09/11/2026 19:45] Castel di Sangro: 8.4°C
-[09/11/2026 19:45] Rivisondoli: 5.8°C
-[09/11/2026 19:46] Roccaraso: 6.2°C
-[09/11/2026 19:46] Castel di Sangro: 8.4°C
-[09/11/2026 19:46] Rivisondoli: 5.8°C
-[09/11/2026 19:50] Roccaraso: 6.2°C
-[09/11/2026 19:50] Castel di Sangro: 8.4°C
-[09/11/2026 19:50] Rivisondoli: 5.8°C
+Roccaraso: 6.2°C
+Castel di Sangro: 8.4°C
+Rivisondoli: 5.8°C
