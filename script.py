@@ -1,9 +1,5 @@
 import os
-import smtplib
 from datetime import datetime
-from email.header import Header
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 import requests
 
 
@@ -26,37 +22,46 @@ def ottieni_temperatura_api_backup(lat, lon):
     return None
 
 
-def invia_email_blogger(contenuto_html):
+def invia_email_via_http(contenuto_html):
+    # Recuperiamo le credenziali dai Secrets
+    api_key_brevo = os.environ.get("BREVO_API_KEY")
     email_destinatario = os.environ.get("BLOGGER_EMAIL_SECRET")
     email_mittente = os.environ.get("MITTENTE_EMAIL")
-    password_mittente = os.environ.get("MITTENTE_PASSWORD")
 
-    if not email_destinatario or not email_mittente or not password_mittente:
+    if not api_key_brevo or not email_destinatario or not email_mittente:
         print(
-            "-> Invio a Blogger ignorato: Mancano i Secrets delle email su GitHub."
+            "-> Invio a Blogger ignorato: Mancano le chiavi nei Secrets di GitHub."
         )
         return
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = Header("Meteo Comprensorio in Tempo Reale", "utf-8")
-    msg["From"] = email_mittente
-    msg["To"] = email_destinatario
+    # Usiamo l'endpoint HTTP ufficiale di Brevo per mandare mail senza usare SMTP
+    url = "https://brevo.com"
 
-    parte_html = MIMEText(contenuto_html, "html", "utf-8")
-    msg.attach(parte_html)
+    headers = {
+        "accept": "application/json",
+        "api-key": api_key_brevo,
+        "content-type": "application/json",
+    }
+
+    payload = {
+        "sender": {"email": email_mittente, "name": "Stazione Meteo GitHub"},
+        "to": [{"email": email_destinatario}],
+        "subject": "Meteo Comprensorio in Tempo Reale",
+        "htmlContent": contenuto_html,
+    }
 
     try:
-        print("Connessione sicura tramite porta 587 TLS...")
-        server = smtplib.SMTP("://gmail.com", 587, timeout=15)
-        server.starttls()
-        server.login(email_mittente, password_mittente)
+        print("Invio e-mail tramite chiamata HTTP (Bypass blocco server cloud)...")
+        response = requests.post(url, headers=headers, json=payload, timeout=15)
 
-        print("Invio in corso a Blogger...")
-        server.sendmail(email_mittente, [email_destinatario], msg.as_string())
-        server.quit()
-        print("🎉 EMAIL INVIATA CON SUCCESSO!")
+        if response.status_code in:
+            print("🎉 EMAIL INVIATA CON SUCCESSO TRAMITE HTTP!")
+        else:
+            print(
+                f"🚨 Errore del server mail ({response.status_code}): {response.text}"
+            )
     except Exception as e:
-        print("🚨 Errore durante l'invio dell'email: " + str(e))
+        print("🚨 Impossibile completare la chiamata HTTP: " + str(e))
 
 
 def salva_meteo_comprensorio():
@@ -93,7 +98,6 @@ def salva_meteo_comprensorio():
             posto["lat"], posto["lon"]
         )
 
-        # Usiamo 'temperatura_attuale' per evitare qualsiasi errore di ortografia
         if not temperatura_attuale:
             if posto["nome"] == "Roccaraso":
                 temperatura_attuale = "6.2°C"
@@ -140,7 +144,7 @@ def salva_meteo_comprensorio():
         except Exception as file_error:
             print("Errore scrittura file: " + str(file_error))
 
-    invia_email_blogger(html_blogger)
+    invia_email_via_http(html_blogger)
 
 
 if __name__ == "__main__":
