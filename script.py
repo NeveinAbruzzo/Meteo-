@@ -2,59 +2,66 @@ from datetime import datetime
 import requests
 
 
-def salva_temperatura():
-    # URL di base dell'API (senza i parametri agganciati)
-    url_base = "https://api.open-meteo.com/v1/forecast"
+def salva_meteo_multiplo():
+    url_base = "https://open-meteo.com"
 
-    # Isoliamo i parametri così Python li compone senza errori di battitura
-    parametri = {
-        "latitude": 41.8487,
-        "longitude": 14.0785,
-        "current": "temperature_2m",
-    }
+    # 1. Elenco delle città che vuoi monitorare. Puoi aggiungerne quante ne vuoi!
+    citta_da_monitorare = [
+        {"nome": "Pescasseroli", "lat": 41.8487, "lon": 14.0785},
+        {"nome": "Roma", "lat": 41.8919, "lon": 12.5113},
+        {"nome": "Milano", "lat": 45.4642, "lon": 9.1900},
+    ]
 
-    # Usiamo un'intestazione (User-Agent) che simula un browser reale per evitare blocchi anti-bot
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
     }
 
-    try:
-        # Effettuiamo la richiesta passando i parametri in modo esplicito
-        response = requests.get(
-            url_base, params=parametri, headers=headers, timeout=15
-        )
+    # Otteniamo l'orario attuale una sola volta per tutte le letture
+    orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
+    righe_da_salvare = []
 
-        # Controlla se il server risponde con un errore HTTP (es. 404, 500)
-        response.raise_for_status()
+    # 2. Il ciclo gira per ogni città presente nella lista
+    for citta in citta_da_monitorare:
+        parametri = {
+            "latitude": citta["lat"],
+            "longitude": citta["lon"],
+            "current": "temperature_2m",
+        }
 
-        # Verifica se la risposta è davvero un JSON e non una pagina HTML
-        if "application/json" not in response.headers.get("Content-Type", ""):
-            print("ATTENZIONE: Il server ha risposto con una pagina web HTML!")
-            print("Controlla che l'URL sia corretto e non bloccato.")
-            exit(1)
+        try:
+            response = requests.get(
+                url_base, params=parametri, headers=headers, timeout=15
+            )
+            response.raise_for_status()
 
-        dati = response.json()
+            if "application/json" not in response.headers.get(
+                "Content-Type", ""
+            ):
+                print(
+                    f"Errore: Risposta non valida per la città {citta['nome']}"
+                )
+                continue
 
-        # Estraiamo i valori corretti dal JSON ottenuto
-        temperatura = dati["current"]["temperature_2m"]
-        unita = dati["current_units"]["temperature_2m"]
+            dati = response.json()
 
-        # Otteniamo l'orario attuale per il report
-        orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
-        riga_meteo = (
-            f"[{orario_locale}] Temperatura rilevata: {temperatura}{unita}\n"
-        )
+            # Estraiamo la temperatura
+            temperatura = dati["current"]["temperature_2m"]
+            unita = dati["current_units"]["temperature_2m"]
 
-        # Scriviamo nel file presente sul tuo repository
+            # Prepariamo la riga includendo il NOME della città
+            riga = f"[{orario_locale}] {citta['nome']}: {temperatura}{unita}\n"
+            righe_da_salvare.append(riga)
+            print(f"Recuperato: {riga.strip()}")
+
+        except Exception as e:
+            print(f"Errore con la città {citta['nome']}: {e}")
+
+    # 3. Scriviamo tutte le letture nel file Dati_meteo.txt in un colpo solo
+    if righe_da_salvare:
         with open("Dati_meteo.txt", "a", encoding="utf-8") as file:
-            file.write(riga_meteo)
-
-        print(f"Successo! Salvato nel file: {riga_meteo.strip()}")
-
-    except Exception as e:
-        print(f"Si è verificato un errore durante l'esecuzione: {e}")
-        exit(1)
+            file.writelines(righe_da_salvare)
+        print("Tutte le città sono state salvate con successo!")
 
 
 if __name__ == "__main__":
-    salva_temperatura()
+    salva_meteo_multiplo()
