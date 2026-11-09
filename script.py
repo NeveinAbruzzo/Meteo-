@@ -8,7 +8,13 @@ import requests
 
 
 def ottieni_temperatura_api_backup(lat, lon):
-    url = f"https://open-meteo.com{lat}&longitude={lon}&current_weather=true"
+    url = (
+        "https://open-meteo.com"
+        + str(lat)
+        + "&longitude="
+        + str(lon)
+        + "&current_weather=true"
+    )
     try:
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
@@ -41,17 +47,16 @@ def invia_email_blogger(contenuto_html):
 
     try:
         print("Connessione sicura tramite porta 587 TLS...")
-        # Cambiamo la connessione sulla porta standard 587, autorizzata sui server cloud
         server = smtplib.SMTP("://gmail.com", 587, timeout=15)
-        server.starttls()  # Avvia la cifratura sicura obbligatoria per Gmail
+        server.starttls()
         server.login(email_mittente, password_mittente)
 
-        print(f"Invio in corso a Blogger ({email_destinatario})...")
+        print("Invio in corso a Blogger...")
         server.sendmail(email_mittente, [email_destinatario], msg.as_string())
         server.quit()
-        print("🎉 EMAIL INVIATA CON SUCCESSO! POST IN CORSO DI AGGIORNAMENTO.")
+        print("🎉 EMAIL INVIATA CON SUCCESSO!")
     except Exception as e:
-        print(f"🚨 Errore durante l'invio dell'email: {e}")
+        print("🚨 Errore durante l'invio dell'email: " + str(e))
 
 
 def salva_meteo_comprensorio():
@@ -68,48 +73,62 @@ def salva_meteo_comprensorio():
     ]
 
     righe_da_salvare = []
-    html_blogger = f"""
-    <div style="font-family: Arial, sans-serif; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; max-width: 500px;">
-        <h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px; margin-top: 0;">📅 Ultimo Aggiornamento Automatico</h3>
-        <p style="font-size: 16px; font-weight: bold; color: #7f8c8d;">Data e Ora: {orario_locale}</p>
-        <ul style="list-style-type: none; padding-left: 0; font-size: 15px; line-height: 1.8;">
-    """
+    html_blogger = (
+        '<div style="font-family: Arial, sans-serif; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; max-width: 500px;">'
+        + '<h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px; margin-top: 0;">📅 Ultimo Aggiornamento Automatico</h3>'
+        + '<p style="font-size: 16px; font-weight: bold; color: #7f8c8d;">Data e Ora: '
+        + orario_locale
+        + "</p>"
+        + '<ul style="list-style-type: none; padding-left: 0; font-size: 15px; line-height: 1.8;">'
+    )
 
     print("--- AVVIO RECUPERO DATI METEO COMPRENSORIO ---")
-    righe_da_salvare.append(f"=== ULTIMO AGGIORNAMENTO: {orario_locale} ===\n\n")
+    righe_da_salvare.append(
+        "=== ULTIMO AGGIORNAMENTO: " + orario_locale + " ===\n\n"
+    )
 
     for posto in localita:
         print("Lettura dati reali per " + posto["nome"] + "...")
-        risultato = ottieni_temperatura_api_backup(posto["lat"], posto["lon"])
+        temperatura_attuale = ottieni_temperatura_api_backup(
+            posto["lat"], posto["lon"]
+        )
 
-        if not resultado:
+        # Usiamo 'temperatura_attuale' per evitare qualsiasi errore di ortografia
+        if not temperatura_attuale:
             if posto["nome"] == "Roccaraso":
-                risultato = "6.2°C"
+                temperatura_attuale = "6.2°C"
             elif posto["nome"] == "Pescocostanzo":
-                risultato = "5.8°C"
+                temperatura_attuale = "5.8°C"
             elif posto["nome"] == "Scanno":
-                risultato = "6.5°C"
+                temperatura_attuale = "6.5°C"
             elif posto["nome"] == "Villetta Barrea":
-                risultato = "7.0°C"
+                temperatura_attuale = "7.0°C"
             elif posto["nome"] == "Frosinone":
-                risultato = "11.5°C"
+                temperatura_attuale = "11.5°C"
             elif posto["nome"] == "Chieti":
-                risultato = "12.0°C"
+                temperatura_attuale = "12.0°C"
             elif posto["nome"] == "Napoli":
-                risultato = "14.8°C"
+                temperatura_attuale = "14.8°C"
             else:
-                risultato = "8.0°C"
+                temperatura_attuale = "8.0°C"
 
-        riga_txt = f"{posto['nome']}: {risultato}\n"
+        riga_txt = posto["nome"] + ": " + temperatura_attuale + "\n"
         righe_da_salvare.append(riga_txt)
-        html_blogger += f'<li style="padding: 6px 0; border-bottom: 1px dashed #eee;">📍 <span style="font-weight:600; color:#34495e;">{posto["nome"]}:</span> <span style="color:#e74c3c; font-weight:bold; margin-left: 5px;">{risultato}</span></li>'
 
-    html_blogger += """
-        </ul>
-        <hr style="border: 0; height: 1px; background: #ddd; margin: 15px 0;">
-        <p style="font-size: 12px; color: #95a5a6; font-style: italic; margin-bottom: 0; text-align: center;">⚙️ Stazione aggiornata con GitHub Actions.</p>
-    </div>
-    """
+        html_blogger += (
+            '<li style="padding: 6px 0; border-bottom: 1px dashed #eee;">📍 <span style="font-weight:600; color:#34495e;">'
+            + posto["nome"]
+            + ':</span> <span style="color:#e74c3c; font-weight:bold; margin-left: 5px;">'
+            + temperatura_attuale
+            + "</span></li>"
+        )
+
+    html_blogger += (
+        "</ul>"
+        + '<hr style="border: 0; height: 1px; background: #ddd; margin: 15px 0;">'
+        + '<p style="font-size: 12px; color: #95a5a6; font-style: italic; margin-bottom: 0; text-align: center;">⚙️ Stazione aggiornata con GitHub Actions.</p>'
+        + "</div>"
+    )
 
     if righe_da_salvare:
         try:
