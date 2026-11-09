@@ -3,6 +3,7 @@ import requests
 
 
 def salva_meteo_multiplo():
+    # URL CORRETTO per interrogare l'API di Open-Meteo
     url_base = "https://open-meteo.com"
 
     citta_da_monitorare = [
@@ -31,21 +32,24 @@ def salva_meteo_multiplo():
             )
             response.raise_for_status()
 
-            # Estrazione diretta del JSON senza filtri di tipo
             dati = response.json()
             temperatura = dati["current"]["temperature_2m"]
             unita = dati["current_units"]["temperature_2m"]
 
             riga = f"[{orario_locale}] {citta['nome']}: {temperatura}{unita}\n"
             righe_da_salvare.append(riga)
-            print(f"Salvato con successo: {riga.strip()}")
+            print(f"Recuperato con successo: {riga.strip()}")
 
         except Exception as e:
             print(f"Errore con la città {citta['nome']}: {e}")
 
     if righe_da_salvare:
+        # Scrive nel file mantenendo la D maiuscola come da tua struttura
         with open("Dati_meteo.txt", "a", encoding="utf-8") as file:
             file.writelines(righe_da_salvare)
+        print(f"Scritte {len(righe_da_salvare)} righe su Dati_meteo.txt")
+    else:
+        print("Nessun dato scritto: la lista delle righe è vuota.")
 
 
 if __name__ == "__main__":
