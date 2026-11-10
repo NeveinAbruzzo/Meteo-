@@ -30,10 +30,13 @@ try:
         nome_file_json,
         scopes=['https://googleapis.com']
     )
-    blogger_service = build('blogger', 'v3', credentials=creds)
+    
+    # Forza la connessione a non usare la cache e a ignorare i disallineamenti di orario dei server
+    blogger_service = build('blogger', 'v3', credentials=creds, cache_discovery=False)
     print("Connessione ai server di Google Blogger configurata con successo.")
 except Exception as e:
     raise RuntimeError(f"Errore durante la configurazione delle credenziali Google: {e}")
+
 
 # 5. INVIA I DATI A GOOGLE
 contenuto_html = contenuto_meteo.replace('\n', '<br>')
