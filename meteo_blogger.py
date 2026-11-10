@@ -1,61 +1,20 @@
 import os
-import json
-import requests
-from google.oauth2 import credentials
-from googleapiclient.discovery import build
 
-# --- CONFIGURAZIONE ---
-BLOG_ID = "IL_TUO_BLOG_ID"  # ⚠️ Sostituisci con l'ID numerico reale del tuo Blogger
+# 1. LEGGI I DATI DAL FILE DI TESTO LOCALE
+nome_file_meteo = "Dati_meteo.txt"
 
-def recupera_dati_meteo():
-    url = "https://open-meteo.com"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            current = data["current_weather"]
-            return f"Temperatura attuale: {current['temperature']}°C<br>Velocità del vento: {current['windspeed']} km/h"
-    except Exception as e:
-        print(f"Errore recupero meteo: {e}")
-    return "Impossibile recuperare i dati meteo aggiornati."
+if not os.path.exists(nome_file_meteo):
+    raise FileNotFoundError(f"Errore: Il file {nome_file_meteo} non è stato trovato nel repository!")
 
-def pubblica_su_blogger():
-    secrets_raw = os.environ.get("BOM_GOOGLE_CREDENTIALS")
-    if not secrets_raw:
-        print("Errore: Secret BOM_GOOGLE_CREDENTIALS non trovato.")
-        return
-        
-    creds_info = json.loads(secrets_raw)
-    
-    # Estraiamo i dati dal JSON scaricato da Google Cloud (struttura "web")
-    if "web" in creds_info:
-        web_info = creds_info["web"]
-        creds = credentials.Credentials(
-            token=None,
-            refresh_token=web_info.get("refresh_token"), # Verrà letto se presente
-            client_id=web_info.get("client_id"),
-            client_secret=web_info.get("client_secret"),
-            token_uri=web_info.get("token_uri", "https://googleapis.com")
-        )
-    else:
-        creds = credentials.Credentials.from_authorized_user_info(creds_info)
-    
-    service = build('blogger', 'v3', credentials=creds)
-    meteo_html = recupera_dati_meteo()
-    
-    body = {
-        "kind": "blogger#post",
-        "title": "Bollettino Meteo Aggiornato 🌤️",
-        "content": f"<p>Ecco gli ultimi aggiornamenti meteo generati automaticamente:</p><p>{meteo_html}</p>",
-        "labels": ["Meteo", "Automazione"]
-    }
-    
-    try:
-        request = service.posts().insert(blogId=BLOG_ID, body=body)
-        response = request.execute()
-        print(f"Post pubblicato con successo! URL: {response['url']}")
-    except Exception as e:
-        print(f"Errore durante la pubblicazione su Blogger: {e}")
+try:
+    with open(nome_file_meteo, 'r', encoding='utf-8') as f:
+        contenuto_meteo = f.read()
+    print("Dati meteo letti con successo dal file locale.")
+except Exception as e:
+    raise RuntimeError(f"Errore durante la lettura del file di testo: {e}")
 
-if __name__ == "__main__":
-    pubblica_su_blogger()
+# 2. CONFIGURA IL CONTENUTO PER BLOGGER
+# Ora la variabile 'contenuto_meteo' contiene il testo esatto del tuo file.
+# Puoi usarla direttamente nel corpo del post di Blogger, ad esempio:
+titolo_post = "Aggiornamento Meteo Automatico"
+corpo_post = contenuto_meteo  # Trasferisce il testo pari pari
