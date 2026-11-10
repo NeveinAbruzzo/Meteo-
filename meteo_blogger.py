@@ -21,10 +21,12 @@ try:
 except Exception as e:
     raise RuntimeError(f"Errore durante la lettura del file: {e}")
 
-# 3. RECUPERA LA CHIAVE API DA GITHUB
-api_key = os.environ.get('BLOGGER_API_KEY')
-if not api_key:
-    raise ValueError("Errore: La variabile BLOGGER_API_KEY è vuota o mancante nei Secrets di GitHub!")
+# 3. CHIAVE API INSERITA DIRETTAMENTE (PROVVISORIO PER TEST)
+api_key = "AIzaSyBIwTIGpvAvurx-ljNvJ2fHcZI3mUyshPA"
+
+if not api_key or api_key == "INCOLLA_QUI_LA_TUA_CHIAVE_API_REALE":
+    raise ValueError("Errore: Inserisci la tua chiave API reale tra le virgolette per fare il test!")
+
 
 # 4. PREPARA LA RICHIESTA HTTP DIRETTA PER BLOGGER
 url = f"https://googleapis.com{BLOG_ID}/posts?key={api_key}"
