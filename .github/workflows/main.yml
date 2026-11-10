@@ -1,46 +1,38 @@
-name: Automazione Dati Meteo
+name: aggiorna-meteo
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
   schedule:
-    - cron: '*/5 * * * *'
-
-permissions:
-  contents: write
+    - cron: '0 6 * * *' # Esegue il workflow automaticamente ogni giorno alle 06:00 UTC
 
 jobs:
   aggiorna-meteo:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Scarica il repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Scarica il repository
+        uses: actions/checkout@v4
 
-    - name: Configura Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
+      - name: Configura Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          update-pip: false
 
-    - name: Installa la libreria requests
-      run: pip install requests
+      - name: Installa la libreria requests
+        run: |
+          pip install requests
 
-    - name: Esegui lo script meteo
-      run: python script.py
-      env:
-        BLOGGER_ID: ${{ secrets.5866549180112140631 }}
-        BLOGGER_POST_ID: ${{ secrets.8471992786634549178 }}
-        BLOGGER_ACCESS_TOKEN: ${{ secrets.ya29.a0AehfTOmfW5w9btQM21FfXTT2Y-Nw8eOZJT2ezVP1X-GUn4W2oLP7mr4nmFHQ-SXno0lBEXMdp5G9nHUvpTvY17KsqrGNme5LhRBzFWXfkM9EMZukYnYBe__s0sWJ6vT0gy5bDZ1iYUL1xhxqvDmGRw3iFVaHBYYDwklRfYVkcLmRMWfvmzWXY95pYBBpsF4o_U6m1cgaCgYKAQUSARYSFQHGX2MidCeygfIzcBENBoS_6kBU_g0206 }}
+      - name: Esegui lo script meteo
+        run: |
+          python script.py
 
-    - name: Pubblica i dati aggiornati su GitHub
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action Meteo"
-        git add Dati_meteo.txt
-        git commit -m "Aggiornato diario meteo automatico [skip ci]" || echo "Nessuna modifica"
-        git pull --rebase -X theirs origin main
-        git push origin main
+      - name: Pubblica i dati aggiornati su GitHub
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add Dati_meteo.txt
+          git commit -m "Aggiornato diario meteo automatico" || echo "Nessuna modifica da caricare"
+          git fetch origin
+          git merge -X theirs origin/main -m "Risoluzione automatica conflitti"
+          git push origin main
