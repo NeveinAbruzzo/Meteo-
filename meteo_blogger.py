@@ -31,8 +31,33 @@ def pubblica_su_blogger():
         print("Errore: Secret BOM_GOOGLE_CREDENTIALS non trovato su GitHub.")
         return
         
-    creds_info = json.loads(secrets_raw)
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+
+# ... all'interno di pubblica_su_blogger():
+creds_info = json.loads(secrets_raw)
+
+# Se il file contiene la struttura "web", usiamo il caricamento corretto del client config
+if "web" in creds_info:
+    # Definiamo i permessi richiesti per Blogger
+    SCOPES = ['https://googleapis.com']
+    flow = InstalledAppFlow.from_client_config(creds_info, scopes=SCOPES)
+    # Nota: Questo metodo potrebbe richiedere un'autenticazione interattiva la prima volta.
+    # Se gira su GitHub Actions in modo non interattivo, potrebbe essere necessario usare un account di servizio o inserire il refresh token.
+    creds = flow.credentials
+else:
     creds = Credentials.from_authorized_user_info(creds_info)
+
+
+
+
+
+
+
+
+
+    
     
     # 2. Inizializza il servizio Blogger API
     service = build('blogger', 'v3', credentials=creds)
