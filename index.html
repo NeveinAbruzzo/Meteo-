@@ -185,6 +185,60 @@
             color: #0088cc;
             font-weight: bold;
         }
+
+        /* Griglia principale per distribuire Banner Sinistro, Sito Centrale e Banner Destro */
+        .page-wrapper {
+            display: grid;
+            grid-template-columns: minmax(120px, 1fr) minmax(auto, 1100px) minmax(120px, 1fr);
+            gap: 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        /* Stile dei Banner Verticali */
+        .sidebar-banner {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-top: 20px;
+        }
+
+        .banner-vertical {
+            background-color: #0b3c5d;
+            border: 2px solid #328cc1;
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+            padding: 20px 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            min-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .banner-vertical img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        /* Nasconde i banner sui telefoni piccoli per non rompere la grafica */
+        @media (max-width: 900px) {
+            .page-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .sidebar-banner {
+                display: none;
+            }
+        }
+
+
+
+        
     </style>
 </head>
 <body>
