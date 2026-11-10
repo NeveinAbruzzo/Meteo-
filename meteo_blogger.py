@@ -38,7 +38,7 @@ payload = {
     "kind": "blogger#post",
     "blog": {"id": BLOG_ID},
     "title": "Aggiornamento Meteo Automatico",
-    "content": contenido_html
+    "content": contenuto_html
 }
 
 data_inserimento = json.dumps(payload).encode('utf-8')
