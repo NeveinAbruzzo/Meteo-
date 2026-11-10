@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dati Meteo - Italia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #9cd1f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .main-container {
+            max-width: 1100px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            padding-bottom: 30px;
+        }
+
+        .header-logo {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header-logo h1 {
+            margin: 0;
+            color: #0088cc;
+            font-size: 2.2rem;
+            font-weight: bold;
+        }
+
+        .header-logo p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .navbar {
+            background-color: #111111;
+            display: flex;
+            overflow-x: auto;
+        }
+
+        .navbar a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .navbar a:hover {
+            background-color: #0088cc;
+        }
+
+        .navbar a.active {
+            background-color: #0088cc;
+        }
+
+        .ticker-bar {
+            background-color: #0b3c5d;
+            color: white;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #328cc1;
+            position: relative;
+            height: 24px;
+        }
+
+        .ticker-title {
+            background-color: #328cc1;
+            padding: 12px 15px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            position: absolute;
+            left: 0;
+            z-index: 2;
+            box-shadow: 5px 0 10px rgba(0,0,0,0.2);
+        }
+
+        .ticker-wrap {
+            width: 100%;
+            padding-left: 170px;
+            overflow: hidden;
+        }
+
+        .ticker-move {
+            display: inline-block;
+            white-space: nowrap;
+            padding-right: 100%;
+            animation: tickerEffect 25s linear infinite;
+        }
+
+        @keyframes tickerEffect {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        .ticker-item {
+            display: inline-block;
+            padding: 0 25px;
+            font-size: 0.95rem;
+        }
+
+        .ticker-item .city { font-weight: bold; color: #efbc9b; }
+        .ticker-item .temp { font-weight: bold; color: #fff; }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid { grid-template-columns: 1fr; }
+        }
+
+        .forecast-card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            background-color: #fafafa;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: #0088cc;
+            border-bottom: 2px solid #0088cc;
+            padding-bottom: 5px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .map-box {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: #f4f9fc;
+            text-align: center;
+        }
+
+        .map-wrapper {
+            background-color: #e3eef5;
+            border: 1px dashed #328cc1;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 15px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .map-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .source-tag {
+            font-size: 0.75rem;
+            color: #777;
+            margin-top: 8px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        
+        <div class="header-logo">
+            <h1>Meteo Portale</h1>
+            <p id="update-time">--- ULTIMO AGGIORNAMENTO: 10/11/2026 14:57 ---</p>
+        </div>
+
+        <div class="navbar">
+            <a href="index.html">HOME</a>
+            <a href="dati-meteo.html" class="active">DATI METEO</a>
+            <a href="#">SITUAZIONE</a>
+            <a href="#">MODELLI</a>
+            <a href="#">PREVISIONI</a>
+            <a href="webcam.html">WEBCAM</a>
+        </div>
+
+        <div class="ticker-bar">
+            <div class="ticker-title">TEMPERATURE LIVE:</div>
+            <div class="ticker-wrap">
+                <div class="ticker-move" id="ticker-content">
+                    Caricamento dati meteo...
+                </div>
+            </div>
+        </div>
+        <div class="content-grid">
+            
+            <!-- COLONNA SINISTRA: BOLLETTINI TESTUALI -->
+            <div>
+                <div class="forecast-card">
+                    <h2 class="card-title">Previsioni Oggi</h2>
+                    <p>La giornata odierna vede una spiccata variabilità sulle regioni del versante Tirrenico e lungo la dorsale appenninica, con possibili addensamenti e locali piovaschi di breve durata. Ampie schiarite resistono lungo le coste adriatiche e sulle pianure settentrionali. Ventilazione moderata di provenienza settentrionale.</p>
+                </div>
+
+                <div class="forecast-card">
+                    <h2 class="card-title">Previsioni Domani</h2>
+                    <p>Per la giornata di domani è atteso il transito di una rapida perturbazione d'origine atlantica che porterà un temporaneo peggioramento delle condizioni atmosferiche, a partire dalle regioni del Nord-Ovest e dalla Toscana. Fenomeni in estensione nel corso del pomeriggio alle aree interne del Centro, con un lieve calo delle temperature massime.</p>
+                </div>
+
+                <div class="forecast-card">
+                    <h2 class="card-title">Tendenza Weekend</h2>
+                    <p>Il fine settimana si preannuncia improntato a una graduale stabilizzazione atmosferica grazie all'espansione di un promontorio di alta pressione sul Mediterraneo centrale. I cieli torneranno in prevalenza sereni o poco nuvolosi su quasi tutta la penisola nel corso di domenica, con un generale e piacevole rialzo termico nei valori diurni.</p>
+                </div>
+            </div>
+
+            <!-- COLONNA DESTRA: FOTO MAPPE SITI FAMOSI -->
+            <div>
+                <div class="map-box">
+                    <h2 class="card-title" style="font-size: 1.1rem; margin-bottom: 5px;">Mappe Nazionali</h2>
+                    
+                    <div class="map-wrapper">
+                        <!-- Immagine di esempio per il radar o le previsioni sinottiche -->
+                        <img src="https://webcams.travel" class="map-img" alt="Mappa Previsioni Italia" onerror="this.style.display='none';">
+                        <div class="source-tag">Fonte: Radar Sinottico Nazionale</div>
+                    </div>
+
+                    <div class="map-wrapper">
+                        <!-- Seconda immagine per le tendenze o i modelli precipitativi -->
+                        <img src="https://webcams.travel" class="map-img" alt="Mappa Tendenza Weekend" onerror="this.style.display='none';">
+                        <div class="source-tag">Elaborazione: Modello Globale</div>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- Chiusura di .content-grid -->
+
+    </div> <!-- Chiusura di .main-container -->
+
+    <!-- SCRIPT JAVASCRIPT PER IL TICKER DELLE TEMPERATURE -->
+    <script>
+        async function caricaDatiMeteo() {
+            try {
+                const response = await fetch('Dati_meteo.txt');
+                const text = await response.text();
+                const linee = text.split('\n');
+                let tickerHtml = '';
+                
+                linee.forEach((linea, index) => {
+                    const rigaPulita = linea.trim();
+                    if (index === 0 && rigaPulita.includes('AGGIORNAMENTO:')) {
+                        const dataInfo = rigaPulita.replace(/---/g, '').trim();
+                        document.getElementById('update-time').innerText = "--- " + dataInfo + " ---";
+                    }
+                    if (rigaPulita.includes(':') && index > 0) {
+                        const parti = rigaPulita.split(':');
+                        const citta = parti[0].trim();
+                        const temperatura = parti[1].trim();
+                        let icona = '☀️';
+                        if (parseFloat(temperatura) < 10) icona = '❄️';
+                        if (parseFloat(temperatura) >= 10 && parseFloat(temperatura) < 16) icona = '⛅';
+                        tickerHtml += `<div class="ticker-item"><span class="city">${citta}:</span> <span class="temp">${temperatura} ${icona}</span></div>`;
+                    }
+                });
+                if (tickerHtml !== '') {
+                    document.getElementById('ticker-content').innerHTML = tickerHtml;
+                }
+            } catch (error) {
+                console.error("Errore nel caricamento del ticker:", error);
+                document.getElementById('ticker-content').innerText = "Dati temporaneamente non disponibili";
+            }
+        }
+        caricaDatiMeteo();
+    </script>
+
+</body>
+</html>
+
