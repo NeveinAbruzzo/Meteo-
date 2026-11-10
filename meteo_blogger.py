@@ -43,5 +43,5 @@ try:
     request = blogger_service.posts().insert(blogId=BLOG_ID, body=corpo_del_post)
     risposta_server = request.execute()
     print(f"🎉 CE L'ABBIAMO FATTA! Post pubblicato sul blog. ID Post: {risposta_server.get('id')}")
-</except Exception as e:
+except Exception as e:
     raise RuntimeError(f"Errore finale di invio: {e}")
