@@ -19,7 +19,6 @@ with open(nome_file_meteo, 'r', encoding='utf-8') as f:
     contenuto_meteo = f.read()
 
 # 3. CARICA LE CREDENZIALI DIRETTAMENTE DAL FILE JSON CARICATO
-# Se il tuo file ha un nome diverso (es. il nome lungo di Google), scrivi quel nome qui sotto!
 nome_file_json = "chiave_google.json"
 
 if not os.path.exists(nome_file_json):
@@ -35,13 +34,6 @@ try:
     print("Connessione ai server di Google Blogger configurata con successo.")
 except Exception as e:
     raise RuntimeError(f"Errore durante la configurazione delle credenziali Google: {e}")
-
-
-# 4. CONFIGURA IL SERVIZIO UFFICIALE DI GOOGLE
-info_credenziali = json.loads(credenziali_prive)
-creds = service_account.Credentials.from_service_account_info(info_credenziali)
-scoped_creds = creds.with_scopes(['https://googleapis.com'])
-blogger_service = build('blogger', 'v3', credentials=scoped_creds)
 
 # 5. INVIA I DATI A GOOGLE
 contenuto_html = contenuto_meteo.replace('\n', '<br>')
