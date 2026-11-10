@@ -44,7 +44,7 @@
             font-size: 0.9rem;
         }
 
-        /* Barra di navigazione blu scuro come AbruzzoMeteo */
+        /* Barra di navigazione nera */
         .navbar {
             background-color: #111111;
             display: flex;
@@ -67,6 +67,71 @@
 
         .navbar a.active {
             background-color: #0088cc;
+        }
+
+        /* NUOVA BARRA BLU SCURO CON LE LOCALITÀ (TICKER) */
+        .ticker-bar {
+            background-color: #0b3c5d;
+            color: white;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #328cc1;
+        }
+
+        /* Titolo fisso sulla sinistra */
+        .ticker-title {
+            background-color: #328cc1;
+            padding: 10px 15px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            position: absolute;
+            z-index: 2;
+            box-shadow: 5px 0 10px rgba(0,0,0,0.2);
+        }
+
+        /* Contenitore del testo che si muove */
+        .ticker-wrap {
+            width: 100%;
+            padding-left: 170px; /* Lascia spazio al titolo fisso */
+            overflow: hidden;
+        }
+
+        /* Animazione per far scorrere le città da destra a sinistra */
+        .ticker-move {
+            display: inline-block;
+            white-space: nowrap;
+            padding-right: 100%;
+            animation: tickerEffect 25s linear infinite;
+        }
+
+        .ticker-move:hover {
+            animation-play-state: paused; /* Si ferma se passi sopra con il mouse */
+        }
+
+        /* Stile per ogni singola città all'interno della barra */
+        .ticker-item {
+            display: inline-block;
+            padding: 0 20px;
+            font-size: 0.95rem;
+        }
+
+        .ticker-item .city {
+            font-weight: bold;
+            color: #efbc9b; /* Colore sabbia/arancio per evidenziare la città */
+        }
+
+        .ticker-item .temp {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        @keyframes tickerEffect {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
         }
 
         /* Layout dei contenuti interni */
@@ -148,6 +213,23 @@
             <a href="#">Modelli</a>
             <a href="#">Previsioni</a>
             <a href="#">Webcam</a>
+        </div>
+
+        <!-- NUOVA FINESTRA ORIZZONTALE SCORREVOLE IN BLU SCURO -->
+        <div class="ticker-bar">
+            <div class="ticker-title">Temperature Live:</div>
+            <div class="ticker-wrap">
+                <div class="ticker-move">
+                    <div class="ticker-item"><span class="city">L'Aquila:</span> <span class="temp">12°C ☀️</span></div>
+                    <div class="ticker-item"><span class="city">Pescara:</span> <span class="temp">19°C ⛅</span></div>
+                    <div class="ticker-item"><span class="city">Chieti:</span> <span class="temp">16°C ⛅</span></div>
+                    <div class="ticker-item"><span class="city">Teramo:</span> <span class="temp">15°C 🌧️</span></div>
+                    <div class="ticker-item"><span class="city">Sulmona:</span> <span class="temp">13°C ☀️</span></div>
+                    <div class="ticker-item"><span class="city">Avezzano:</span> <span class="temp">11°C ☀️</span></div>
+                    <div class="ticker-item"><span class="city">Giulianova:</span> <span class="temp">18°C ⛅</span></div>
+                    <div class="ticker-item"><span class="city">Vasto:</span> <span class="temp">19°C ☀️</span></div>
+                </div>
+            </div>
         </div>
 
         <!-- Griglia dei contenuti principali dello schermo -->
