@@ -1,10 +1,11 @@
-name: Invia Meteo a Blogger
+name: run-blogger-sync
 
 on:
+  # Esegue lo script ogni giorno alle 07:30 UTC (08:30 in Italia)
   schedule:
-    # Esegue lo script ogni giorno alle 07:30 UTC (regola l'orario a piacimento)
     - cron: '30 7 * * *'
-  workflow_dispatch: # Ti permette di avviarlo manualmente quando vuoi per fare i test
+  # Ti permette di avviarlo manualmente quando vuoi per fare i test
+  workflow_dispatch:
 
 jobs:
   run-blogger-sync:
@@ -21,12 +22,9 @@ jobs:
 
     - name: Installa le librerie per Google e le richieste HTTP
       run: |
-        pip install requests google-auth google-api-python-client
+        python -m pip install --upgrade pip
+        pip install requests PyJWT cryptography
 
     - name: Esegui lo script di pubblicazione
-      env:
-        # Passa il Secret di GitHub all'ambiente dello script Python
-        # ASSICURATI che il nome dopo 'secrets.' sia IDENTICO al nome del Secret che hai creato su GitHub
-        BOM_GOOGLE_CREDENTIALS: ${{ secrets.BOM_GOOGLE_CREDENTIALS }}
-      run: python meteo_blogger.py
-
+      run: |
+        python meteo_blogger.py
