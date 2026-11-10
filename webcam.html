@@ -36,9 +36,16 @@
             font-weight: bold;
         }
 
+        .header-logo p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
         .navbar {
             background-color: #111111;
             display: flex;
+            overflow-x: auto;
         }
 
         .navbar a {
@@ -48,6 +55,7 @@
             text-transform: uppercase;
             font-size: 0.85rem;
             font-weight: bold;
+            white-space: nowrap;
         }
 
         .navbar a:hover {
@@ -58,93 +66,95 @@
             background-color: #0088cc;
         }
 
-        .webcam-layout {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
+        /* STILE DELLA TUA GRIGLIA DI SELEZIONE */
+        .comprensorio-box {
+            width: 100%;
+            max-width: 900px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 12px;
             padding: 20px;
+            margin: 25px auto 15px auto;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-sizing: border-box;
         }
 
-        @media (max-width: 768px) {
-            .webcam-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Elenco verticale delle località */
-        .webcam-list {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #fafafa;
-            padding: 10px;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .webcam-list h3 {
+        .comprensorio-box h3 {
+            color: #fff;
+            font-size: 18px;
             margin-top: 0;
-            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             border-bottom: 2px solid #0088cc;
-            padding-bottom: 5px;
+            padding-bottom: 8px;
+            display: inline-block;
         }
 
-        .webcam-btn {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 8px;
-            background-color: #ffffff;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            text-align: left;
-            font-size: 1rem;
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .column-title {
+            color: #efbc9b;
+            font-size: 14px;
             font-weight: bold;
+            text-transform: uppercase;
+            margin: 0 0 10px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .webcam-ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .webcam-ul li {
+            margin-bottom: 8px;
+        }
+
+        .webcam-link {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            padding: 4px 0;
+            border-bottom: 1px dashed #333;
+            transition: color 0.2s, padding-left 0.2s;
+        }
+
+        .webcam-link:hover {
             color: #0088cc;
-            cursor: pointer;
-            transition: all 0.2s;
+            padding-left: 5px;
         }
 
-        .webcam-btn:hover {
-            background-color: #0088cc;
-            color: white;
-        }
-
-        .webcam-btn.active {
-            background-color: #0b3c5d;
-            color: white;
-            border-color: #0b3c5d;
-        }
-
-        /* Riquadro di visualizzazione della webcam attiva */
-        .webcam-display {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 15px;
-            background-color: #f4f9fc;
-            text-align: center;
-        }
-
-        .webcam-display h2 {
-            margin-top: 0;
-            color: #0b3c5d;
-        }
-
-        .video-container {
+        /* CORNICE E RITAGLIO DINAMICO IFRAME */
+        .player-container {
             width: 100%;
-            background-color: #000;
-            border-radius: 4px;
+            max-width: 770px;
+            height: 405px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            min-height: 350px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: relative;
+            border: 3px solid #333;
+            background: #000;
+            border-radius: 12px;
+            margin: 20px auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .video-container img, .video-container iframe {
-            width: 100%;
-            height: auto;
-            max-height: 500px;
+        #mioRiquadroWebcam {
+            width: 1120px;
+            height: 1600px;
+            position: absolute;
+            transform: scale(0.85);
+            transform-origin: top left;
+            top: -765px;
+            left: -110px;
             border: none;
         }
     </style>
@@ -154,7 +164,8 @@
     <div class="main-container">
         
         <div class="header-logo">
-            <h1>Meteo Portale - Webcam Live</h1>
+            <h1>Meteo Portale - Live Webcam</h1>
+            <p>Seleziona una località per visualizzare lo streaming in tempo reale</p>
         </div>
 
         <div class="navbar">
@@ -166,46 +177,68 @@
             <a href="webcam.html" class="active">Webcam</a>
         </div>
 
-        <div class="webcam-layout">
+        <!-- BOX SELEZIONE CON LA TUA GRIGLIA -->
+        <div class="comprensorio-box">
+            <h3>⛷️ Elenco Webcam per Comprensorio</h3>
             
-            <!-- Colonna Sinistra: Lista delle località cliccabili -->
-            <div class="webcam-list">
-                <h3>Seleziona Località</h3>
-                <!-- NOTA: Questi pulsanti attivano lo switch. Cambia i link finti qua sotto con quelli reali generati dal tuo script OpenMeteo -->
-                <button class="webcam-btn active" onclick="cambiaWebcam('Roccaraso - Piazza', 'https://webcams.travel')">Roccaraso</button>
-                <button class="webcam-btn" onclick="cambiaWebcam('Pescara - Lungomare', 'https://webcams.travel')">Pescara</button>
-                <button class="webcam-btn" onclick="cambiaWebcam('L\'Aquila - Centro', 'https://webcams.travel')">L'Aquila</button>
-                <button class="webcam-btn" onclick="cambiaWebcam('Scanno - Lago', 'https://webcams.travel')">Scanno</button>
-            </div>
-
-            <!-- Colonna Destra: Player o Immagine della Webcam attiva -->
-            <div class="webcam-display">
-                <h2 id="webcam-title">Roccaraso - Piazza</h2>
-                <div class="video-container">
-                    <img id="webcam-frame" src="https://webcams.travel" alt="Webcam in tempo reale">
+            <div class="grid-layout">
+                
+                <!-- COMPRENSORIO 1 -->
+                <div>
+                    <h4 class="column-title">🏔️ Alto Sangro (AQ)</h4>
+                    <ul class="webcam-ul">
+                        <li><a href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -835, -110, 0.85);" class="webcam-link">👉 Roccaraso centro citta'</a></li>
+                        <li><a href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -835, -110, 0.85);" class="webcam-link">👉 Villetta Barrea</a></li>
+                        <li><a href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -685, -110, 0.85);" class="webcam-link">👉 Piana cinque Miglia</a></li>
+                        <li><a href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -835, -100, 0.85);" class="webcam-link">👉 Pizzalto</a></li>
+                    </ul>
                 </div>
-            </div>
+                
+                <!-- COMPRENSORIO 2 -->
+                <div>
+                    <h4 class="column-title">🏔️ Centro Appennino</h4>
+                    <ul class="webcam-ul">
+                        <li><a href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -685, -80, 0.85);" class="webcam-link">👉 San Gregorio Matese</a></li>
+                        <li><a href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -800, -100, 0.85);" class="webcam-link">👉 Campitello Matese piste 5</a></li>
+                        <li><a href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -730, -100, 0.85);" class="webcam-link">👉 Pescasseroli</a></li>
+                    </ul>
+                </div>
 
+                <!-- COMPRENSORIO 3 -->
+                <div>
+                    <h4 class="column-title">🏔️ Alpi & Nord</h4>
+                    <ul class="webcam-ul">
+                        <li><a href="javascript:void(0);" onclick="cambiaWebcam('https://feratel.com', -380, -120, 0.85);" class="webcam-link">👉 Val Gardena</a></li>
+                        <li><a href="javascript:void(0);" onclick="cambiaWebcam('https://feratel.com', -380, -100, 0.85);" class="webcam-link">👉 Rocca di cambio Lago</a></li>
+                        <li><a href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -800, -100, 0.85);" class="webcam-link">👉 Bocca della Selva</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- IL RAGGIUSTATO PLAYER CONTENITORE -->
+        <div class="player-container">
+            <iframe id="mioRiquadroWebcam" 
+                    src="https://turismometeo.it" 
+                    scrolling="no">
+            </iframe>
         </div>
 
     </div>
 
+    <!-- SCRIPT AUTOMATICO DI AGGANCIO -->
     <script>
-        // Funzione per cambiare la sorgente video/immagine al clic del tasto
-        function cambiaWebcam(nome, url) {
-            // Aggiorna il titolo e l'immagine sorgente
-            document.getElementById('webcam-title').innerText = nome;
-            document.getElementById('webcam-frame').src = url;
-
-            // Rimuove lo stile attivo da tutti i pulsanti e lo assegna a quello cliccato
-            const bottoni = document.querySelectorAll('.webcam-btn');
-            bottoni.forEach(btn => btn.classList.remove('active'));
-            
-            // Trova il bottone cliccato per metterlo in risalto
-            event.currentTarget.classList.add('active');
+    function cambiaWebcam(url, topValue, leftValue, scaleValue) {
+        var iframe = document.getElementById('mioRiquadroWebcam');
+        if (iframe) {
+            iframe.src = url;
+            iframe.style.top = topValue + 'px';
+            iframe.style.left = leftValue + 'px';
+            iframe.style.transform = 'scale(' + scaleValue + ')';
         }
+    }
     </script>
 
 </body>
 </html>
-
