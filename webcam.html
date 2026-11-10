@@ -1,1 +1,211 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Live - Meteo Portale</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #9cd1f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .main-container {
+            max-width: 1100px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            padding-bottom: 30px;
+        }
+
+        .header-logo {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header-logo h1 {
+            margin: 0;
+            color: #0088cc;
+            font-size: 2.2rem;
+            font-weight: bold;
+        }
+
+        .navbar {
+            background-color: #111111;
+            display: flex;
+        }
+
+        .navbar a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            background-color: #0088cc;
+        }
+
+        .navbar a.active {
+            background-color: #0088cc;
+        }
+
+        .webcam-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .webcam-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Elenco verticale delle località */
+        .webcam-list {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fafafa;
+            padding: 10px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .webcam-list h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #0088cc;
+            padding-bottom: 5px;
+        }
+
+        .webcam-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #0088cc;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .webcam-btn:hover {
+            background-color: #0088cc;
+            color: white;
+        }
+
+        .webcam-btn.active {
+            background-color: #0b3c5d;
+            color: white;
+            border-color: #0b3c5d;
+        }
+
+        /* Riquadro di visualizzazione della webcam attiva */
+        .webcam-display {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: #f4f9fc;
+            text-align: center;
+        }
+
+        .webcam-display h2 {
+            margin-top: 0;
+            color: #0b3c5d;
+        }
+
+        .video-container {
+            width: 100%;
+            background-color: #000;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            min-height: 350px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-container img, .video-container iframe {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        
+        <div class="header-logo">
+            <h1>Meteo Portale - Webcam Live</h1>
+        </div>
+
+        <div class="navbar">
+            <a href="index.html">Home</a>
+            <a href="#">Dati Meteo</a>
+            <a href="#">Situazione</a>
+            <a href="#">Modelli</a>
+            <a href="#">Previsioni</a>
+            <a href="webcam.html" class="active">Webcam</a>
+        </div>
+
+        <div class="webcam-layout">
+            
+            <!-- Colonna Sinistra: Lista delle località cliccabili -->
+            <div class="webcam-list">
+                <h3>Seleziona Località</h3>
+                <!-- NOTA: Questi pulsanti attivano lo switch. Cambia i link finti qua sotto con quelli reali generati dal tuo script OpenMeteo -->
+                <button class="webcam-btn active" onclick="cambiaWebcam('Roccaraso - Piazza', 'https://webcams.travel')">Roccaraso</button>
+                <button class="webcam-btn" onclick="cambiaWebcam('Pescara - Lungomare', 'https://webcams.travel')">Pescara</button>
+                <button class="webcam-btn" onclick="cambiaWebcam('L\'Aquila - Centro', 'https://webcams.travel')">L'Aquila</button>
+                <button class="webcam-btn" onclick="cambiaWebcam('Scanno - Lago', 'https://webcams.travel')">Scanno</button>
+            </div>
+
+            <!-- Colonna Destra: Player o Immagine della Webcam attiva -->
+            <div class="webcam-display">
+                <h2 id="webcam-title">Roccaraso - Piazza</h2>
+                <div class="video-container">
+                    <img id="webcam-frame" src="https://webcams.travel" alt="Webcam in tempo reale">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Funzione per cambiare la sorgente video/immagine al clic del tasto
+        function cambiaWebcam(nome, url) {
+            // Aggiorna il titolo e l'immagine sorgente
+            document.getElementById('webcam-title').innerText = nome;
+            document.getElementById('webcam-frame').src = url;
+
+            // Rimuove lo stile attivo da tutti i pulsanti e lo assegna a quello cliccato
+            const bottoni = document.querySelectorAll('.webcam-btn');
+            bottoni.forEach(btn => btn.classList.remove('active'));
+            
+            // Trova il bottone cliccato per metterlo in risalto
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
 
