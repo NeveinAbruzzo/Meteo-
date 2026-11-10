@@ -1,11 +1,12 @@
 import os
 import json
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 # =======================================================
 # 1. IMPOSTA L'ID DEL TUO BLOG
-# Sostituisci questo numero con il numero reale del tuo blog!
 # =======================================================
+# L'ID preso dal tuo log è 5866549180112140631
 BLOG_ID = "5866549180112140631"
 
 # 2. LEGGI I DATI DAL FILE DI TESTO LOCALE
@@ -14,29 +15,22 @@ nome_file_meteo = "Dati_meteo.txt"
 if not os.path.exists(nome_file_meteo):
     raise FileNotFoundError(f"Errore: Il file {nome_file_meteo} non esiste nel repository!")
 
-try:
-    with open(nome_file_meteo, 'r', encoding='utf-8') as f:
-        contenuto_meteo = f.read()
-    print("Dati meteo letti con successo dal file locale.")
-except Exception as e:
-    raise RuntimeError(f"Errore durante la lettura del file: {e}")
+with open(nome_file_meteo, 'r', encoding='utf-8') as f:
+    contenuto_meteo = f.read()
 
-# 3. RECUPERA LA CHIAVE API (Inserita direttamente come nel test precedente)
-api_key = "AIzaSyBIwTIGpvAvurx-ljNvJ2fHcZI3mUyshPA"
-
-if not api_key or api_key == "AIzaSyBIwTIGpvAvurx-ljNvJ2fHcZI3mUyshPA":
-    raise ValueError("Errore: Inserisci la tua chiave API reale tra le virgolette!")
+# 3. CREDENZIALI DI SERVIZIO DIRETTE
+# Incolla l'INTERO contenuto del file .json scaricato da Google Cloud tra le tre virgolette
+credenziali_prive = """
+INCOLLA_QUI_IL_CONTENUTO_DEL_FILE_JSON_DELL_ACCOUNT_DI_SERVIZIO
+"""
 
 # 4. CONFIGURA IL SERVIZIO UFFICIALE DI GOOGLE
-try:
-    # Build gestisce l'URL internamente in modo sicuro senza usare urllib
-    blogger_service = build('blogger', 'v3', developerKey=api_key)
-    print("Connessione ai server di Google Blogger configurata.")
-except Exception as e:
-    raise RuntimeError(f"Errore durante la configurazione del servizio Google: {e}")
+info_credenziali = json.loads(credenziali_prive)
+creds = service_account.Credentials.from_service_account_info(info_credenziali)
+scoped_creds = creds.with_scopes(['https://googleapis.com'])
+blogger_service = build('blogger', 'v3', credentials=scoped_creds)
 
 # 5. INVIA I DATI A GOOGLE
-# Trasforma i dati meteo in formato HTML per preservare gli a capo del testo
 contenuto_html = contenuto_meteo.replace('\n', '<br>')
 
 corpo_del_post = {
@@ -46,9 +40,8 @@ corpo_del_post = {
 }
 
 try:
-    # Esegue l'inserimento usando le funzioni ufficiali
     request = blogger_service.posts().insert(blogId=BLOG_ID, body=corpo_del_post)
     risposta_server = request.execute()
-    print(f"🎉 SUCCESSO! Dati meteo inviati a Blogger. ID Post: {risposta_server.get('id')}")
-except Exception as e:
-    raise RuntimeError(f"Errore durante l'invio del post. Verifica la chiave o l'ID del blog: {e}")
+    print(f"🎉 CE L'ABBIAMO FATTA! Post pubblicato sul blog. ID Post: {risposta_server.get('id')}")
+</except Exception as e:
+    raise RuntimeError(f"Errore finale di invio: {e}")
