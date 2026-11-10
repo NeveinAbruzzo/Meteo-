@@ -288,5 +288,103 @@
         caricaDatiMeteo();
     </script>
 
+<!-- Box Principale Contenitore delle Liste -->
+<div style="width: 100%; max-width: 770px; background: #1a1a1a; border: 2px solid #333; border-radius: 12px; padding: 20px; margin: 20px auto; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.3); box-sizing: border-box;">
+    
+    <h3 style="color: #fff; font-size: 18px; margin-top: 0; margin-bottom: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #ff3b30; padding-bottom: 8px; display: inline-block;">
+        ⛷️ Elenco Webcam per Comprensorio
+    </h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+        
+        <!-- COMPRENSORIO 1 -->
+        <div>
+            <h4 style="color: #ff3b30; font-size: 14px; font-weight: bold; text-transform: uppercase; margin: 0 0 10px 0; letter-spacing: 0.5px;">
+                🏔️ Alto Sangro (AQ)
+            </h4>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 8px;">
+                    
+                    <a href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it/webcam/roccaraso-largo-luigi-savoia-clinica-dello-sci', -835, -110, 0.85);" style="color: #ccc; text-decoration: none; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: color 0.2s;">👉 Roccaraso centro citta'</a>
+                </li>
+                <li style="margin-bottom: 8px;">
+                    <a href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it/webcam/barrea-panorama-vista-lago-bar-il-chioschetto-aq', -835, -110, 0.85);" style="color: #ccc; text-decoration: none; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: color 0.2s;">👉 Villetta Barrea</a>
+                </li>
+                <li style="margin-bottom: 8px;">
+                    <a href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/roccaraso-piana-cinque-miglia-pizzalto-pratello-aremogna-skipass-altosangro', -685, -110, 0.85);" style="color: #ccc; text-decoration: none; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: color 0.2s;">👉Piana cinque Miglia</a>
+                </li>
+                <li style="margin-bottom: 8px;">
+                    <a href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/roccaraso-aremogna-pizzalto-aq', -835, -100, 0.85);" style="color: #ccc; text-decoration: none; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: color 0.2s;">👉 Pizzalto</a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- COMPRENSORIO 2 -->
+        <div>
+            <h4 style="color: #ff3b30; font-size: 14px; font-weight: bold; text-transform: uppercase; margin: 0 0 10px 0; letter-spacing: 0.5px;">
+                🏔️ Centro Appennino
+            </h4>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 8px;">
+                    <a href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/san-gregorio-matese-ce', -685, -80, 0.85);" style="color: #ccc; text-decoration: none; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: color 0.2s;">👉 San Gregorio Matese</a>
+                </li>
+                <li style="margin-bottom: 8px;">
+                    <a href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/campitello-matese-vista-hotel-spa-miletto', -800, -100, 0.85);" style="color: #ccc; text-decoration: none; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: color 0.2s;">👉 Campitello Matese piste 5</a>
+                </li>
+                <li style="margin-bottom: 8px;">
+                    <a href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/pescasseroli-hotel-iris-aq', -730, -100, 0.85);" style="color: #ccc; text-decoration: none; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: color 0.2s;">👉 Pescasseroli</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- COMPRENSORIO 3 -->
+        <div>
+            <h4 style="color: #ff3b30; font-size: 14px; font-weight: bold; text-transform: uppercase; margin: 0 0 10px 0; letter-spacing: 0.5px;">
+                🏔️ Alpi & Nord
+            </h4>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 8px;">
+                    <a href="javascript:void(0);" onclick="cambiaWebcam('https://www.feratel.com/it/webcam/italia/alto-adige/santa-cristina-valgardena-seceda-6344', -380, -120, 0.85);" style="color: #ccc; text-decoration: none; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: color 0.2s;">👉 Val Gardena</a>
+                </li>
+                <li style="margin-bottom: 8px;">
+                    <a href="javascript:void(0);" onclick="cambiaWebcam('https://www.feratel.com/it/webcam/italia/abruzzo/rocca-di-cambio-lago-cisterna-6420', -380, -100, 0.85);" style="color: #ccc; text-decoration: none; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: color 0.2s;">👉 Rocca di cambio Lago </a>
+                </li>
+                <li style="margin-bottom: 8px;">
+                    <a href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/bocca-della-selva-rifugio-montano-bn', -800, -100, 0.85);" style="color: #ccc; text-decoration: none; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: color 0.2s;">👉 Bocca della Selva</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- La scatola che fa da cornice e contiene il riquadro dinamico guidato da JavaScript -->
+<div style="width: 100%; max-width: 770px; height: 405px; overflow: hidden; position: relative; border: 3px solid #333; background: #000; border-radius: 12px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+    
+    <iframe id="mioRiquadroWebcam" 
+            src="https://www.turismometeo.it/webcam/bocca-della-selva-rifugio-montano-bn" 
+            style="width: 1120px; height: 1600px; position: absolute; transform: scale(0.85); transform-origin: top left; top: -765px; left: -110px; border: none;" 
+            scrolling="no">
+    </iframe>
+
+</div>
+
+<!-- Lo Script automatico che sposta e inquadra la pagina in base al tasto cliccato -->
+<script>
+function cambiaWebcam(url, topValue, leftValue, scaleValue) {
+    var iframe = document.getElementById('mioRiquadroWebcam');
+    if (iframe) {
+        // Cambia il link all'interno del riquadro
+        iframe.src = url;
+        // Aggiorna istantaneamente la posizione e lo zoom della nuova pagina
+        iframe.style.top = topValue + 'px';
+        iframe.style.left = leftValue + 'px';
+        iframe.style.transform = 'scale(' + scaleValue + ')';
+    }
+}
+</script>
+
+
+
+    
 </body>
 </html>
