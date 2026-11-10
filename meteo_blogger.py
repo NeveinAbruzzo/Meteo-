@@ -6,7 +6,7 @@ import urllib.request
 # 1. IMPOSTA L'ID DEL TUO BLOG
 # Sostituisci questo numero con il numero reale del tuo blog!
 # =======================================================
-BLOG_ID = "IL_TUO_ID_DEL_BLOG_QUI"
+BLOG_ID = "5866549180112140631"
 
 # 2. LEGGI I DATI DAL FILE DI TESTO LOCALE
 nome_file_meteo = "Dati_meteo.txt"
