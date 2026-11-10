@@ -1,4 +1,4 @@
-name: run-blogger-sync
+name: run-blogger-sync 
 
 on:
   # Esegue lo script ogni giorno alle 07:30 UTC (08:30 in Italia)
