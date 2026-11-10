@@ -6,7 +6,7 @@ from googleapiclient.discovery import build
 
 # --- CONFIGURAZIONE ---
 # ⚠️ SOSTITUISCI QUESTO ID CON QUELLO REALE DEL TUO BLOG BLOGGER
-BLOG_ID = "IL_TUO_BLOG_ID"  
+BLOG_ID = "5866549180112140631"  
 
 def recupera_dati_meteo():
     """
