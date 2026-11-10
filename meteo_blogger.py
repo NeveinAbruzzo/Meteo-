@@ -1,57 +1,56 @@
 import os
 import json
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
+import urllib.request
 
-# ==========================================
-# 1. LEGGI I DATI DAL FILE DI TESTO LOCALE
-# ==========================================
+# =======================================================
+# 1. IMPOSTA L'ID DEL TUO BLOG
+# Sostituisci questo numero con il numero reale del tuo blog!
+# =======================================================
+BLOG_ID = "IL_TUO_ID_DEL_BLOG_QUI"
+
+# 2. LEGGI I DATI DAL FILE DI TESTO LOCALE
 nome_file_meteo = "Dati_meteo.txt"
 
 if not os.path.exists(nome_file_meteo):
-    raise FileNotFoundError(f"Errore: Il file {nome_file_meteo} non è stato trovato!")
+    raise FileNotFoundError(f"Errore: Il file {nome_file_meteo} non esiste nel repository!")
 
 try:
     with open(nome_file_meteo, 'r', encoding='utf-8') as f:
         contenuto_meteo = f.read()
     print("Dati meteo letti con successo dal file locale.")
 except Exception as e:
-    raise RuntimeError(f"Errore durante la lettura del file di testo: {e}")
+    raise RuntimeError(f"Errore durante la lettura del file: {e}")
 
+# 3. RECUPERA LA CHIAVE API DA GITHUB
+api_key = os.environ.get('BLOGGER_API_KEY')
+if not api_key:
+    raise ValueError("Errore: La variabile BLOGGER_API_KEY è vuota o mancante nei Secrets di GitHub!")
 
-# ==========================================
-# 2. AUTENTICAZIONE CON GOOGLE BLOGGER
-# ==========================================
-# Recupera il JSON delle credenziali dai Secrets di GitHub
-credenziali_json = os.environ.get('BOM_GOOGLE_CREDENTIALS')
-# INSERISCI QUI IL TUO ID DEL BLOG DI BLOGGER
-BLOG_ID = "5866549180112140631" 
+# 4. PREPARA LA RICHIESTA HTTP DIRETTA PER BLOGGER
+url = f"https://googleapis.com{BLOG_ID}/posts?key={api_key}"
 
-if not credenziali_json:
-    raise ValueError("Errore: La variabile d'ambiente GOOGLE_CREDENTIALS è vuota o mancante nei Repository Secrets!")
+# Trasforma i dati meteo in formato HTML per preservare gli a capo del testo
+contenuto_html = contenuto_meteo.replace('\n', '<br>')
 
-try:
-    info_credenziali = json.loads(credenziali_json)
-    creds = Credentials.from_authorized_user_info(info_credenziali)
-    blogger_service = build('blogger', 'v3', credentials=creds)
-    print("Autenticazione con Google Blogger riuscita.")
-except Exception as e:
-    raise RuntimeError(f"Errore durante l'autenticazione con Blogger: {e}")
-
-
-# ==========================================
-# 3. PUBBLICAZIONE DEL POST
-# ==========================================
-corpo_del_post = {
-    'kind': 'blogger#post',
-    'title': 'Aggiornamento Meteo Automatico',
-    'content': contenuto_meteo  # Inserisce il testo del file pari pari
+payload = {
+    "kind": "blogger#post",
+    "blog": {"id": BLOG_ID},
+    "title": "Aggiornamento Meteo Automatico",
+    "content": contenido_html
 }
 
+data_inserimento = json.dumps(payload).encode('utf-8')
+
+req = urllib.request.Request(
+    url, 
+    data=data_inserimento, 
+    headers={'Content-Type': 'application/json'}
+)
+
+# 5. INVIA I DATI A GOOGLE
 try:
-    # Esegue la pubblicazione ufficiale
-    request = blogger_service.posts().insert(blogId=BLOG_ID, body=corpo_del_post)
-    response = request.execute()
-    print(f"Post pubblicato con successo! URL: {response.get('url')}")
+    with urllib.request.urlopen(req) as response:
+        risposta_server = json.loads(response.read().decode('utf-8'))
+        print(f"🎉 SUCCESSO! Dati meteo inviati a Blogger. ID Post: {risposta_server.get('id')}")
 except Exception as e:
-    raise RuntimeError(f"Errore durante la pubblicazione del post: {e}")
+    raise RuntimeError(f"Errore durante l'invio a Blogger. Verifica la chiave o l'ID del blog: {e}")
