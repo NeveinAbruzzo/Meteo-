@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meteo Portale Style</title>
     <style>
-        /* Sfondo azzurro chiaro preso dallo stile del sito */
         body {
             font-family: Arial, sans-serif;
             background-color: #9cd1f5;
@@ -14,7 +13,6 @@
             color: #333;
         }
 
-        /* Contenitore principale bianco al centro dello schermo */
         .main-container {
             max-width: 1100px;
             margin: 20px auto;
@@ -24,7 +22,6 @@
             overflow: hidden;
         }
 
-        /* Spazio per l'intestazione superiore */
         .header-logo {
             padding: 20px;
             text-align: left;
@@ -44,7 +41,6 @@
             font-size: 0.9rem;
         }
 
-        /* Barra di navigazione nera */
         .navbar {
             background-color: #111111;
             display: flex;
@@ -69,7 +65,7 @@
             background-color: #0088cc;
         }
 
-        /* NUOVA BARRA BLU SCURO CON LE LOCALITÀ (TICKER) */
+        /* BARRA BLU SCURO CON LE LOCALITÀ (TICKER) */
         .ticker-bar {
             background-color: #0b3c5d;
             color: white;
@@ -79,28 +75,28 @@
             display: flex;
             align-items: center;
             border-bottom: 2px solid #328cc1;
+            position: relative;
+            height: 24px;
         }
 
-        /* Titolo fisso sulla sinistra */
         .ticker-title {
             background-color: #328cc1;
-            padding: 10px 15px;
+            padding: 12px 15px;
             font-weight: bold;
             font-size: 0.85rem;
             text-transform: uppercase;
             position: absolute;
+            left: 0;
             z-index: 2;
             box-shadow: 5px 0 10px rgba(0,0,0,0.2);
         }
 
-        /* Contenitore del testo che si muove */
         .ticker-wrap {
             width: 100%;
-            padding-left: 170px; /* Lascia spazio al titolo fisso */
+            padding-left: 170px;
             overflow: hidden;
         }
 
-        /* Animazione per far scorrere le città da destra a sinistra */
         .ticker-move {
             display: inline-block;
             white-space: nowrap;
@@ -109,19 +105,18 @@
         }
 
         .ticker-move:hover {
-            animation-play-state: paused; /* Si ferma se passi sopra con il mouse */
+            animation-play-state: paused;
         }
 
-        /* Stile per ogni singola città all'interno della barra */
         .ticker-item {
             display: inline-block;
-            padding: 0 20px;
+            padding: 0 25px;
             font-size: 0.95rem;
         }
 
         .ticker-item .city {
             font-weight: bold;
-            color: #efbc9b; /* Colore sabbia/arancio per evidenziare la città */
+            color: #efbc9b;
         }
 
         .ticker-item .temp {
@@ -134,7 +129,6 @@
             100% { transform: translate3d(-100%, 0, 0); }
         }
 
-        /* Layout dei contenuti interni */
         .content-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -148,7 +142,6 @@
             }
         }
 
-        /* Blocco Bollettino / Previsioni principali */
         .main-card {
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -165,7 +158,6 @@
             margin-bottom: 15px;
         }
 
-        /* Box laterale per dati veloci della stazione */
         .side-card {
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -199,13 +191,12 @@
 
     <div class="main-container">
         
-        <!-- Intestazione del portale -->
         <div class="header-logo">
             <h1>Meteo Portale</h1>
-            <p>Rilevamenti della stazione automatica in tempo reale</p>
+            <!-- La data si aggiornerà da sola grazie al file txt -->
+            <p id="update-time">Caricamento ultimo aggiornamento...</p>
         </div>
 
-        <!-- Barra dei menu nera -->
         <div class="navbar">
             <a href="#" class="active">Home</a>
             <a href="#">Dati Meteo</a>
@@ -215,53 +206,97 @@
             <a href="#">Webcam</a>
         </div>
 
-        <!-- NUOVA FINESTRA ORIZZONTALE SCORREVOLE IN BLU SCURO -->
+        <!-- BARRA ORIZZONTALE ATTIVA -->
         <div class="ticker-bar">
             <div class="ticker-title">Temperature Live:</div>
             <div class="ticker-wrap">
-                <div class="ticker-move">
-                    <div class="ticker-item"><span class="city">L'Aquila:</span> <span class="temp">12°C ☀️</span></div>
-                    <div class="ticker-item"><span class="city">Pescara:</span> <span class="temp">19°C ⛅</span></div>
-                    <div class="ticker-item"><span class="city">Chieti:</span> <span class="temp">16°C ⛅</span></div>
-                    <div class="ticker-item"><span class="city">Teramo:</span> <span class="temp">15°C 🌧️</span></div>
-                    <div class="ticker-item"><span class="city">Sulmona:</span> <span class="temp">13°C ☀️</span></div>
-                    <div class="ticker-item"><span class="city">Avezzano:</span> <span class="temp">11°C ☀️</span></div>
-                    <div class="ticker-item"><span class="city">Giulianova:</span> <span class="temp">18°C ⛅</span></div>
-                    <div class="ticker-item"><span class="city">Vasto:</span> <span class="temp">19°C ☀️</span></div>
+                <div class="ticker-move" id="ticker-content">
+                    Caricamento dati meteo in tempo reale...
                 </div>
             </div>
         </div>
 
-        <!-- Griglia dei contenuti principali dello schermo -->
         <div class="content-grid">
             
-            <!-- Colonna sinistra: Bollettino testuale -->
             <div class="main-card">
                 <h2 class="card-title">Bollettino Meteorologico Generale</h2>
                 <p>La situazione attuale sul territorio mostra un quadro stabile con transito di nubi medio-alte. Nel corso della giornata si prevede una ventilazione debole o moderata, con temperature in linea con le medie stagionali.</p>
                 <p>Aggiornamenti continui estratti automaticamente dal sistema di localizzazione.</p>
             </div>
 
-            <!-- Colonna destra: Dati numerici istantanei -->
+            <!-- Box principale della tua stazione (mostrerà i dati di Roccaraso come esempio principale) -->
             <div class="side-card">
-                <h2 class="card-title">Dati Stazione</h2>
+                <h2 class="card-title">Stazione Principale</h2>
+                <div class="weather-row">
+                    <span class="weather-label">Località:</span>
+                    <span class="weather-value" id="main-city">Roccaraso</span>
+                </div>
                 <div class="weather-row">
                     <span class="weather-label">Temperatura:</span>
-                    <span class="weather-value">18°C</span>
-                </div>
-                <div class="weather-row">
-                    <span class="weather-label">Umidità:</span>
-                    <span class="weather-value">72%</span>
-                </div>
-                <div class="weather-row">
-                    <span class="weather-label">Vento:</span>
-                    <span class="weather-value">14 km/h</span>
+                    <span class="weather-value" id="main-temp">--°C</span>
                 </div>
             </div>
 
         </div>
 
     </div>
+
+    <!-- SCRIPT JAVASCRIPT PER LEGGERE IL FILE DATI_METEO.TXT IN TEMPO REALE -->
+    <script>
+        async function caricaDatiMeteo() {
+            try {
+                // Legge il file direttamente dal tuo server GitHub Pages
+                const response = await fetch('Dati_meteo.txt');
+                const text = await response.text();
+                
+                // Divide il testo riga per riga
+                const linee = text.split('\n');
+                
+                let tickerHtml = '';
+                
+                // Elabora la prima riga per estrarre la data dell'ultimo aggiornamento
+                if (linee[0] && linee[0].includes('AGGIORNAMENTO:')) {
+                    const dataInfo = linee[0].replace('---', '').replace('---', '').trim();
+                    document.getElementById('update-time').innerText = dataInfo;
+                }
+
+                // Cicla su tutte le altre righe per trovare città e temperature
+                linee.forEach((linea, index) => {
+                    if (index > 0 && linea.includes(':')) {
+                        const parti = linea.split(':');
+                        const citta = parti[0].trim();
+                        const temperatura = parti[1].trim();
+                        
+                        // Icona meteo di esempio automatica in base alla temperatura
+                        let icona = '☀️';
+                        if (parseFloat(temperatura) < 10) icona = '❄️';
+                        if (parseFloat(temperatura) >= 10 && parseFloat(temperatura) < 16) icona = '⛅';
+
+                        // Aggiunge la città alla barra scorrevole
+                        tickerHtml += `<div class="ticker-item"><span class="city">${citta}:</span> <span class="temp">${temperatura} ${icona}</span></div>`;
+                        
+                        // Imposta Roccaraso (la prima città dell'elenco) nel box laterale di destra
+                        if (index === 2) {
+                            document.getElementById('main-city').innerText = citta;
+                            document.getElementById('main-temp').innerText = temperatura;
+                        }
+                    }
+                });
+
+                // Inserisce i dati reali dentro la barra blu
+                if (tickerHtml !== '') {
+                    document.getElementById('ticker-content').innerHTML = tickerHtml;
+                }
+
+            } catch (error) {
+                console.error("Errore nel caricamento del file dei dati meteo:", error);
+                document.getElementById('ticker-content').innerText = "Dati temporaneamente non disponibili";
+            }
+        }
+
+        // Avvia la funzione all'apertura del sito
+        caricaDatiMeteo();
+    </script>
 
 </body>
 </html>
