@@ -1,4 +1,4 @@
-name: aggiorna-meteo
+name: aggiorna-meteo 
 
 on:
   workflow_dispatch:
