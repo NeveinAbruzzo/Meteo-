@@ -1,4 +1,4 @@
-name: Automazione Dati Meteo
+name: Automazione Dati Meteo 
  
 on:
   push:
