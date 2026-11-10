@@ -22,7 +22,7 @@ except Exception as e:
     raise RuntimeError(f"Errore durante la lettura del file: {e}")
 
 # 3. RECUPERA LA CHIAVE API (Inserita direttamente come nel test precedente)
-api_key = "LA_TUA_CHIAVE_API_REALE_QUI"
+api_key = "AIzaSyBIwTIGpvAvurx-ljNvJ2fHcZI3mUyshPA"
 
 if not api_key or api_key == "LA_TUA_CHIAVE_API_REALE_QUI":
     raise ValueError("Errore: Inserisci la tua chiave API reale tra le virgolette!")
