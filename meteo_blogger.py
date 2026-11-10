@@ -24,7 +24,7 @@ except Exception as e:
 # 3. RECUPERA LA CHIAVE API (Inserita direttamente come nel test precedente)
 api_key = "AIzaSyBIwTIGpvAvurx-ljNvJ2fHcZI3mUyshPA"
 
-if not api_key or api_key == "LA_TUA_CHIAVE_API_REALE_QUI":
+if not api_key or api_key == "AIzaSyBIwTIGpvAvurx-ljNvJ2fHcZI3mUyshPA":
     raise ValueError("Errore: Inserisci la tua chiave API reale tra le virgolette!")
 
 # 4. CONFIGURA IL SERVIZIO UFFICIALE DI GOOGLE
