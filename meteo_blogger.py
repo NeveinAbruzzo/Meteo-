@@ -18,11 +18,24 @@ if not os.path.exists(nome_file_meteo):
 with open(nome_file_meteo, 'r', encoding='utf-8') as f:
     contenuto_meteo = f.read()
 
-# 3. CREDENZIALI DI SERVIZIO DIRETTE
-# Incolla l'INTERO contenuto del file .json scaricato da Google Cloud tra le tre virgolette
-credenziali_prive = """
-INCOLLA_QUI_IL_CONTENUTO_DEL_FILE_JSON_DELL_ACCOUNT_DI_SERVIZIO
-"""
+# 3. CARICA LE CREDENZIALI DIRETTAMENTE DAL FILE JSON CARICATO
+# Se il tuo file ha un nome diverso (es. il nome lungo di Google), scrivi quel nome qui sotto!
+nome_file_json = "chiave_google.json"
+
+if not os.path.exists(nome_file_json):
+    raise FileNotFoundError(f"Errore: Il file {nome_file_json} non è presente nel repository!")
+
+# 4. CONFIGURA IL SERVIZIO UFFICIALE DI GOOGLE
+try:
+    creds = service_account.Credentials.from_service_account_file(
+        nome_file_json,
+        scopes=['https://googleapis.com']
+    )
+    blogger_service = build('blogger', 'v3', credentials=creds)
+    print("Connessione ai server di Google Blogger configurata con successo.")
+except Exception as e:
+    raise RuntimeError(f"Errore durante la configurazione delle credenziali Google: {e}")
+
 
 # 4. CONFIGURA IL SERVIZIO UFFICIALE DI GOOGLE
 info_credenziali = json.loads(credenziali_prive)
