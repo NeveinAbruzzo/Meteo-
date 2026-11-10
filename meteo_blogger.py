@@ -25,7 +25,7 @@ except Exception as e:
 # Recupera il JSON delle credenziali dai Secrets di GitHub
 credenziali_json = os.environ.get('GOOGLE_CREDENTIALS')
 # INSERISCI QUI IL TUO ID DEL BLOG DI BLOGGER
-BLOG_ID = "IL_TUO_BLOG_ID_QUI" 
+BLOG_ID = "5866549180112140631" 
 
 if not credenziali_json:
     raise ValueError("Errore: La variabile d'ambiente GOOGLE_CREDENTIALS è vuota o mancante nei Repository Secrets!")
