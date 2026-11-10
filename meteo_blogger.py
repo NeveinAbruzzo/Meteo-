@@ -23,7 +23,7 @@ except Exception as e:
 # 2. AUTENTICAZIONE CON GOOGLE BLOGGER
 # ==========================================
 # Recupera il JSON delle credenziali dai Secrets di GitHub
-credenziali_json = os.environ.get('GOOGLE_CREDENTIALS')
+credenziali_json = os.environ.get('BOM_GOOGLE_CREDENTIALS')
 # INSERISCI QUI IL TUO ID DEL BLOG DI BLOGGER
 BLOG_ID = "5866549180112140631" 
 
