@@ -125,7 +125,7 @@
         <div class="sidebar-banner"><div class="banner-vertical"><span>PUBBLICITÀ<br><br>SPAZIO<br>DISPONIBILE</span></div></div>
     </div>
 
-    <script>
+        <script>
         function cambiaWebcam(url, topValue, leftValue, scaleValue) {
             var iframe = document.getElementById('mioRiquadroWebcam');
             if (iframe) {
@@ -150,35 +150,67 @@
         async function aggiornaMeteoLive() {
             const tickerElement = document.getElementById('ticker-content');
             const updateTimeElement = document.getElementById('update-time');
-            const url = "https://open-meteo.com";
+            const maxCityEl = document.getElementById('max-city');
+            const minCityEl = document.getElementById('min-city');
+            const activeStationsEl = document.getElementById('active-stations');
+
+            const lats = localita.map(c => c.lat).join(',');
+            const lons = localita.map(c => c.lon).join(',');
+            const url = `https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`;
 
             try {
                 const risposta = await fetch(url);
-                const risultati = await risposta.json();
-                let htmlTicker = '', maxTemp = -Infinity, minTemp = Infinity, cittaCalda = '', cittaFredda = '';
+                if (!risposta.ok) throw new Error("Errore di rete");
+                const datiRicevuti = await risposta.json();
 
-                risultati.forEach((dati, index) => {
+                // Gestisce sia il caso di più città (array) sia di una singola città (oggetto)
+                const listaRisultati = Array.isArray(datiRicevuti) ? datiRicevuti : [datiRicevuti];
+
+                let htmlTicker = '';
+                let maxTemp = -999;
+                let minTemp = 999;
+                let cittaCalda = '--';
+                let cittaFredda = '--';
+
+                listaRisultati.forEach((dati, index) => {
                     const nomeCitta = localita[index].nome;
-                    const temp = dati.current.temperature_2m;
+                    const temp = Number(dati.current.temperature_2m);
+
                     htmlTicker += `<span class="ticker-item"><span class="city">${nomeCitta}:</span> <span class="temp">${temp.toFixed(1)} °C</span></span>`;
-                    if (temp > maxTemp) { maxTemp = temp; cittaCalda = `${nomeCitta} (${temp.toFixed(1)}°C)`; }
-                    if (temp < minTemp) { minTemp = temp; cittaFredda = `${nomeCitta} (${temp.toFixed(1)}°C)`; }
+
+                    if (temp > maxTemp) {
+                        maxTemp = temp;
+                        cittaCalda = `${nomeCitta} (${temp.toFixed(1)} °C)`;
+                    }
+                    if (temp < minTemp) {
+                        minTemp = temp;
+                        cittaFredda = `${nomeCitta} (${temp.toFixed(1)} °C)`;
+                    }
                 });
 
-                tickerElement.innerHTML = htmlTicker;
-                document.getElementById('max-city').textContent = cittaCalda;
-                document.getElementById('min-city').textContent = cittaFredda;
-                document.getElementById('active-stations').textContent = `${localita.length} attive`;
+                if (tickerElement) tickerElement.innerHTML = htmlTicker;
+                if (maxCityEl) maxCityEl.textContent = cittaCalda;
+                if (minCityEl) minCityEl.textContent = cittaFredda;
+                if (activeStationsEl) activeStationsEl.textContent = `${listaRisultati.length} attive`;
 
                 const adesso = new Date();
-                updateTimeElement.textContent = `Ultimo aggiornamento rilevazioni: ${adesso.toLocaleDateString('it-IT')} alle ore ${adesso.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`;
+                if (updateTimeElement) {
+                    updateTimeElement.textContent = `Ultimo aggiornamento rilevazioni: ${adesso.toLocaleDateString('it-IT')} alle ore ${adesso.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`;
+                }
             } catch (errore) {
-                tickerElement.innerHTML = '<span class="ticker-item">Errore connessione dati meteo.</span>';
+                console.error("Errore meteo:", errore);
+                if (tickerElement) {
+                    tickerElement.innerHTML = '<span class="ticker-item">Errore caricamento dati meteo. Riprovo tra poco...</span>';
+                }
             }
         }
 
-        aggiornaMeteoLive();
-        setInterval(aggiornaMeteoLive, 600000);
+        // Esegue subito al caricamento completo della pagina
+        window.addEventListener('DOMContentLoaded', () => {
+            aggiornaMeteoLive();
+            setInterval(aggiornaMeteoLive, 600000);
+        });
     </script>
+
 </body>
 </html>
