@@ -101,17 +101,17 @@
                         <div>
                             <h4>🏔️ Centro Appennino</h4>
                             <ul>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -685, -80, 0.85);">👉 San Gregorio Matese</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -800, -100, 0.85);">👉 Campitello Matese piste 5</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -730, -100, 0.85);">👉 Pescasseroli</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it/webcam/roccaraso-largo-luigi-savoia-clinica-dello-sci', -685, -80, 0.85);">👉 San Gregorio Matese</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it/webcam/barrea-panorama-vista-lago-bar-il-chioschetto-aq', -800, -100, 0.85);">👉 Campitello Matese piste 5</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/roccaraso-piana-cinque-miglia-pizzalto-pratello-aremogna-skipass-altosangro'', -730, -100, 0.85);">👉 Pescasseroli</a></li>
                             </ul>
                         </div>
                         <div>
                             <h4>🏔️ Alpi & Nord</h4>
                             <ul>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://feratel.com', -380, -120, 0.85);">👉 Val Gardena</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://feratel.com', -380, -100, 0.85);">👉 Rocca di Cambio Lago</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -800, -100, 0.85);">👉 Bocca della Selva</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/roccaraso-aremogna-pizzalto-aq'', -380, -120, 0.85);">👉 Val Gardena</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/san-gregorio-matese-ce', -380, -100, 0.85);">👉 Rocca di Cambio Lago</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/campitello-matese-vista-hotel-spa-miletto', -800, -100, 0.85);">👉 Bocca della Selva</a></li>
                             </ul>
                         </div>
                     </div>
@@ -213,4 +213,165 @@
     </script>
 
 </body>
+<!-- STRUTTURA GRAFICA COMPATTA DARK -->
+<div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 12px; padding: 12px; font-family: 'Segoe UI', Roboto, sans-serif; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 100%; max-width: 800px; color: #f8fafc; margin: 10px auto;">
+  
+  <!-- Animazione CSS Lampeggiante -->
+  <style>
+    @keyframes lampeggioNeon {
+      0% { opacity: 0.3; text-shadow: 0 0 2px #38bdf8; }
+      50% { opacity: 1; text-shadow: 0 0 10px #38bdf8, 0 0 20px #0284c7; }
+      100% { opacity: 0.3; text-shadow: 0 0 2px #38bdf8; }
+    }
+    .testo-lampeggiante {
+      color: #38bdf8;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 5px;
+      animation: lampeggioNeon 2s infinite ease-in-out;
+    }
+  </style>
+
+  <div class="testo-lampeggiante">🔵 Real Time</div>
+  <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 13px; text-align: center; color: #e2e8f0; text-transform: uppercase; letter-spacing: 1px;">🏔️ SITUAZIONE METEO</h3>
+  
+  <div id="visualizzatore-meteo-orizzontale" style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 8px;">
+    <div style="text-align: center; font-size: 12px; color: #94a3b8; padding: 10px; width: 100%;">Caricamento bollettino...</div>
+  </div>
+
+  <div style="font-size: 9px; color: #64748b; text-align: center; margin-top: 10px;" id="meteo-aggiornamento">...</div>
+</div>
+
+<script>
+function selezionaIconaMeteo(percentuale) {
+  var nuvole = parseInt(percentuale);
+  if (isNaN(nuvole)) return "🌡️"; 
+  if (nuvole <= 20) return "☀️"; 
+  if (nuvole <= 50) return "🌤️"; 
+  if (nuvole <= 80) return "🌥️"; 
+  return "☁️"; 
+}
+
+window.disponiGradienteTemperatura = function(data) {
+  try {
+    if (!data || !data.entry || !data.entry.content || !data.entry.content.$t) {
+      document.getElementById('visualizzatore-meteo-orizzontale').innerHTML = "<div style='width:100%; text-align:center; color:#94a3b8;'>In attesa dei dati dal post...</div>";
+      return;
+    }
+
+    var testoGrezzo = data.entry.content.$t;
+    var divTemp = document.createElement("div");
+    divTemp.innerHTML = testoGrezzo;
+    var testoArticoloPulito = divTemp.textContent || divTemp.innerText || "";
+    
+    // Lista delle località esatte da mappare
+    var elencoLocalita = ["Roccaraso", "Pescocostanzo", "Villetta Barrea", "Scanno", "Pescasseroli", "Chieti", "Napoli"];
+    var htmlFinale = "";
+
+    elencoLocalita.forEach(function(citta) {
+      var testoMinuscolo = testoArticoloPulito.toLowerCase();
+      var cittaMinuscolo = citta.toLowerCase();
+      
+      if (testoMinuscolo.indexOf(cittaMinuscolo) !== -1) {
+        var tempTrovata = "--°C";
+        var nuvoleTrovate = "--%";
+        var iconaMeteo = "🌡️";
+        var coloreDinamico = "#38bdf8";
+
+        // Dividiamo il post in segmenti per non mischiare i dati delle varie città
+        var partiTesto = testoArticoloPulito.split(/(?=nuvolosita|temperatura)/i);
+        
+        partiTesto.forEach(function(segmento) {
+          var segMinuscolo = segmento.toLowerCase();
+          
+          // Se questo segmento parla della nostra città
+          if (segMinuscolo.includes(cittaMinuscolo)) {
+            
+            // Caso A: È il segmento della TEMPERATURA
+            if (segMinuscolo.includes("temperatura")) {
+              var matchTemp = segmento.match(/(-?\d+(?:[.,]\d+)?)\s*(?:°\s*C|°C|c)/i);
+              if (!matchTemp) {
+                // Ricerca di salvataggio del primo numero presente nel segmento temperatura
+                matchTemp = segmento.match(/(-?\d+(?:[.,]\d+)?)/);
+              }
+              if (matchTemp) {
+                var valoreStr = matchTemp[1];
+                tempTrovata = valoreStr.replace(',', '.') + "°C";
+                var valoreNumerico = parseFloat(valoreStr.replace(',', '.'));
+                coloreDinamico = calcolaColoreTemperatura(valoreNumerico);
+              }
+            }
+            
+            // Caso B: È il segmento della NUVOLOSITÀ
+            if (segMinuscolo.includes("nuvolosita")) {
+              var matchNuvole = segmento.match(/(\d+)\s*%/);
+              if (!matchNuvole) {
+                matchNuvole = segmento.match(/(\d+)/);
+              }
+              if (matchNuvole) {
+                var valoreNuvoleStr = matchNuvole[1];
+                nuvoleTrovate = valoreNuvoleStr + "%";
+                iconaMeteo = selezionaIconaMeteo(valoreNuvoleStr);
+              }
+            }
+          }
+        });
+
+        // Composizione del quadratino grafico corretto
+        htmlFinale += '<div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 130px; flex: 1; max-width: 170px;">';
+        htmlFinale += '  <div style="font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">📍 ' + citta + '</div>';
+        htmlFinale += '  <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">';
+        htmlFinale += '    <span style="font-size: 18px;">' + iconaMeteo + '</span>';
+        htmlFinale += '    <span style="font-size: 18px; font-weight: 800; color: ' + coloreDinamico + '; text-shadow: 0 0 8px ' + coloreDinamico + '30;">' + tempTrovata + '</span>';
+        htmlFinale += '    <span style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-left: 1px;">(' + nuvoleTrovate + ')</span>';
+        htmlFinale += '  </div>';
+        htmlFinale += '</div>';
+      }
+    });
+
+    if (htmlFinale !== "") {
+      document.getElementById('visualizzatore-meteo-orizzontale').innerHTML = htmlFinale;
+    } else {
+      document.getElementById('visualizzatore-meteo-orizzontale').innerHTML = '<div style="background: #1e293b; padding: 10px; border-radius: 8px; font-size: 12px; width: 100%; color:#f1f5f9;">' + testoArticoloPulito + '</div>';
+    }
+    
+    var ora = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    document.getElementById('meteo-aggiornamento').innerText = "🔄 Sincronizzato alle " + ora;
+
+  } catch (error) {
+    console.error(error);
+    document.getElementById('visualizzatore-meteo-orizzontale').innerHTML = "<div style='width:100%; text-align:center; color:#94a3b8; font-size:11px;'>Errore nell'allineamento dei dati meteo.</div>";
+  }
+};
+
+// Funzione gradiente termico da viola (-40) a rosso fuoco (+40)
+function calcolaColoreTemperatura(temp) {
+  var t = Math.max(-40, Math.min(40, temp));
+  var percentuale = (t + 40) / 80;
+  var r, g, b;
+  if (percentuale < 0.33) {
+    var p = percentuale / 0.33; r = Math.round(124 + (56 - 124) * p); g = Math.round(58 + (189 - 58) * p); b = Math.round(237 + (248 - 237) * p);
+  } else if (percentuale < 0.66) {
+    var p = (percentuale - 0.33) / 0.33; r = Math.round(56 + (245 - 56) * p); g = Math.round(189 + (158 - 189) * p); b = Math.round(248 + (11 - 248) * p);
+  } else {
+    var p = (percentuale - 0.66) / 0.34; r = Math.round(245 + (239 - 245) * p); g = Math.round(158 + (68 - 158) * p); b = Math.round(11 + (68 - 11) * p);
+  }
+  return "rgb(" + r + "," + g + "," + b + ")";
+}
+
+function caricaDatiMeteoBlogger() {
+  var ID_POST = "5866549180112140631"; 
+  var nocache = "&_nocache=" + new Date().getTime();
+  var urlFeed = window.location.protocol + '//' + window.location.hostname + '/feeds/posts/default/' + ID_POST + '?alt=json-in-script&callback=disponiGradienteTemperatura' + nocache;
+  var vecchioScript = document.getElementById('script-trigger-feed');
+  if (vecchioScript) vecchioScript.remove();
+  var script = document.createElement('script');
+  script.id = 'script-trigger-feed'; script.src = urlFeed; document.body.appendChild(script);
+}
+caricaDatiMeteoBlogger();
+setInterval(caricaDatiMeteoBlogger, 300000);
+</script>
 </html>
