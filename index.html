@@ -313,3 +313,99 @@
                             <h4 style="color: #ff3b30; font-size: 14px; font-weight: bold; text-transform: uppercase; margin: 0 0 10px 0; letter-spacing: 0.5px;">
                                 🏔️ Alto Sangro (AQ)
                             </h4>
+                                                        <ul>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -835, -110, 0.85);">👉 Roccaraso centro città</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -835, -110, 0.85);">👉 Villetta Barrea</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -685, -110, 0.85);">👉 Piana cinque Miglia</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -835, -100, 0.85);">👉 Pizzalto</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>🏔️ Centro Appennino</h4>
+                            <ul>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -685, -80, 0.85);">👉 San Gregorio Matese</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -800, -100, 0.85);">👉 Campitello Matese piste 5</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -730, -100, 0.85);">👉 Pescasseroli</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>🏔️ Alpi & Nord</h4>
+                            <ul>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://feratel.com', -380, -120, 0.85);">👉 Val Gardena</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://feratel.com', -380, -100, 0.85);">👉 Rocca di Cambio Lago</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -800, -100, 0.85);">👉 Bocca della Selva</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="webcam-frame">
+                    <iframe id="mioRiquadroWebcam" src="https://turismometeo.it" style="width: 1120px; height: 1600px; position: absolute; transform: scale(0.85); transform-origin: top left; top: -765px; left: -110px; border: none;" scrolling="no"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-banner"><div class="banner-vertical"><span>PUBBLICITÀ<br><br>SPAZIO<br>DISPONIBILE</span></div></div>
+    </div>
+
+    <script>
+        function cambiaWebcam(url, topValue, leftValue, scaleValue) {
+            var iframe = document.getElementById('mioRiquadroWebcam');
+            if (iframe) {
+                iframe.src = url;
+                iframe.style.top = topValue + 'px';
+                iframe.style.left = leftValue + 'px';
+                iframe.style.transform = 'scale(' + scaleValue + ')';
+            }
+        }
+
+        const localita = [
+            { nome: "Roccaraso", lat: 41.8481, lon: 14.0792 },
+            { nome: "Barrea", lat: 41.7567, lon: 13.9936 },
+            { nome: "Pescasseroli", lat: 41.8069, lon: 13.7889 },
+            { nome: "San Gregorio Matese", lat: 41.3853, lon: 14.3739 },
+            { nome: "Campitello Matese", lat: 41.4608, lon: 14.3917 },
+            { nome: "Bocca della Selva", lat: 41.3758, lon: 14.5042 },
+            { nome: "Rocca di Cambio", lat: 42.2389, lon: 13.4897 },
+            { nome: "Val Gardena (Seceda)", lat: 46.5978, lon: 11.7242 }
+        ];
+
+        async function aggiornaMeteoLive() {
+            const tickerElement = document.getElementById('ticker-content');
+            const updateTimeElement = document.getElementById('update-time');
+            const lats = localita.map(c => c.lat).join(',');
+            const lons = localita.map(c => c.lon).join(',');
+            const url = `https://open-meteo.com{lats}&longitude=${lons}&current_weather=true`;
+
+            try {
+                const risposta = await fetch(url);
+                const risultati = await risposta.json();
+                let htmlTicker = '';
+                let maxTemp = -Infinity, minTemp = Infinity, cittaCalda = '', cittaFredda = '';
+
+                risultati.forEach((dati, index) => {
+                    const nomeCitta = localita[index].nome;
+                    const temp = dati.current_weather.temperature;
+                    htmlTicker += `<span class="ticker-item"><span class="city">${nomeCitta}:</span> <span class="temp">${temp.toFixed(1)} °C</span></span>`;
+                    if (temp > maxTemp) { maxTemp = temp; cittaCalda = `${nomeCitta} (${temp.toFixed(1)}°C)`; }
+                    if (temp < minTemp) { minTemp = temp; cittaFredda = `${nomeCitta} (${temp.toFixed(1)}°C)`; }
+                });
+
+                tickerElement.innerHTML = htmlTicker;
+                document.getElementById('max-city').textContent = cittaCalda;
+                document.getElementById('min-city').textContent = cittaFredda;
+                document.getElementById('active-stations').textContent = `${localita.length} attive`;
+
+                const adesso = new Date();
+                updateTimeElement.textContent = `Ultimo aggiornamento rilevazioni: ${adesso.toLocaleDateString('it-IT')} alle ore ${adesso.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`;
+            } catch (errore) {
+                tickerElement.innerHTML = '<span class="ticker-item">Impossibile aggiornare le temperature. Riprovo tra poco...</span>';
+            }
+        }
+
+        aggiornaMeteoLive();
+        setInterval(aggiornaMeteoLive, 600000);
+    </script>
+</body>
+</html>
+
