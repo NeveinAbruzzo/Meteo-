@@ -1,15 +1,14 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import os
+import time
 import requests
 
 
 def ottieni_temperature_comprensorio(localita):
-    # Prepara le liste di latitudini e longitudini separate da virgola
     latitudini = ",".join(str(posto["lat"]) for posto in localita)
     longitudini = ",".join(str(posto["lon"]) for posto in localita)
 
-    # URL corretto per le API di Open-Meteo
     url = (
         f"https://open-meteo.com"
         f"?latitude={latitudini}&longitude={longitudini}"
@@ -17,33 +16,38 @@ def ottieni_temperature_comprensorio(localita):
     )
 
     headers = {
-        "User-Agent": "NeveInAbruzzoMeteoBot/1.0"
+        "User-Agent": "Mozilla/5.0 (compatible; NeveInAbruzzoBot/1.0)",
+        "Accept": "application/json"
     }
 
-    try:
-        response = requests.get(url, headers=headers, timeout=15)
-        response.raise_for_status()
-        dati = response.json()
+    # Prova fino a 3 volte in caso di risposta vuota dai server condivisi GitHub
+    for tentativo in range(1, 4):
+        try:
+            response = requests.get(url, headers=headers, timeout=15)
+            
+            # Stampa diagnostica per capire cosa risponde esattamente il server
+            print(f"Tentativo {tentativo} - Status: {response.status_code} - Lunghezza risposta: {len(response.text)} caratteri")
+            
+            if response.status_code != 200 or not response.text.strip():
+                print(f"Risposta non valida (prime 150 lettere): {response.text[:150]!r}")
+                time.sleep(2)
+                continue
 
-        # Se c'è più di una località, Open-Meteo restituisce una lista di dizionari
-        if isinstance(dati, list):
-            return [
-                f"{item['current']['temperature_2m']}°C" for item in dati
-            ]
-        # Caso di sicurezza se ci fosse una sola località
-        elif isinstance(dati, dict) and "current" in dati:
-            return [f"{dati['current']['temperature_2m']}°C"]
+            dati = response.json()
 
-    except requests.exceptions.HTTPError as http_err:
-        print(f"Errore HTTP Open-Meteo ({response.status_code}): {http_err}")
-    except Exception as e:
-        print(f"Errore durante il recupero dei dati da Open-Meteo: {e}")
+            if isinstance(dati, list):
+                return [f"{item['current']['temperature_2m']}°C" for item in dati]
+            elif isinstance(dati, dict) and "current" in dati:
+                return [f"{dati['current']['temperature_2m']}°C"]
+
+        except Exception as e:
+            print(f"Errore tentativo {tentativo}: {e}")
+            time.sleep(2)
 
     return None
 
 
 def salva_meteo_comprensorio():
-    # Imposta l'orario italiano anche quando gira sui server GitHub (che usano UTC)
     orario_locale = datetime.now(ZoneInfo("Europe/Rome")).strftime("%d/%m/%Y %H:%M")
 
     localita = [
