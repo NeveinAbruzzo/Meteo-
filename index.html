@@ -8,51 +8,52 @@
         * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background-color: #9cd1f5; margin: 0; padding: 0; color: #333; }
         
-        /* GRIGLIA A 3 COLONNE: Sinistra 160px | Centro flessibile | Destra 260px */
-        .page-wrapper { 
-            display: grid; 
-            grid-template-columns: 160px 1fr 260px; 
-            gap: 15px; 
-            max-width: 1500px; 
-            margin: 0 auto; 
-            padding: 0 10px; 
-        }
-        
-        .sidebar-banner { padding-top: 20px; }
-        
-        /* Banner sinistro (Pubblicità) */
-        .banner-vertical { 
-            background-color: #0b3c5d; 
-            border: 2px solid #328cc1; 
-            border-radius: 8px; 
-            color: white; 
-            text-align: center; 
-            padding: 20px 10px; 
-            font-size: 0.9rem; 
-            font-weight: bold; 
-            min-height: 400px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
-        }
+       /* GRIGLIA A 3 COLONNE: Sinistra 160px | Centro flessibile | Destra 380px */
+.page-wrapper { 
+    display: grid; 
+    grid-template-columns: 160px 1fr 380px; 
+    gap: 15px; 
+    max-width: 1600px; 
+    margin: 0 auto; 
+    padding: 0 10px; 
+}
 
-        /* Banner destro allargato e allungato per le previsioni */
-        .sidebar-banner:last-child .banner-vertical {
-            background-color: #ffffff;
-            color: #333333;
-            padding: 8px;
-            min-height: 720px;
-            height: auto;
-            display: block;
-            overflow: hidden;
-        }
-        .sidebar-banner:last-child iframe {
-            width: 100%;
-            height: 700px;
-            border: none;
-            display: block;
-        }
+.sidebar-banner { padding-top: 20px; }
+
+/* Banner sinistro (Pubblicità) */
+.banner-vertical { 
+    background-color: #0b3c5d; 
+    border: 2px solid #328cc1; 
+    border-radius: 8px; 
+    color: white; 
+    text-align: center; 
+    padding: 20px 10px; 
+    font-size: 0.9rem; 
+    font-weight: bold; 
+    min-height: 400px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
+}
+
+/* Banner destro allargato (380px) e allungato (850px) per visualizzare bene tutto */
+.sidebar-banner:last-child .banner-vertical {
+    background-color: #ffffff;
+    color: #333333;
+    padding: 6px;
+    min-height: 850px;
+    height: auto;
+    display: block;
+    overflow: hidden;
+}
+.sidebar-banner:last-child iframe {
+    width: 100%;
+    height: 835px;
+    border: none;
+    display: block;
+}
+
         
         /* Riquadro bianco centrale che avvolge tutta la pagina fino a sotto le webcam */
         .main-container {
