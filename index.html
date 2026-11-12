@@ -19,7 +19,7 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
             border-radius: 4px;
             overflow: clip;
-            padding-bottom: 50px; /* Spazio bianco extra dopo le webcam/mappa */
+            padding-bottom: 50px;
         }
 
         .header-logo { padding: 20px; text-align: left; border-bottom: 1px solid #eee; }
@@ -69,21 +69,33 @@
             </div>
             
             <div class="navbar">
-                <a href="#" class="active">HOME</a>
-                <a href="#">DATI METEO</a>
+                <a href="index.html" class="active">HOME</a>
+                <a href="dati_meteo.html">DATI METEO</a>
                 <a href="#">SITUAZIONE</a>
                 <a href="#">MODELLI</a>
                 <a href="#">PREVISIONI</a>
                 <a href="webcam.html">WEBCAM</a>
             </div>
             
-           
+            <!-- BOLLETTINO METEO IN TEMPO REALE + ESTREMI RILEVATI -->
+            <div class="content-grid">
+                <div class="main-card">
+                    <h2 class="card-title">Bollettino Meteorologico Generale</h2>
+                    <p id="bollettino-testo-1">Connessione alle stazioni meteo in corso...</p>
+                    <p id="bollettino-testo-2">Recupero dati live di temperatura, umidità e vento...</p>
+                </div>
+                
+                <div class="side-card">
+                    <h3 class="card-title" style="font-size: 1.1rem;">Estremi Rilevati</h3>
+                    <div class="weather-row"><span class="weather-label">Località più calda:</span><span class="weather-value" id="max-city">--</span></div>
+                    <div class="weather-row"><span class="weather-label">Località più fredda:</span><span class="weather-value" id="min-city">--</span></div>
+                    <div class="weather-row"><span class="weather-label">Stazioni attive:</span><span class="weather-value" id="active-stations">0</span></div>
+                </div>
+            </div>
 
             <div class="webcam-section">
                 <div class="webcam-box">
                     <h3>⛷️ Elenco Webcam per Comprensorio</h3>
-                    <!-- Qui continua il tuo elenco webcam e tutto il resto fino alla chiusura di main-container -->
-
                     <div class="webcam-grid">
                         <div>
                             <h4>🏔️ Alto Sangro (AQ)</h4>
@@ -99,7 +111,7 @@
                             <ul>
                                 <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it/webcam/roccaraso-largo-luigi-savoia-clinica-dello-sci', -685, -80, 0.85);">👉 Roccaraso citta'</a></li>
                                 <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it/webcam/barrea-panorama-vista-lago-bar-il-chioschetto-aq', -800, -100, 0.85);">👉 Villetta Barrea</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/roccaraso-piana-cinque-miglia-pizzalto-pratello-aremogna-skipass-altosangro'', -730, -100, 0.85);">👉 Piana 5 Miglia</a></li>
+                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://www.turismometeo.it/webcam/roccaraso-piana-cinque-miglia-pizzalto-pratello-aremogna-skipass-altosangro', -730, -100, 0.85);">👉 Piana 5 Miglia</a></li>
                             </ul>
                         </div>
                         <div>
@@ -112,102 +124,7 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="webcam-frame">
-                    <iframe id="mioRiquadroWebcam" src="https://turismometeo.it" style="width: 1120px; height: 1600px; position: absolute; transform: scale(0.85); transform-origin: top left; top: -765px; left: -110px; border: none;" scrolling="no"></iframe>
-                </div>
-            </div>
-        </div>
-        <div class="sidebar-banner"><div class="banner-vertical"><span>PUBBLICITÀ<br><br>SPAZIO<br>DISPONIBILE</span></div></div>
-    </div>
-
-        <script>
-        function cambiaWebcam(url, topValue, leftValue, scaleValue) {
-            var iframe = document.getElementById('mioRiquadroWebcam');
-            if (iframe) {
-                iframe.src = url;
-                iframe.style.top = topValue + 'px';
-                iframe.style.left = leftValue + 'px';
-                iframe.style.transform = 'scale(' + scaleValue + ')';
-            }
-        }
-
-        const localita = [
-            { nome: "Roccaraso", lat: 41.8481, lon: 14.0792 },
-            { nome: "Barrea", lat: 41.7567, lon: 13.9936 },
-            { nome: "Pescasseroli", lat: 41.8069, lon: 13.7889 },
-            { nome: "San Gregorio Matese", lat: 41.3853, lon: 14.3739 },
-            { nome: "Campitello Matese", lat: 41.4608, lon: 14.3917 },
-            { nome: "Bocca della Selva", lat: 41.3758, lon: 14.5042 },
-            { nome: "Rocca di Cambio", lat: 42.2389, lon: 13.4897 },
-            { nome: "Val Gardena (Seceda)", lat: 46.5978, lon: 11.7242 }
-        ];
-
-        async function aggiornaMeteoLive() {
-            const tickerElement = document.getElementById('ticker-content');
-            const updateTimeElement = document.getElementById('update-time');
-            const maxCityEl = document.getElementById('max-city');
-            const minCityEl = document.getElementById('min-city');
-            const activeStationsEl = document.getElementById('active-stations');
-
-            const lats = localita.map(c => c.lat).join(',');
-            const lons = localita.map(c => c.lon).join(',');
-            const url = `https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`;
-
-            try {
-                const risposta = await fetch(url);
-                if (!risposta.ok) throw new Error("Errore di rete");
-                const datiRicevuti = await risposta.json();
-
-                // Gestisce sia il caso di più città (array) sia di una singola città (oggetto)
-                const listaRisultati = Array.isArray(datiRicevuti) ? datiRicevuti : [datiRicevuti];
-
-                let htmlTicker = '';
-                let maxTemp = -999;
-                let minTemp = 999;
-                let cittaCalda = '--';
-                let cittaFredda = '--';
-
-                listaRisultati.forEach((dati, index) => {
-                    const nomeCitta = localita[index].nome;
-                    const temp = Number(dati.current.temperature_2m);
-
-                    htmlTicker += `<span class="ticker-item"><span class="city">${nomeCitta}:</span> <span class="temp">${temp.toFixed(1)} °C</span></span>`;
-
-                    if (temp > maxTemp) {
-                        maxTemp = temp;
-                        cittaCalda = `${nomeCitta} (${temp.toFixed(1)} °C)`;
-                    }
-                    if (temp < minTemp) {
-                        minTemp = temp;
-                        cittaFredda = `${nomeCitta} (${temp.toFixed(1)} °C)`;
-                    }
-                });
-
-                if (tickerElement) tickerElement.innerHTML = htmlTicker;
-                if (maxCityEl) maxCityEl.textContent = cittaCalda;
-                if (minCityEl) minCityEl.textContent = cittaFredda;
-                if (activeStationsEl) activeStationsEl.textContent = `${listaRisultati.length} attive`;
-
-                const adesso = new Date();
-                if (updateTimeElement) {
-                    updateTimeElement.textContent = `Ultimo aggiornamento rilevazioni: ${adesso.toLocaleDateString('it-IT')} alle ore ${adesso.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`;
-                }
-            } catch (errore) {
-                console.error("Errore meteo:", errore);
-                if (tickerElement) {
-                    tickerElement.innerHTML = '<span class="ticker-item">Errore caricamento dati meteo. Riprovo tra poco...</span>';
-                }
-            }
-        }
-
-        // Esegue subito al caricamento completo della pagina
-        window.addEventListener('DOMContentLoaded', () => {
-            aggiornaMeteoLive();
-            setInterval(aggiornaMeteoLive, 600000);
-        });
-    </script>
-<script src="barra-meteo.js"></script>
+                <!-- Qui lascia la tua webcam-frame e lo script cambiaWebcam(...) come li avevi prima -->
+    <script src="barra-meteo.js"></script>
 </body>
-
 </html>
