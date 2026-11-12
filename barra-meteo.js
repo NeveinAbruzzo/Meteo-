@@ -7,11 +7,11 @@ document.addEventListener("DOMContentLoaded", function () {
       background-color: #0b3c5d;
       color: #ffffff;
       font-family: Arial, sans-serif;
-      font-size: 15px;
+      font-size: 16px;
       display: flex;
       align-items: center;
       overflow: hidden;
-      height: 42px;
+      height: 44px;
       border-bottom: 2px solid #328cc1;
       position: sticky;
       top: 0;
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
       display: flex;
       align-items: center;
       font-weight: bold;
-      font-size: 0.85rem;
+      font-size: 14px;
       text-transform: uppercase;
       white-space: nowrap;
       z-index: 2;
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
       white-space: nowrap;
       padding-left: 100%;
       font-weight: bold;
-      animation: scorrimento-meteo 28s linear infinite;
+      animation: scorrimento-meteo 40s linear infinite;
     }
     .ticker-meteo-container:hover .ticker-meteo-scroll {
       animation-play-state: paused;
@@ -52,8 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const barra = document.createElement("div");
   barra.className = "ticker-meteo-container";
   barra.innerHTML = `
-    <div class="ticker-meteo-label">TEMPERATURE LIVE:</div>
-    <div class="ticker-meteo-scroll" id="testo-temperature-live">Caricamento dati live...</div>
+    <div class="ticker-meteo-label">TEMPERATURE LIVE ABRUZZO:</div>
+    <div class="ticker-meteo-scroll" id="testo-temperature-live">Caricamento temperature live Abruzzo...</div>
   `;
 
   const navbar = document.querySelector(".navbar");
@@ -63,15 +63,20 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.prepend(barra);
   }
 
-  // 3. Stazioni meteo in tempo reale
-  const localita = [
+  // 3. Elenco città dell'Abruzzo
+  const localitaAbruzzo = [
+    { nome: "L'Aquila", lat: 42.3507, lon: 13.3999 },
+    { nome: "Pescara", lat: 42.4618, lon: 14.2161 },
+    { nome: "Chieti", lat: 42.3483, lon: 14.1649 },
+    { nome: "Teramo", lat: 42.6589, lon: 13.7044 },
+    { nome: "Avezzano", lat: 42.0312, lon: 13.4262 },
+    { nome: "Sulmona", lat: 42.0494, lon: 13.9255 },
+    { nome: "Vasto", lat: 42.1118, lon: 14.7082 },
+    { nome: "Lanciano", lat: 42.2266, lon: 14.3906 },
     { nome: "Roccaraso", lat: 41.8487, lon: 14.0785 },
     { nome: "Scanno", lat: 41.9044, lon: 13.8796 },
-    { nome: "Frosinone", lat: 41.6398, lon: 13.3411 },
     { nome: "Pescocostanzo", lat: 41.8872, lon: 14.0661 },
-    { nome: "Villetta Barrea", lat: 41.7554, lon: 13.9909 },
-    { nome: "Chieti", lat: 42.3483, lon: 14.1649 },
-    { nome: "Napoli", lat: 40.8762, lon: 14.5195 }
+    { nome: "Villetta Barrea", lat: 41.7554, lon: 13.9909 }
   ];
 
   function ottieniIcona(code) {
@@ -98,8 +103,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function aggiornaTuttoInTempoReale() {
     try {
-      const lats = localita.map(c => c.lat).join(",");
-      const lons = localita.map(c => c.lon).join(",");
+      const lats = localitaAbruzzo.map(c => c.lat).join(",");
+      const lons = localitaAbruzzo.map(c => c.lon).join(",");
       const url = `https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Europe%2FRome`;
 
       const response = await fetch(url);
@@ -109,10 +114,12 @@ document.addEventListener("DOMContentLoaded", function () {
       let minTemp = 999;
       let cittaCalda = "";
       let cittaFredda = "";
+      let nomeCalda = "";
+      let nomeFredda = "";
       let sommaVento = 0;
 
       const stringheBarra = dati.map((item, i) => {
-        const nome = localita[i].nome;
+        const nome = localitaAbruzzo[i].nome;
         const temp = item.current.temperature_2m;
         const code = item.current.weather_code;
         const vento = item.current.wind_speed_10m;
@@ -121,23 +128,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (temp > maxTemp) {
           maxTemp = temp;
+          nomeCalda = nome;
           cittaCalda = `${nome} (${temp}°C)`;
         }
         if (temp < minTemp) {
           minTemp = temp;
+          nomeFredda = nome;
           cittaFredda = `${nome} (${temp}°C)`;
         }
 
         return `<span style="color:#efbc9b;">${nome}:</span> ${temp}°C ${ottieniIcona(code)}`;
       });
 
-      // 1. Aggiorna barra scorrevole
+      // 1. Aggiorna la barra scorrevole
       const elBarra = document.getElementById("testo-temperature-live");
       if (elBarra) {
         elBarra.innerHTML = stringheBarra.join(" &nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp; ");
       }
 
-      // 2. Aggiorna orario
+      // 2. Aggiorna l'orario sotto il titolo
       const elOrario = document.getElementById("update-time");
       if (elOrario) {
         const adesso = new Date().toLocaleString("it-IT", {
@@ -154,27 +163,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (elCalda) elCalda.textContent = cittaCalda;
       if (elFredda) elFredda.textContent = cittaFredda;
-      if (elStazioni) elStazioni.textContent = localita.length;
+      if (elStazioni) elStazioni.textContent = localitaAbruzzo.length;
 
-      // 4. Aggiorna il Bollettino Meteorologico Generale IN TEMPO REALE
+      // 4. Aggiorna il Bollettino Meteorologico Generale in tempo reale
       const elBoll1 = document.getElementById("bollettino-testo-1");
       const elBoll2 = document.getElementById("bollettino-testo-2");
 
       if (elBoll1 && elBoll2) {
-        // dati[0] è Roccaraso (Abruzzo interno), dati[5] è Chieti (Abruzzo costiero/collinare)
-        const meteoMonti = descriviSituazione(dati[0].current.weather_code);
-        const meteoCosta = descriviSituazione(dati[5].current.weather_code);
-        const tempRoccaraso = dati[0].current.temperature_2m;
-        const tempChieti = dati[5].current.temperature_2m;
-        const umidita = dati[0].current.relative_humidity_2m;
+        const meteoMonti = descriviSituazione(dati.current.weather_code);
+        const meteoCosta = descriviSituazione(dati.current.weather_code);
+        const tempRoccaraso = dati.current.temperature_2m;
+        const tempPescara = dati.current.temperature_2m;
+        const umidita = dati.current.relative_humidity_2m;
         const ventoMedio = Math.round(sommaVento / dati.length);
 
-        elBoll1.innerHTML = `In questo momento sull'Abruzzo si rileva <strong>${meteoMonti}</strong> sui settori montani (Roccaraso <strong>${tempRoccaraso}°C</strong>, umidità ${umidita}%) e <strong>${meteoCosta}</strong> verso la fascia adriatica e collinare (Chieti <strong>${tempChieti}°C</strong>).`;
-        elBoll2.innerHTML = `Ventilazione media sul comprensorio intorno a <strong>${ventoMedio} km/h</strong>, con escursione termica attuale compresa tra i <strong>${minTemp}°C</strong> di ${cittaFredda.split(" ")[0]} e i <strong>${maxTemp}°C</strong> di ${cittaCalda.split(" ")[0]}.`;
+        elBoll1.innerHTML = `In questo momento sull'Abruzzo si rileva <strong>${meteoMonti}</strong> sui settori interni e montani (Roccaraso <strong>${tempRoccaraso}°C</strong>, umidità ${umidita}%) e <strong>${meteoCosta}</strong> lungo la fascia costiera adriatica (Pescara <strong>${tempPescara}°C</strong>).`;
+        elBoll2.innerHTML = `Ventilazione media regionale intorno a <strong>${ventoMedio} km/h</strong>, con escursione termica attuale compresa tra i <strong>${minTemp}°C</strong> di ${nomeFredda} e i <strong>${maxTemp}°C</strong> di ${nomeCalda}.`;
       }
 
     } catch (errore) {
-      console.error("Errore aggiornamento meteo:", errore);
+      console.error("Errore aggiornamento meteo Abruzzo:", errore);
     }
   }
 
