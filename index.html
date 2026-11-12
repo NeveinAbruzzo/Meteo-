@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="it">
-
-    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,56 +11,38 @@
         .sidebar-banner { padding-top: 20px; }
         .banner-vertical { background-color: #0b3c5d; border: 2px solid #328cc1; border-radius: 8px; color: white; text-align: center; padding: 20px 10px; font-size: 0.9rem; font-weight: bold; min-height: 400px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         
+        /* RIQUADRO BIANCO PRINCIPALE CHE AVVOLGE TUTTO FINO IN FONDO */
         .main-container {
-    width: 100%;
-    margin: 20px auto;
-    background-color: #ffffff;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 4px;
-    overflow: clip;
-    padding-bottom: 30px;
-}
+            width: 100%;
+            margin: 20px auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            overflow: clip;
+            padding-bottom: 50px; /* Spazio bianco extra dopo le webcam/mappa */
+        }
 
-.ticker-bar {
-    position: sticky;
-    top: 0;
-    z-index: 9999;
-    background-color: #0b3c5d;
-    color: white;
-    overflow: hidden;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    border-bottom: 2px solid #328cc1;
-    height: 42px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-        
         .header-logo { padding: 20px; text-align: left; border-bottom: 1px solid #eee; }
         .header-logo h1 { margin: 0; color: #0088cc; font-size: 2.2rem; font-weight: bold; }
         .header-logo p { margin: 5px 0 0 0; color: #666; font-size: 0.9rem; }
+        
         .navbar { background-color: #111111; display: flex; overflow-x: auto; }
         .navbar a { color: white; padding: 14px 20px; text-decoration: none; text-transform: uppercase; font-size: 0.85rem; font-weight: bold; white-space: nowrap; }
         .navbar a:hover, .navbar a.active { background-color: #0088cc; }
-        .ticker-bar { background-color: #0b3c5d; color: white; overflow: hidden; white-space: nowrap; display: flex; align-items: center; border-bottom: 2px solid #328cc1; height: 42px; }
-        .ticker-title { background-color: #328cc1; padding: 0 15px; height: 100%; display: flex; align-items: center; font-weight: bold; font-size: 0.85rem; text-transform: uppercase; z-index: 2; flex-shrink: 0; }
-        .ticker-wrap { width: 100%; overflow: hidden; }
-        .ticker-move { display: inline-block; white-space: nowrap; padding-left: 100%; animation: tickerEffect 35s linear infinite; }
-        .ticker-move:hover { animation-play-state: paused; }
-        .ticker-item { display: inline-block; padding: 0 25px; font-size: 0.95rem; }
-        .ticker-item .city { font-weight: bold; color: #efbc9b; }
-        .ticker-item .temp { font-weight: bold; color: #fff; }
-        @keyframes tickerEffect { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+
+        /* GRIGLIA BOLLETTINO + ESTREMI */
         .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; padding: 20px; }
-        .main-card { border: 1px solid #ddd; border-radius: 4px; padding: 20px; background-color: #fafafa; }
+        .main-card { border: 1px solid #ddd; border-radius: 4px; padding: 20px; background-color: #fafafa; min-height: 220px; }
         .card-title { font-size: 1.3rem; color: #0088cc; border-bottom: 2px solid #0088cc; padding-bottom: 5px; margin-top: 0; margin-bottom: 15px; }
+        
         .side-card { border: 1px solid #ddd; border-radius: 4px; padding: 15px; background-color: #f4f9fc; }
         .weather-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e3eef5; }
         .weather-row:last-child { border-bottom: none; }
         .weather-label { font-weight: bold; color: #555; }
         .weather-value { color: #0088cc; font-weight: bold; }
-        .webcam-section { padding: 0 20px; }
+
+        /* SEZIONE WEBCAM DENTRO IL RIQUADRO BIANCO */
+        .webcam-section { padding: 10px 20px 30px 20px; }
         .webcam-box { width: 100%; max-width: 820px; background: #1a1a1a; border: 2px solid #333; border-radius: 12px; padding: 20px; margin: 10px auto 20px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .webcam-box h3 { color: #fff; font-size: 18px; margin: 0 0 20px 0; text-transform: uppercase; border-bottom: 2px solid #ff3b30; padding-bottom: 8px; display: inline-block; }
         .webcam-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -72,20 +52,22 @@
         .webcam-link { color: #cccccc !important; text-decoration: none !important; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: all 0.2s; }
         .webcam-link:hover { color: #ffffff !important; padding-left: 5px; }
         .webcam-frame { width: 100%; max-width: 820px; height: 405px; overflow: hidden; position: relative; border: 3px solid #333; background: #000; border-radius: 12px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        
         @media (max-width: 900px) { .page-wrapper { grid-template-columns: 1fr; } .sidebar-banner { display: none; } .webcam-grid { grid-template-columns: 1fr; } }
         @media (max-width: 768px) { .content-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
-    <script src="barra-meteo.js"></script>
 
 <body>
     <div class="page-wrapper">
         <div class="sidebar-banner"><div class="banner-vertical"><span>PUBBLICITÀ<br><br>SPAZIO<br>DISPONIBILE</span></div></div>
+        
         <div class="main-container">
             <div class="header-logo">
                 <h1>Meteo Portale</h1>
                 <p id="update-time">Caricamento ultimo aggiornamento...</p>
             </div>
+            
             <div class="navbar">
                 <a href="index.html" class="active">HOME</a>
                 <a href="dati_meteo.html">DATI METEO</a>
@@ -95,10 +77,14 @@
                 <a href="webcam.html">WEBCAM</a>
             </div>
             
+            <!-- QUESTI DUE TAG MANCAVANO E FACEVANO CHIUDERE PRESTO IL RIQUADRO BIANCO -->
+            <div class="content-grid">
+                <div class="main-card">
                     <h2 class="card-title">Bollettino Meteorologico Generale</h2>
-                    <p>La situazione attuale sul territorio mostra un quadro stabile con transito di nubi medio-alte. Nel corso della giornata si prevede una ventilazione debole o moderata, con temperature in linea con le medie stagionali.</p>
-                    <p>Aggiornamenti continui estratti automaticamente dal sistema di localizzazione.</p>
+                    <p id="bollettino-testo-1">La situazione attuale sul territorio mostra un quadro stabile con transito di nubi medio-alte. Nel corso della giornata si prevede una ventilazione debole o moderata, con temperature in linea con le medie stagionali.</p>
+                    <p id="bollettino-testo-2">Aggiornamenti continui estratti automaticamente dal sistema di localizzazione.</p>
                 </div>
+                
                 <div class="side-card">
                     <h3 class="card-title" style="font-size: 1.1rem;">Estremi Rilevati</h3>
                     <div class="weather-row"><span class="weather-label">Località più calda:</span><span class="weather-value" id="max-city">--</span></div>
@@ -110,6 +96,8 @@
             <div class="webcam-section">
                 <div class="webcam-box">
                     <h3>⛷️ Elenco Webcam per Comprensorio</h3>
+                    <!-- Qui continua il tuo elenco webcam e tutto il resto fino alla chiusura di main-container -->
+
                     <div class="webcam-grid">
                         <div>
                             <h4>🏔️ Alto Sangro (AQ)</h4>
