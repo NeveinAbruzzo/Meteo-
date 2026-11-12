@@ -388,16 +388,79 @@ function calcolaColoreTemperatura(temp) {
   return "rgb(" + r + "," + g + "," + b + ")";
 }
 
-function caricaDatiMeteoBlogger() {
-  var ID_POST = "5866549180112140631"; 
-  var nocache = "&_nocache=" + new Date().getTime();
-  var urlFeed = window.location.protocol + '//' + window.location.hostname + '/feeds/posts/default/' + ID_POST + '?alt=json-in-script&callback=disponiGradienteTemperatura' + nocache;
-  var vecchioScript = document.getElementById('script-trigger-feed');
-  if (vecchioScript) vecchioScript.remove();
-  var script = document.createElement('script');
-  script.id = 'script-trigger-feed'; script.src = urlFeed; document.body.appendChild(script);
+
+<script>
+function caricaDatiMeteo() {
+    // Punta direttamente al file Dati_meteo.txt aggiornato dal tuo workflow su GitHub
+    const url = "https://githubusercontent.com" + new Date().getTime();
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("File non trovato: " + response.status);
+            }
+            return response.text();
+        })
+        .then(testo => {
+            const righe = testo.split("\n");
+            let htmlTicker = "";
+            let stazioni = [];
+            let orarioAggiornamento = "";
+
+            righe.forEach(riga => {
+                const pulita = riga.trim();
+                if (!pulita) return;
+
+                if (pulita.startsWith("===")) {
+                    orarioAggiornamento = pulita.replace(/=/g, "").trim();
+                } else if (pulita.includes(":")) {
+                    const parti = pulita.split(":");
+                    const citta = parti[0].trim();
+                    const tempTesto = parti[1].trim();
+
+                    htmlTicker += `<span class="ticker-item"><span class="city">${citta}:</span> <span class="temp">${tempTesto}</span></span>`;
+
+                    const valoreNumerico = parseFloat(tempTesto.replace("°C", ""));
+                    if (!isNaN(valoreNumerico)) {
+                        stazioni.push({ nome: citta, temp: valoreNumerico, testo: tempTesto });
+                    }
+                }
+            });
+
+            // 1. Aggiorna la barra scorrevole
+            const tickerEl = document.getElementById("ticker-content");
+            if (tickerEl) {
+                tickerEl.innerHTML = htmlTicker || "Nessun dato disponibile";
+            }
+
+            // 2. Aggiorna la data/ora sotto il titolo "Meteo Portale"
+            const updateEl = document.getElementById("update-time");
+            if (updateEl && orarioAggiornamento) {
+                updateEl.textContent = orarioAggiornamento;
+            }
+
+            // 3. Aggiorna il box "Estremi Rilevati"
+            if (stazioni.length > 0) {
+                const piuCalda = stazioni.reduce((a, b) => a.temp > b.temp ? a : b);
+                const piuFredda = stazioni.reduce((a, b) => a.temp < b.temp ? a : b);
+
+                document.getElementById("max-city").textContent = `${piuCalda.nome} (${piuCalda.testo})`;
+                document.getElementById("min-city").textContent = `${piuFredda.nome} (${piuFredda.testo})`;
+                document.getElementById("active-stations").textContent = stazioni.length;
+            }
+        })
+        .catch(errore => {
+            console.error("Errore caricamento meteo:", errore);
+            const tickerEl = document.getElementById("ticker-content");
+            if (tickerEl) {
+                tickerEl.textContent = "Errore caricamento dati meteo. Riprovo tra poco...";
+            }
+        });
 }
-caricaDatiMeteoBlogger();
-setInterval(caricaDatiMeteoBlogger, 300000);
+
+// Avvia al caricamento della pagina e aggiorna ogni 5 minuti
+document.addEventListener("DOMContentLoaded", caricaDatiMeteo);
+setInterval(caricaDatiMeteo, 300000);
 </script>
+
 </html>
