@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // 1. Stile CSS della barra scorrevole
   const stile = document.createElement("style");
   stile.textContent = `
     .ticker-meteo-container {
@@ -48,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
   `;
   document.head.appendChild(stile);
 
-  // 2. Inserisce la barra subito dopo il menu nero (.navbar)
   const barra = document.createElement("div");
   barra.className = "ticker-meteo-container";
   barra.innerHTML = `
@@ -63,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.prepend(barra);
   }
 
-  // 3. Elenco città dell'Abruzzo
   const localitaAbruzzo = [
     { nome: "L'Aquila", lat: 42.3507, lon: 13.3999 },
     { nome: "Pescara", lat: 42.4618, lon: 14.2161 },
@@ -140,13 +137,11 @@ document.addEventListener("DOMContentLoaded", function () {
         return `<span style="color:#efbc9b;">${nome}:</span> ${temp}°C ${ottieniIcona(code)}`;
       });
 
-      // 1. Aggiorna la barra scorrevole
       const elBarra = document.getElementById("testo-temperature-live");
       if (elBarra) {
         elBarra.innerHTML = stringheBarra.join(" &nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp; ");
       }
 
-      // 2. Aggiorna l'orario sotto il titolo
       const elOrario = document.getElementById("update-time");
       if (elOrario) {
         const adesso = new Date().toLocaleString("it-IT", {
@@ -156,7 +151,6 @@ document.addEventListener("DOMContentLoaded", function () {
         elOrario.textContent = `Ultimo aggiornamento in tempo reale: ${adesso}`;
       }
 
-      // 3. Aggiorna Estremi Rilevati
       const elCalda = document.getElementById("max-city");
       const elFredda = document.getElementById("min-city");
       const elStazioni = document.getElementById("active-stations");
@@ -165,16 +159,15 @@ document.addEventListener("DOMContentLoaded", function () {
       if (elFredda) elFredda.textContent = cittaFredda;
       if (elStazioni) elStazioni.textContent = localitaAbruzzo.length;
 
-      // 4. Aggiorna il Bollettino Meteorologico Generale in tempo reale
       const elBoll1 = document.getElementById("bollettino-testo-1");
       const elBoll2 = document.getElementById("bollettino-testo-2");
 
       if (elBoll1 && elBoll2) {
-        const meteoMonti = descriviSituazione(dati.current.weather_code);
-        const meteoCosta = descriviSituazione(dati.current.weather_code);
-        const tempRoccaraso = dati.current.temperature_2m;
-        const tempPescara = dati.current.temperature_2m;
-        const umidita = dati.current.relative_humidity_2m;
+        const meteoMonti = descriviSituazione(dati[8].current.weather_code);
+        const meteoCosta = descriviSituazione(dati[1].current.weather_code);
+        const tempRoccaraso = dati[8].current.temperature_2m;
+        const tempPescara = dati[1].current.temperature_2m;
+        const umidita = dati[8].current.relative_humidity_2m;
         const ventoMedio = Math.round(sommaVento / dati.length);
 
         elBoll1.innerHTML = `In questo momento sull'Abruzzo si rileva <strong>${meteoMonti}</strong> sui settori interni e montani (Roccaraso <strong>${tempRoccaraso}°C</strong>, umidità ${umidita}%) e <strong>${meteoCosta}</strong> lungo la fascia costiera adriatica (Pescara <strong>${tempPescara}°C</strong>).`;
