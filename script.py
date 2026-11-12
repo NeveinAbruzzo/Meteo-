@@ -1,4 +1,5 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import os
 import requests
 
@@ -8,14 +9,19 @@ def ottieni_temperature_comprensorio(localita):
     latitudini = ",".join(str(posto["lat"]) for posto in localita)
     longitudini = ",".join(str(posto["lon"]) for posto in localita)
 
+    # URL corretto per le API di Open-Meteo
     url = (
         f"https://open-meteo.com"
         f"?latitude={latitudini}&longitude={longitudini}"
         f"&current=temperature_2m&timezone=Europe%2FRome"
     )
 
+    headers = {
+        "User-Agent": "NeveInAbruzzoMeteoBot/1.0"
+    }
+
     try:
-        response = requests.get(url, timeout=15)
+        response = requests.get(url, headers=headers, timeout=15)
         response.raise_for_status()
         dati = response.json()
 
@@ -28,6 +34,8 @@ def ottieni_temperature_comprensorio(localita):
         elif isinstance(dati, dict) and "current" in dati:
             return [f"{dati['current']['temperature_2m']}°C"]
 
+    except requests.exceptions.HTTPError as http_err:
+        print(f"Errore HTTP Open-Meteo ({response.status_code}): {http_err}")
     except Exception as e:
         print(f"Errore durante il recupero dei dati da Open-Meteo: {e}")
 
@@ -35,7 +43,8 @@ def ottieni_temperature_comprensorio(localita):
 
 
 def salva_meteo_comprensorio():
-    orario_locale = datetime.now().strftime("%d/%m/%Y %H:%M")
+    # Imposta l'orario italiano anche quando gira sui server GitHub (che usano UTC)
+    orario_locale = datetime.now(ZoneInfo("Europe/Rome")).strftime("%d/%m/%Y %H:%M")
 
     localita = [
         {"nome": "Roccaraso", "lat": 41.8487, "lon": 14.0785, "fallback": "6.2°C"},
