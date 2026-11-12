@@ -10,7 +10,33 @@
         .page-wrapper { display: grid; grid-template-columns: 160px 1fr 160px; gap: 15px; max-width: 1400px; margin: 0 auto; padding: 0 10px; }
         .sidebar-banner { padding-top: 20px; }
         .banner-vertical { background-color: #0b3c5d; border: 2px solid #328cc1; border-radius: 8px; color: white; text-align: center; padding: 20px 10px; font-size: 0.9rem; font-weight: bold; min-height: 400px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .main-container { width: 100%; margin: 20px auto; background-color: #ffffff; box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 4px; overflow: hidden; padding-bottom: 30px; }
+        
+        .main-container {
+    width: 100%;
+    margin: 20px auto;
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    overflow: clip;
+    padding-bottom: 30px;
+}
+
+.ticker-bar {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    background-color: #0b3c5d;
+    color: white;
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #328cc1;
+    height: 42px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+        
         .header-logo { padding: 20px; text-align: left; border-bottom: 1px solid #eee; }
         .header-logo h1 { margin: 0; color: #0088cc; font-size: 2.2rem; font-weight: bold; }
         .header-logo p { margin: 5px 0 0 0; color: #666; font-size: 0.9rem; }
