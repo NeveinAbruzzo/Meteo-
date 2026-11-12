@@ -1,9 +1,9 @@
-=== ULTIMO AGGIORNAMENTO: 12/11/2026 17:49 ===
+=== ULTIMO AGGIORNAMENTO: 12/11/2026 18:02 ===
 
-Roccaraso: 12.5°C
-Scanno: 14.4°C
-Frosinone: 17.2°C
-Pescocostanzo: 11.9°C
+Roccaraso: 12.6°C
+Scanno: 14.2°C
+Frosinone: 17.1°C
+Pescocostanzo: 12.1°C
 Villetta Barrea: 13.9°C
-Chieti: 16.9°C
-Napoli: 18.8°C
+Chieti: 16.7°C
+Napoli: 18.7°C
