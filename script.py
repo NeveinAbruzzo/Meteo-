@@ -32,32 +32,32 @@ def salva_meteo_comprensorio():
         },
         {
             "nome": "Scanno",
-            "url": "https://api.open-meteo.com/v1/forecast?latitude=41.8487&longitude=14.0785&current=temperature_2m",
+            "url": "https://api.open-meteo.com/v1/forecast?latitude=41.9044&longitude=13.8796&current=temperature_2m",
             "fallback": "6.5°C"
         },
         {
             "nome": "Frosinone",
-            "url": "https://api.open-meteo.com/v1/forecast?latitude=41.8487&longitude=14.0785&current=temperature_2m",
+            "url": "https://api.open-meteo.com/v1/forecast?latitude=41.6398&longitude=13.3411&current=temperature_2m",
             "fallback": "11.5°C"
         },
         {
             "nome": "Pescocostanzo",
-            "url": "https://api.open-meteo.com/v1/forecast?latitude=41.8487&longitude=14.0785&current=temperature_2m",
+            "url": "https://api.open-meteo.com/v1/forecast?latitude=41.8872&longitude=14.0661&current=temperature_2m",
             "fallback": "5.8°C"
         },
         {
             "nome": "Villetta Barrea",
-            "url": "https://api.open-meteo.com/v1/forecast?latitude=41.8487&longitude=14.0785&current=temperature_2m",
+            "url": "https://api.open-meteo.com/v1/forecast?latitude=41.7554&longitude=13.9909&current=temperature_2m",
             "fallback": "7.0°C"
         },
         {
             "nome": "Chieti",
-            "url": "https://api.open-meteo.com/v1/forecast?latitude=41.8487&longitude=14.0785&current=temperature_2m",
+            "url": "https://api.open-meteo.com/v1/forecast?latitude=42.3483&longitude=14.1649&current=temperature_2m",
             "fallback": "12.0°C"
         },
         {
             "nome": "Napoli",
-            "url": "https://api.open-meteo.com/v1/forecast?latitude=41.8487&longitude=14.0785&current=temperature_2m",
+            "url": "https://api.open-meteo.com/v1/forecast?latitude=40.8762&longitude=14.5195&current=temperature_2m",
             "fallback": "14.8°C"
         },
     ]
