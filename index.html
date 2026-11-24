@@ -35,13 +35,13 @@
         .meteo-table th, .meteo-table td { padding: 10px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
         .meteo-table th { background-color: #005b96; color: white; }
         .temp-col { font-weight: bold; color: #004472; text-align: right; }
-        .status-msg { margin-top: 15px; font-size: 0.8rem; color: #627d98; }
+        .status-msg { margin-top: 15px; font-size: 0.85rem; color: #102a43; font-weight: bold; text-align: center; }
     </style>
 </head>
 <body>
     <div class="ticker-wrap">
         <div class="ticker" id="ticker-list">
-            <div class="ticker-item">Caricamento dati meteo Abruzzo in corso...</div>
+            <div class="ticker-item">In attesa dei dati...</div>
         </div>
     </div>
     <nav>
@@ -55,15 +55,15 @@
             <div class="record-card card-max">
                 <div class="record-label">Temperatura più alta</div>
                 <div class="record-value" id="max-temp">--°C</div>
-                <div class="record-details" id="max-city">Caricamento...</div>
+                <div class="record-details" id="max-city">...</div>
             </div>
             <div class="record-card card-min">
                 <div class="record-label">Temperatura più bassa</div>
                 <div class="record-value" id="min-temp">--°C</div>
-                <div class="record-details" id="min-city">Caricamento...</div>
+                <div class="record-details" id="min-city">...</div>
             </div>
         </div>
-        <div class="status-msg" id="last-update">Aggiornamento dati in corso...</div>
+        <div class="status-msg" id="last-update">Script non ancora avviato</div>
     </main>
     <section id="sez-webcam" class="sezione">
         <h1 class="period-title">Webcam Live Stazioni Sciistiche</h1>
@@ -82,12 +82,85 @@
         <table class="meteo-table">
             <thead><tr><th>Località</th><th style="text-align: right;">Temperatura</th></tr></thead>
             <tbody id="tabella-body">
-                <tr><td colspan="2" style="text-align:center;">Caricamento temperature...</td></tr>
+                <tr><td colspan="2" style="text-align:center;">In attesa...</td></tr>
             </tbody>
         </table>
     </section>
 
-    <!-- Collegamento al file JavaScript esterno -->
     <script src="script.js"></script>
 </body>
 </html>
+document.getElementById('last-update').textContent = 'Script avviato! Scarico i dati...';
+
+function cambiaScheda(nome, btn) {
+    document.querySelectorAll('.sezione').forEach(s => s.classList.remove('attiva'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('sez-' + nome).classList.add('attiva');
+    btn.classList.add('active');
+}
+
+const localita = [
+    { nome: "L'Aquila", lat: 42.3498, lon: 13.3995 },
+    { nome: "Pescara", lat: 42.4618, lon: 14.2161 },
+    { nome: "Chieti", lat: 42.3510, lon: 14.1675 },
+    { nome: "Teramo", lat: 42.6589, lon: 13.7044 },
+    { nome: "Roccaraso", lat: 41.8465, lon: 14.0792 },
+    { nome: "Pescocostanzo", lat: 41.8894, lon: 14.0653 },
+    { nome: "Scanno", lat: 41.9026, lon: 13.8803 },
+    { nome: "Villetta Barrea", lat: 41.7766, lon: 13.9392 },
+    { nome: "Campo Imperatore", lat: 42.4431, lon: 13.5592 },
+    { nome: "Ovindoli", lat: 42.1375, lon: 13.5169 },
+    { nome: "Campo Felice", lat: 42.2158, lon: 13.4561 },
+    { nome: "Avezzano", lat: 42.0312, lon: 13.4263 },
+    { nome: "Sulmona", lat: 42.0494, lon: 13.9255 },
+    { nome: "Lanciano", lat: 42.2266, lon: 14.3905 },
+    { nome: "Vasto", lat: 42.1122, lon: 14.7081 }
+];
+
+async function aggiornaMeteo() {
+    const statusEl = document.getElementById('last-update');
+    const lats = localita.map(l => l.lat).join(',');
+    const lons = localita.map(l => l.lon).join(',');
+    const url = `https://open-meteo.com{lats}&longitude=${lons}&current_weather=true`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const dati = await response.json();
+        const listaDati = Array.isArray(dati) ? dati : [dati];
+
+        let tickerHTML = '';
+        let tabellaHTML = '';
+        let maxTemp = -Infinity, maxCity = '';
+        let minTemp = Infinity, minCity = '';
+
+        listaDati.forEach((item, index) => {
+            const nome = localita[index].nome;
+            const temp = item.current_weather.temperature;
+            const tempStr = temp.toFixed(1) + '°C';
+
+            if (temp > maxTemp) { maxTemp = temp; maxCity = nome; }
+            if (temp < minTemp) { minTemp = temp; minCity = nome; }
+
+            tickerHTML += `<div class="ticker-item">${nome}: <span>${tempStr}</span></div>`;
+            tabellaHTML += `<tr><td>${nome}</td><td class="temp-col">${tempStr}</td></tr>`;
+        });
+
+        document.getElementById('ticker-list').innerHTML = tickerHTML;
+        document.getElementById('tabella-body').innerHTML = tabellaHTML;
+        document.getElementById('max-temp').textContent = maxTemp.toFixed(1) + '°C';
+        document.getElementById('max-city').textContent = maxCity;
+        document.getElementById('min-temp').textContent = minTemp.toFixed(1) + '°C';
+        document.getElementById('min-city').textContent = minCity;
+
+        const ora = new Date();
+        statusEl.textContent = 'Aggiornato alle ' + ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+        statusEl.style.color = '#627d98';
+    } catch (errore) {
+        statusEl.textContent = 'Errore: ' + errore.message;
+        statusEl.style.color = 'red';
+    }
+}
+
+aggiornaMeteo();
+setInterval(aggiornaMeteo, 900000);
