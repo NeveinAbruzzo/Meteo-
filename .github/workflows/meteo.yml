@@ -1,0 +1,25 @@
+name: Aggiorna Meteo Abruzzo
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - run: python aggiorna.py
+      - run: |
+          git config user.name "MeteoBot"
+          git config user.email "bot@://github.com"
+          git add index.html
+          git commit -m "Aggiornamento temperature" || exit 0
+          git push
