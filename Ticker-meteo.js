@@ -1,5 +1,6 @@
+
 document.addEventListener("DOMContentLoaded", function () {
-  // 1. Aggiunge gli stili CSS del tuo ticker (utili per le pagine che non li hanno già)
+  // 1. Aggiunge gli stili CSS del tuo ticker
   const style = document.createElement("style");
   style.textContent = `
     .ticker-bar { background-color: #0b3c5d; color: white; overflow: hidden; white-space: nowrap; display: flex; align-items: center; border-bottom: 2px solid #328cc1; height: 42px; font-family: Arial, sans-serif; }
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
     tickerContent = document.getElementById("ticker-content");
   }
 
-  // 3. Scarica i dati aggiornati da GitHub e popola sia il ticker sia i riquadri riepilogo (se presenti)
+  // 3. METTI QUI IL LINK RAW DEL TUO FILE Dati_meteo.txt SU GITHUB
   const urlDati = "https://githubusercontent.com" + new Date().getTime();
 
   fetch(urlDati)
@@ -69,31 +70,31 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
-      tickerContent.innerHTML = htmlTicker || "Dati meteo non disponibili";
-
-      // Aggiorna l'orario nell'header se presente nella pagina
-      const updateTimeEl = document.getElementById("update-time");
-      if (updateTimeEl && ultimoAggiornamento) {
-        updateTimeEl.textContent = ultimoAggiornamento;
+      // Aggiorna il ticker
+      if (htmlTicker) {
+        tickerContent.innerHTML = htmlTicker;
+      } else {
+        tickerContent.textContent = "Nessun dato meteo disponibile.";
       }
 
-      // Aggiorna anche il riquadro "Estremi Rilevati" nella Home se presente
+      // Popola eventuali riquadri riepilogo se presenti nella pagina
       if (stazioni.length > 0) {
-        const piuCalda = stazioni.reduce((a, b) => (a.temp > b.temp ? a : b));
-        const piuFredda = stazioni.reduce((a, b) => (a.temp < b.temp ? a : b));
+        stazioni.sort((a, b) => a.temp - b.temp);
+        const piuFredda = stazioni[0];
+        const piuCalda = stazioni[stazioni.length - 1];
 
-        const maxEl = document.getElementById("max-city");
-        const minEl = document.getElementById("min-city");
-        const countEl = document.getElementById("active-stations");
+        const elCalda = document.getElementById("temp-max") || document.getElementById("stazione-calda");
+        const elFredda = document.getElementById("temp-min") || document.getElementById("stazione-fredda");
+        const elAgg = document.getElementById("ultimo-aggiornamento");
 
-        if (maxEl) maxEl.textContent = `${piuCalda.nome} (${piuCalda.testo})`;
-        if (minEl) minEl.textContent = `${piuFredda.nome} (${piuFredda.testo})`;
-        if (countEl) countEl.textContent = stazioni.length;
+        if (elCalda) elCalda.textContent = `${piuCalda.nome} (${piuCalda.testo})`;
+        if (elFredda) elFredda.textContent = `${piuFredda.nome} (${piuFredda.testo})`;
+        if (elAgg && ultimoAggiornamento) elAgg.textContent = ultimoAggiornamento;
       }
     })
     .catch((err) => {
-      console.error("Errore ticker meteo:", err);
-      tickerContent.textContent = "Dati meteo temporaneamente non disponibili";
+      console.error(err);
+      tickerContent.textContent = "Errore nel caricamento delle temperature.";
     });
 });
 
