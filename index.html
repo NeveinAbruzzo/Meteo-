@@ -31,7 +31,7 @@
         .cam-btn { background: white; border: 1px solid #d9e2ec; border-left: 4px solid #005b96; border-radius: 6px; padding: 14px 16px; text-decoration: none; color: #102a43; display: flex; flex-direction: column; gap: 4px; }
         .cam-station { font-weight: bold; font-size: 0.95rem; color: #005b96; }
         .cam-altitude { font-size: 0.78rem; color: #627d98; }
-        .meteo-table { width: 100%; max-width: 450px; background: white; border-radius: 8px; border-collapse: collapse; }
+        .meteo-table { width: 100%; max-width: 450px; background: white; border-radius: 8px; border-collapse: collapse; box-shadow: 0 4px 12px rgba(0,0,0,0.06); overflow: hidden; }
         .meteo-table th, .meteo-table td { padding: 10px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
         .meteo-table th { background-color: #005b96; color: white; }
         .temp-col { font-weight: bold; color: #004472; text-align: right; }
@@ -39,7 +39,11 @@
     </style>
 </head>
 <body>
-    <div class="ticker-wrap"><div class="ticker"><div class="ticker-item">L'Aquila: <span>5.0°C</span></div><div class="ticker-item">Pescara: <span>5.0°C</span></div><div class="ticker-item">Chieti: <span>5.0°C</span></div><div class="ticker-item">Teramo: <span>5.0°C</span></div><div class="ticker-item">Roccaraso: <span>5.0°C</span></div><div class="ticker-item">Pescocostanzo: <span>5.0°C</span></div><div class="ticker-item">Scanno: <span>5.0°C</span></div><div class="ticker-item">Villetta Barrea: <span>5.0°C</span></div><div class="ticker-item">Campo Imperatore: <span>5.0°C</span></div><div class="ticker-item">Ovindoli: <span>5.0°C</span></div><div class="ticker-item">Campo Felice: <span>5.0°C</span></div><div class="ticker-item">Avezzano: <span>5.0°C</span></div><div class="ticker-item">Sulmona: <span>5.0°C</span></div><div class="ticker-item">Lanciano: <span>5.0°C</span></div><div class="ticker-item">Vasto: <span>5.0°C</span></div></div></div>
+    <div class="ticker-wrap">
+        <div class="ticker" id="ticker-list">
+            <div class="ticker-item">Caricamento dati meteo Abruzzo in corso...</div>
+        </div>
+    </div>
     <nav>
         <button class="nav-btn active" onclick="cambiaScheda('home', this)">Home Page</button>
         <button class="nav-btn" onclick="cambiaScheda('webcam', this)">Dati Meteo &amp; Webcam</button>
@@ -50,16 +54,16 @@
         <div class="records-container">
             <div class="record-card card-max">
                 <div class="record-label">Temperatura più alta</div>
-                <div class="record-value">5.0°C</div>
-                <div class="record-details">L'Aquila</div>
+                <div class="record-value" id="max-temp">--°C</div>
+                <div class="record-details" id="max-city">Caricamento...</div>
             </div>
             <div class="record-card card-min">
                 <div class="record-label">Temperatura più bassa</div>
-                <div class="record-value">5.0°C</div>
-                <div class="record-details">L'Aquila</div>
+                <div class="record-value" id="min-temp">--°C</div>
+                <div class="record-details" id="min-city">Caricamento...</div>
             </div>
         </div>
-        <div class="status-msg">Aggiornato automaticamente il 24/11/2026 15:20</div>
+        <div class="status-msg" id="last-update">Aggiornamento dati in corso...</div>
     </main>
     <section id="sez-webcam" class="sezione">
         <h1 class="period-title">Webcam Live Stazioni Sciistiche</h1>
@@ -77,16 +81,13 @@
         <h1 class="period-title">Temperature Live Località Abruzzo</h1>
         <table class="meteo-table">
             <thead><tr><th>Località</th><th style="text-align: right;">Temperatura</th></tr></thead>
-            <tbody><tr><td>L'Aquila</td><td class="temp-col">5.0°C</td></tr><tr><td>Pescara</td><td class="temp-col">5.0°C</td></tr><tr><td>Chieti</td><td class="temp-col">5.0°C</td></tr><tr><td>Teramo</td><td class="temp-col">5.0°C</td></tr><tr><td>Roccaraso</td><td class="temp-col">5.0°C</td></tr><tr><td>Pescocostanzo</td><td class="temp-col">5.0°C</td></tr><tr><td>Scanno</td><td class="temp-col">5.0°C</td></tr><tr><td>Villetta Barrea</td><td class="temp-col">5.0°C</td></tr><tr><td>Campo Imperatore</td><td class="temp-col">5.0°C</td></tr><tr><td>Ovindoli</td><td class="temp-col">5.0°C</td></tr><tr><td>Campo Felice</td><td class="temp-col">5.0°C</td></tr><tr><td>Avezzano</td><td class="temp-col">5.0°C</td></tr><tr><td>Sulmona</td><td class="temp-col">5.0°C</td></tr><tr><td>Lanciano</td><td class="temp-col">5.0°C</td></tr><tr><td>Vasto</td><td class="temp-col">5.0°C</td></tr></tbody>
+            <tbody id="tabella-body">
+                <tr><td colspan="2" style="text-align:center;">Caricamento temperature...</td></tr>
+            </tbody>
         </table>
     </section>
-    <script>
-        function cambiaScheda(nome, btn) {
-            document.querySelectorAll('.sezione').forEach(s => s.classList.remove('attiva'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('sez-' + nome).classList.add('attiva');
-            btn.classList.add('active');
-        }
-    </script>
+
+    <!-- Collegamento al file JavaScript esterno -->
+    <script src="script.js"></script>
 </body>
 </html>
