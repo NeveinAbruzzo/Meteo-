@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meteo Abruzzo - Dashboard Compatta</title>
+    <title>Meteo Abruzzo Live</title>
     <style>
-        /* Stile generale compatto */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -22,7 +21,7 @@
             font-size: 14px;
         }
 
-        /* 1. BARRA SCORREVOLE IN ALTO (Ticker) */
+        /* 1. BARRA SCORREVOLE IN ALTO */
         .ticker-wrap {
             width: 100%;
             overflow: hidden;
@@ -39,7 +38,6 @@
             animation: scorrimento 35s linear infinite;
         }
 
-        /* Mette in pausa lo scorrimento quando ci passi sopra col mouse */
         .ticker-wrap:hover .ticker {
             animation-play-state: paused;
         }
@@ -79,7 +77,6 @@
             border-radius: 4px;
             font-size: 0.85rem;
             cursor: pointer;
-            text-decoration: none;
             transition: background-color 0.2s;
         }
 
@@ -90,21 +87,29 @@
             border-color: #ffdd57;
         }
 
-        /* 3. SEZIONE CENTRALE RIMPICCIOLITA */
-        main {
+        /* GESTIONE SCHERMATE */
+        .sezione {
+            display: none;
             flex: 1;
-            display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 20px 15px;
-            max-width: 650px;
+            padding: 25px 15px;
+            max-width: 750px;
             margin: 0 auto;
             width: 100%;
         }
 
+        .sezione.attiva {
+            display: flex;
+        }
+
+        /* SCHERMATA 1: HOME PAGE */
+        #sez-home {
+            justify-content: center;
+        }
+
         .period-title {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             margin-bottom: 18px;
             color: #102a43;
             text-align: center;
@@ -153,6 +158,74 @@
             font-size: 0.85rem;
             color: #334e68;
         }
+
+        /* SCHERMATA 2: WEBCAM STAZIONI */
+        .webcam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            width: 100%;
+        }
+
+        .cam-btn {
+            background: white;
+            border: 1px solid #d9e2ec;
+            border-left: 4px solid #005b96;
+            border-radius: 6px;
+            padding: 14px 16px;
+            text-decoration: none;
+            color: #102a43;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+
+        .cam-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0,91,150,0.15);
+            border-left-color: #e63946;
+        }
+
+        .cam-station { font-weight: bold; font-size: 0.95rem; color: #005b96; }
+        .cam-altitude { font-size: 0.78rem; color: #627d98; }
+
+        /* SCHERMATA 3: TABELLA TEMPERATURE LIVE */
+        .meteo-table {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border-collapse: collapse;
+        }
+
+        .meteo-table th, .meteo-table td {
+            padding: 10px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .meteo-table th {
+            background-color: #005b96;
+            color: white;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .temp-col {
+            font-weight: bold;
+            color: #004472;
+            text-align: right;
+        }
+
+        .status-msg {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #627d98;
+        }
     </style>
 </head>
 <body>
@@ -160,92 +233,170 @@
     <!-- 1. BARRA SCORREVOLE IN ALTO -->
     <div class="ticker-wrap">
         <div class="ticker" id="ticker-container">
-            <!-- Le località verranno inserite qui dallo script -->
+            <div class="ticker-item">Caricamento temperature in tempo reale da Open-Meteo...</div>
         </div>
     </div>
 
-    <!-- 2. BARRA DI NAVIGAZIONE CON 3 TASTI -->
+    <!-- 2. MENU CON I 3 TASTI -->
     <nav>
-        <a href="#home" class="nav-btn active">Home Page</a>
-        <a href="#dati_meteo" class="nav-btn">Dati Meteo</a>
-        <a href="#temperature-abruzzo" class="nav-btn">Temperature Abruzzo</a>
+        <button class="nav-btn active" onclick="cambiaScheda('home', this)">Home Page</button>
+        <button class="nav-btn" onclick="cambiaScheda('webcam', this)">Dati Meteo &amp; Webcam</button>
+        <button class="nav-btn" onclick="cambiaScheda('tabella', this)">Temperature Abruzzo</button>
     </nav>
 
-    <!-- 3. PARTE CENTRALE COMPATTA -->
-    <main>
-        <h1 class="period-title">Estremi Termici del Periodo</h1>
-        
+    <!-- SCHEDA 1: HOME PAGE -->
+    <main id="sez-home" class="sezione attiva">
+        <h1 class="period-title">Estremi Termici Attuali Abruzzo</h1>
         <div class="records-container">
             <div class="record-card card-max">
                 <div class="record-label">Temperatura più alta</div>
                 <div class="record-value" id="max-temp">--°C</div>
-                <div class="record-details" id="max-location">--</div>
+                <div class="record-details" id="max-location">Rilevamento...</div>
             </div>
-
             <div class="record-card card-min">
                 <div class="record-label">Temperatura più bassa</div>
                 <div class="record-value" id="min-temp">--°C</div>
-                <div class="record-details" id="min-location">--</div>
+                <div class="record-details" id="min-location">Rilevamento...</div>
             </div>
         </div>
+        <div class="status-msg" id="last-update">Connessione a Open-Meteo in corso...</div>
     </main>
 
-    <!-- JAVASCRIPT PER POPOLARE I DATI -->
+    <!-- SCHEDA 2: WEBCAM STAZIONI SCIISTICHE -->
+    <section id="sez-webcam" class="sezione">
+        <h1 class="period-title">Webcam Live Stazioni Sciistiche</h1>
+        <div class="webcam-grid">
+            <a href="https://roccaraso.net" target="_blank" rel="noopener" class="cam-btn">
+                <span class="cam-station">Roccaraso - Alto Sangro</span>
+                <span class="cam-altitude">Aremogna • Pizzalto • Monte Pratello</span>
+            </a>
+            <a href="https://campofelice.it" target="_blank" rel="noopener" class="cam-btn">
+                <span class="cam-station">Campo Felice</span>
+                <span class="cam-altitude">Brecciara • Cerchiare • Panoramica 360°</span>
+            </a>
+            <a href="https://ovindolimagnola.it" target="_blank" rel="noopener" class="cam-btn">
+                <span class="cam-station">Ovindoli - Monte Magnola</span>
+                <span class="cam-altitude">Dolce Vita • Anfiteatro • Monte Freddo</span>
+            </a>
+            <a href="https://skiresort.it" target="_blank" rel="noopener" class="cam-btn">
+                <span class="cam-station">Campo Imperatore</span>
+                <span class="cam-altitude">Gran Sasso • Scindarella • Funivia</span>
+            </a>
+            <a href="https://dovesciare.it" target="_blank" rel="noopener" class="cam-btn">
+                <span class="cam-station">Passolanciano - Majelletta</span>
+                <span class="cam-altitude">Majella • Rifugio Pomilio 1890m</span>
+            </a>
+            <a href="https://meteoregioneabruzzo.it" target="_blank" rel="noopener" class="cam-btn">
+                <span class="cam-station">Pescasseroli</span>
+                <span class="cam-altitude">Impianti Sci • Monte delle Vitelle</span>
+            </a>
+            <a href="https://skiinfo.it" target="_blank" rel="noopener" class="cam-btn">
+                <span class="cam-station">Tutte le Stazioni Abruzzo</span>
+                <span class="cam-altitude">Riepilogo piste e neve in diretta</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- SCHEDA 3: TABELLA TEMPERATURE LIVE -->
+    <section id="sez-tabella" class="sezione">
+        <h1 class="period-title">Temperature Live Località Abruzzo</h1>
+        <table class="meteo-table">
+            <thead>
+                <tr>
+                    <th>Località</th>
+                    <th style="text-align: right;">Temperatura</th>
+                </tr>
+            </thead>
+            <tbody id="tabella-body">
+                <tr><td colspan="2">Caricamento dati...</td></tr>
+            </tbody>
+        </table>
+    </section>
     <script>
-        const datiAbruzzo = {
-            // Elenco località per la barra scorrevole
-            localita: [
-                { citta: "L'Aquila", temp: "11°C" },
-                { citta: "Pescara", temp: "17°C" },
-                { citta: "Chieti", temp: "15°C" },
-                { citta: "Teramo", temp: "14°C" },
-                { citta: "Avezzano", temp: "10°C" },
-                { citta: "Sulmona", temp: "12°C" },
-                { citta: "Lanciano", temp: "16°C" },
-                { citta: "Vasto", temp: "17°C" },
-                { citta: "Giulianova", temp: "16°C" },
-                { citta: "Roseto degli Abruzzi", temp: "16°C" },
-                { citta: "Montesilvano", temp: "17°C" },
-                { citta: "Francavilla al Mare", temp: "17°C" },
-                { citta: "Ortona", temp: "16°C" },
-                { citta: "Roccaraso", temp: "4°C" },
-                { citta: "Campo Imperatore", temp: "-2°C" },
-                { citta: "Castel di Sangro", temp: "7°C" }
-            ],
-            // Record del periodo
-            recordPeriodo: {
-                massima: {
-                    valore: "24.5°C",
-                    dettagli: "Pescara • 12 Nov"
-                },
-                minima: {
-                    valore: "-4.2°C",
-                    dettagli: "Campo Imperatore • 18 Nov"
-                }
-            }
-        };
+        const localitaAbruzzo = [
+            { nome: "L'Aquila", lat: 42.3498, lon: 13.3995 },
+            { nome: "Pescara", lat: 42.4618, lon: 14.2161 },
+            { nome: "Chieti", lat: 42.3483, lon: 14.1649 },
+            { nome: "Teramo", lat: 42.6589, lon: 13.7044 },
+            { nome: "Roccaraso", lat: 41.8487, lon: 14.0785 },
+            { nome: "Pescocostanzo", lat: 41.8872, lon: 14.0661 },
+            { nome: "Scanno", lat: 41.9044, lon: 13.8796 },
+            { nome: "Villetta Barrea", lat: 41.7554, lon: 13.9909 },
+            { nome: "Campo Imperatore", lat: 42.4431, lon: 13.5586 },
+            { nome: "Ovindoli", lat: 42.1384, lon: 13.5161 },
+            { nome: "Campo Felice", lat: 42.2217, lon: 13.4561 },
+            { nome: "Avezzano", lat: 42.0312, lon: 13.4262 },
+            { nome: "Sulmona", lat: 42.0493, lon: 13.9258 },
+            { nome: "Lanciano", lat: 42.2271, lon: 14.3905 },
+            { nome: "Vasto", lat: 42.1118, lon: 14.7061 }
+        ];
 
-        function caricaDatiMeteo() {
-            // Popola il ticker scorrevole
-            const tickerContainer = document.getElementById('ticker-container');
-            tickerContainer.innerHTML = '';
-
-            datiAbruzzo.localita.forEach(item => {
-                const span = document.createElement('div');
-                span.className = 'ticker-item';
-                span.innerHTML = `${item.citta}: <span>${item.temp}</span>`;
-                tickerContainer.appendChild(span);
-            });
-
-            // Popola le card centrali
-            document.getElementById('max-temp').textContent = datiAbruzzo.recordPeriodo.massima.valore;
-            document.getElementById('max-location').textContent = datiAbruzzo.recordPeriodo.massima.dettagli;
-
-            document.getElementById('min-temp').textContent = datiAbruzzo.recordPeriodo.minima.valore;
-            document.getElementById('min-location').textContent = datiAbruzzo.recordPeriodo.minima.dettagli;
+        function cambiaScheda(nomeScheda, btnCliccato) {
+            document.querySelectorAll('.sezione').forEach(s => s.classList.remove('attiva'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('sez-' + nomeScheda).classList.add('attiva');
+            btnCliccato.classList.add('active');
         }
 
-        window.onload = caricaDatiMeteo;
+        async function aggiornaTemperatureLive() {
+            const lats = localitaAbruzzo.map(l => l.lat).join(',');
+            const lons = localitaAbruzzo.map(l => l.lon).join(',');
+            const url = `https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`;
+
+            try {
+                const risposta = await fetch(url);
+                const dati = await risposta.json();
+
+                const tickerContainer = document.getElementById('ticker-container');
+                const tabellaBody = document.getElementById('tabella-body');
+                tickerContainer.innerHTML = '';
+                tabellaBody.innerHTML = '';
+
+                let tempMax = -999;
+                let cittaMax = '';
+                let tempMin = 999;
+                let cittaMin = '';
+
+                dati.forEach((risultato, indice) => {
+                    const nomeCitta = localitaAbruzzo[indice].nome;
+                    const tempVal = risultato.current.temperature_2m;
+
+                    const itemTicker = document.createElement('div');
+                    itemTicker.className = 'ticker-item';
+                    itemTicker.innerHTML = `${nomeCitta}: <span>${tempVal}°C</span>`;
+                    tickerContainer.appendChild(itemTicker);
+
+                    const riga = document.createElement('tr');
+                    riga.innerHTML = `<td>${nomeCitta}</td><td class="temp-col">${tempVal}°C</td>`;
+                    tabellaBody.appendChild(riga);
+
+                    if (tempVal > tempMax) {
+                        tempMax = tempVal;
+                        cittaMax = nomeCitta;
+                    }
+                    if (tempVal < tempMin) {
+                        tempMin = tempVal;
+                        cittaMin = nomeCitta;
+                    }
+                });
+
+                document.getElementById('max-temp').textContent = `${tempMax}°C`;
+                document.getElementById('max-location').textContent = cittaMax;
+
+                document.getElementById('min-temp').textContent = `${tempMin}°C`;
+                document.getElementById('min-location').textContent = cittaMin;
+
+                const ora = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                document.getElementById('last-update').textContent = `Dati reali Open-Meteo aggiornati alle ${ora}`;
+
+            } catch (errore) {
+                document.getElementById('last-update').textContent = "Errore nel caricamento dati live.";
+                console.error(errore);
+            }
+        }
+
+        window.onload = aggiornaTemperatureLive;
     </script>
 
 </body>
