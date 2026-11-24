@@ -1,3 +1,4 @@
+import time
 import requests
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -20,15 +21,25 @@ localita = [
     {"nome": "Vasto", "lat": 42.1118, "lon": 14.7061}
 ]
 
+headers = {
+    "User-Agent": "Mozilla/5.0 (compatible; NeveInAbruzzoBot/1.0)",
+    "Accept": "application/json"
+}
+
 risultati = []
 for p in localita:
     url = f"https://open-meteo.com{p['lat']}&longitude={p['lon']}&current=temperature_2m"
     try:
-        r = requests.get(url, timeout=10).json()
-        temp = r["current"]["temperature_2m"]
-    except:
+        resp = requests.get(url, headers=headers, timeout=15)
+        resp.raise_for_status()
+        r = resp.json()
+        temp = float(r["current"]["temperature_2m"])
+        print(f"OK {p['nome']}: {temp}°C")
+    except Exception as e:
+        print(f"ERRORE {p['nome']}: {e}")
         temp = 5.0
     risultati.append({"nome": p["nome"], "temp": temp})
+    time.sleep(0.4)
 
 piu_calda = max(risultati, key=lambda x: x["temp"])
 piu_fredda = min(risultati, key=lambda x: x["temp"])
