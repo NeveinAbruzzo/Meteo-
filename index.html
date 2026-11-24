@@ -81,7 +81,7 @@
         </table>
     </section>
   
-     <script>
+      <script>
         function cambiaScheda(nome, btn) {
             document.querySelectorAll('.sezione').forEach(s => s.classList.remove('attiva'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -90,44 +90,65 @@
         }
 
         const localita = [
-            { nome: "L'Aquila", lat: 42.3507, lon: 13.3999 },
-            { nome: "Pescara", lat: 42.4618, lon: 14.2161 },
-            { nome: "Chieti", lat: 42.3512, lon: 14.1675 },
-            { nome: "Teramo", lat: 42.6589, lon: 13.7044 },
-            { nome: "Roccaraso", lat: 41.8469, lon: 14.0789 },
-            { nome: "Pescocostanzo", lat: 41.8892, lon: 14.0642 },
-            { nome: "Scanno", lat: 41.9022, lon: 13.8806 },
-            { nome: "Villetta Barrea", lat: 41.7769, lon: 13.9389 },
-            { nome: "Campo Imperatore", lat: 42.4431, lon: 13.5592 },
-            { nome: "Ovindoli", lat: 42.1381, lon: 13.5169 },
-            { nome: "Campo Felice", lat: 42.2219, lon: 13.4381 },
-            { nome: "Avezzano", lat: 42.0311, lon: 13.4261 },
-            { nome: "Sulmona", lat: 42.0494, lon: 13.9258 },
-            { nome: "Lanciano", lat: 42.2311, lon: 14.3903 },
-            { nome: "Vasto", lat: 42.1117, lon: 14.7083 }
+            { nome: "L'Aquila", query: "L'Aquila,Italy", lat: 42.3507, lon: 13.3999 },
+            { nome: "Pescara", query: "Pescara,Italy", lat: 42.4618, lon: 14.2161 },
+            { nome: "Chieti", query: "Chieti,Italy", lat: 42.3512, lon: 14.1675 },
+            { nome: "Teramo", query: "Teramo,Italy", lat: 42.6589, lon: 13.7044 },
+            { nome: "Roccaraso", query: "Roccaraso,Italy", lat: 41.8469, lon: 14.0789 },
+            { nome: "Pescocostanzo", query: "Pescocostanzo,Italy", lat: 41.8892, lon: 14.0642 },
+            { nome: "Scanno", query: "Scanno,Italy", lat: 41.9022, lon: 13.8806 },
+            { nome: "Villetta Barrea", query: "Villetta+Barrea,Italy", lat: 41.7769, lon: 13.9389 },
+            { nome: "Campo Imperatore", query: "42.4431,13.5592", lat: 42.4431, lon: 13.5592 },
+            { nome: "Ovindoli", query: "Ovindoli,Italy", lat: 42.1381, lon: 13.5169 },
+            { nome: "Campo Felice", query: "42.2219,13.4381", lat: 42.2219, lon: 13.4381 },
+            { nome: "Avezzano", query: "Avezzano,Italy", lat: 42.0311, lon: 13.4261 },
+            { nome: "Sulmona", query: "Sulmona,Italy", lat: 42.0494, lon: 13.9258 },
+            { nome: "Lanciano", query: "Lanciano,Italy", lat: 42.2311, lon: 14.3903 },
+            { nome: "Vasto", query: "Vasto,Italy", lat: 42.1117, lon: 14.7083 }
         ];
 
-        async function aggiornaMeteo() {
+        async function ottieniTemperaturaCitta(loc) {
             try {
-                // Usa API Open-Meteo v1 con parametro 'current=temperature_2m' e timestamp anti-cache
-                const lats = localita.map(l => l.lat).join(',');
-                const lons = localita.map(l => l.lon).join(',');
-                const url = `https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m&timezone=Europe%2FRome&_=${Date.now()}`;
-                
-                const res = await fetch(url, { cache: "no-store" });
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                const data = await res.json();
-                const listaRisultati = Array.isArray(data) ? data : [data];
+                // 1. Prova prima con Open-Meteo (più preciso per le località di montagna)
+                const urlOM = `https://open-meteo.com{loc.lat}&longitude=${loc.lon}&current=temperature_2m`;
+                const resOM = await fetch(urlOM);
+                if (resOM.ok) {
+                    const dataOM = await resOM.json();
+                    if (dataOM && dataOM.current && typeof dataOM.current.temperature_2m === 'number') {
+                        return dataOM.current.temperature_2m;
+                    }
+                }
+            } catch (e) {
+                // Se Open-Meteo fallisce, passa al fallback
+            }
+
+            // 2. Fallback automatico su wttr.in
+            const urlWttr = `https://wttr.in{loc.query}?format=j1`;
+            const resWttr = await fetch(urlWttr);
+            if (!resWttr.ok) throw new Error(`HTTP ${resWttr.status}`);
+            const dataWttr = await resWttr.json();
+            return parseFloat(dataWttr.current_condition[0].temp_C);
+        }
+
+        async function aggiornaMeteo() {
+            document.getElementById('last-update').textContent = "Aggiornamento temperature reali in corso...";
+            
+            try {
+                const promesse = localita.map(async (loc) => {
+                    const temp = await ottieniTemperaturaCitta(loc);
+                    return { nome: loc.nome, temp: temp };
+                });
+
+                const listaRisultati = await Promise.all(promesse);
 
                 let tickerHTML = '';
                 let tabellaHTML = '';
                 let maxTemp = -Infinity, maxCity = '';
                 let minTemp = Infinity, minCity = '';
 
-                listaRisultati.forEach((item, index) => {
-                    const nome = localita[index].nome;
-                    // Legge correttamente la temperatura reale dell'oggetto current
-                    const temp = Number(item.current.temperature_2m);
+                listaRisultati.forEach((item) => {
+                    const nome = item.nome;
+                    const temp = item.temp;
                     const tempFormattata = temp.toFixed(1) + '°C';
 
                     tickerHTML += `<div class="ticker-item">${nome}: <span>${tempFormattata}</span></div>`;
@@ -145,13 +166,13 @@
                 document.getElementById('min-city').textContent = minCity;
 
                 const ora = new Date();
-                const dataStr = ora.toLocaleDateString('it-IT') + ' ' + ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                const testoAggiornamento = `Aggiornato il ${dataStr}`;
-                document.getElementById('last-update').textContent = testoAggiornamento;
+                const dataStr = ora.toLocaleDateString('it-IT') + ' ' + ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const testoAggiornamento = `Aggiornato alle ${dataStr}`;
+                document.getElementById('last-update').innerHTML = `${testoAggiornamento} <button onclick="aggiornaMeteo()" style="margin-left:8px; padding:2px 8px; cursor:pointer; border-radius:4px; border:1px solid #005b96; background:white; color:#005b96; font-weight:bold;">Aggiorna ora</button>`;
                 document.getElementById('last-update-table').textContent = testoAggiornamento;
 
             } catch (errore) {
-                const msgErrore = `Errore: ${errore.message}`;
+                const msgErrore = `Impossibile scaricare i dati (${errore.message}). Apri il file nel browser.`;
                 document.getElementById('last-update').textContent = msgErrore;
                 document.getElementById('ticker-container').innerHTML = `<div class="ticker-item">${msgErrore}</div>`;
             }
