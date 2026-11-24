@@ -24,22 +24,30 @@ const localita = [
 ];
 
 async function aggiornaMeteo() {
+    const statusEl = document.getElementById('last-update');
+    const tabellaEl = document.getElementById('tabella-body');
+    
     const lats = localita.map(l => l.lat).join(',');
     const lons = localita.map(l => l.lon).join(',');
-    const url = `https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m&timezone=Europe%2FRome`;
+    const url = `https://open-meteo.com{lats}&longitude=${lons}&current_weather=true`;
 
     try {
         const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Server meteo non raggiungibile (Codice " + response.status + ")");
+        }
+        
         const dati = await response.json();
+        const listaDati = Array.isArray(dati) ? dati : [dati];
 
         let tickerHTML = '';
         let tabellaHTML = '';
         let maxTemp = -Infinity, maxCity = '';
         let minTemp = Infinity, minCity = '';
 
-        dati.forEach((item, index) => {
+        listaDati.forEach((item, index) => {
             const nome = localita[index].nome;
-            const temp = item.current.temperature_2m;
+            const temp = item.current_weather.temperature;
             const tempStr = temp.toFixed(1) + '°C';
 
             if (temp > maxTemp) { maxTemp = temp; maxCity = nome; }
@@ -50,7 +58,7 @@ async function aggiornaMeteo() {
         });
 
         document.getElementById('ticker-list').innerHTML = tickerHTML;
-        document.getElementById('tabella-body').innerHTML = tabellaHTML;
+        tabellaEl.innerHTML = tabellaHTML;
         document.getElementById('max-temp').textContent = maxTemp.toFixed(1) + '°C';
         document.getElementById('max-city').textContent = maxCity;
         document.getElementById('min-temp').textContent = minTemp.toFixed(1) + '°C';
@@ -58,13 +66,18 @@ async function aggiornaMeteo() {
 
         const ora = new Date();
         const dataFormattata = ora.toLocaleDateString('it-IT') + ' ' + ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-        document.getElementById('last-update').textContent = 'Aggiornato automaticamente il ' + dataFormattata;
+        statusEl.textContent = 'Aggiornato automaticamente il ' + dataFormattata;
+        statusEl.style.color = '#627d98';
 
     } catch (errore) {
-        document.getElementById('last-update').textContent = 'Errore nel caricamento dei dati meteo. Riprova più tardi.';
-        console.error(errore);
+        const msgErrore = 'Errore: ' + errore.message;
+        statusEl.textContent = msgErrore;
+        statusEl.style.color = '#e63946';
+        tabellaEl.innerHTML = `<tr><td colspan="2" style="color:red; text-align:center;">${msgErrore}</td></tr>`;
     }
 }
 
-aggiornaMeteo();
-setInterval(aggiornaMeteo, 900000);
+document.addEventListener('DOMContentLoaded', () => {
+    aggiornaMeteo();
+    setInterval(aggiornaMeteo, 900000);
+});
