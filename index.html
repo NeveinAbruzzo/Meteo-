@@ -111,6 +111,7 @@
         </table>
         <div class="status-msg" id="last-update-table"></div>
     </section>
+
     <script>
         function cambiaScheda(nome, btn) {
             document.querySelectorAll('.sezione').forEach(s => s.classList.remove('attiva'));
@@ -138,24 +139,29 @@
         ];
 
         async function aggiornaMeteo() {
-            const lats = localita.map(l => l.lat).join(',');
-            const lons = localita.map(l => l.lon).join(',');
-            const url = `https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`;
-
             try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
-                const dati = await response.json();
-                const listaDati = Array.isArray(dati) ? dati : [dati];
+                // Esegue richieste singole in parallelo per evitare blocchi API
+                const richieste = localita.map(async (loc) => {
+                    const url = `https://open-meteo.com{loc.lat}&longitude=${loc.lon}&current_weather=true`;
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const data = await res.json();
+                    return {
+                        nome: loc.nome,
+                        temp: data.current_weather.temperature
+                    };
+                });
+
+                const listaDati = await Promise.all(richieste);
 
                 let tickerHTML = '';
                 let tabellaHTML = '';
                 let maxTemp = -Infinity, maxCity = '';
                 let minTemp = Infinity, minCity = '';
 
-                listaDati.forEach((item, index) => {
-                    const nome = localita[index].nome;
-                    const temp = item.current.temperature_2m;
+                listaDati.forEach((item) => {
+                    const nome = item.nome;
+                    const temp = item.temp;
                     const tempFormattata = temp.toFixed(1) + '°C';
 
                     tickerHTML += `<div class="ticker-item">${nome}: <span>${tempFormattata}</span></div>`;
@@ -174,12 +180,12 @@
 
                 const ora = new Date();
                 const dataStr = ora.toLocaleDateString('it-IT') + ' ' + ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                const testoAggiornamento = `Aggiornato automaticamente il ${dataStr}`;
+                const testoAggiornamento = `Aggiornato il ${dataStr}`;
                 document.getElementById('last-update').textContent = testoAggiornamento;
                 document.getElementById('last-update-table').textContent = testoAggiornamento;
 
             } catch (errore) {
-                const msgErrore = "Errore nel caricamento dei dati meteo. Verifica la connessione internet.";
+                const msgErrore = `Errore tecnico: ${errore.message} (apri il file direttamente in Chrome/Safari)`;
                 document.getElementById('last-update').textContent = msgErrore;
                 document.getElementById('ticker-container').innerHTML = `<div class="ticker-item">${msgErrore}</div>`;
                 console.error(errore);
