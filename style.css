@@ -50,3 +50,7 @@ nav { background-color: #005b96; padding: 6px 8px; display: flex; justify-conten
 .meteo-table th { background-color: #005b96; color: white; }
 .temp-col { font-weight: bold; color: #004472; text-align: right; }
 .status-msg { margin-top: 14px; font-size: 0.78rem; color: #627d98; text-align: center; }
+
+/* Stile per l'iframe che ospita dati_meteo.html */
+#sez-livecam { padding: 10px; max-width: 900px; }
+.external-frame { width: 100%; height: 78vh; min-height: 500px; border: none; border-radius: 8px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
