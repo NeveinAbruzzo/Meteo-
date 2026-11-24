@@ -1,26 +1,20 @@
 function cambiaScheda(nome, btn) {
     var sezioni = document.querySelectorAll('.sezione');
-    for (var i = 0; i < sezioni.length; i++) {
-        sezioni[i].classList.remove('attiva');
-    }
+    sezioni.forEach(function(s) {
+        s.classList.remove('attiva');
+    });
     var bottoni = document.querySelectorAll('.nav-btn');
-    for (var j = 0; j < bottoni.length; j++) {
-        bottoni[j].classList.remove('active');
-    }
+    bottoni.forEach(function(b) {
+        b.classList.remove('active');
+    });
     document.getElementById('sez-' + nome).classList.add('attiva');
     btn.classList.add('active');
 }
 
-var localitaAbruzzo = [
-    "l'aquila", "pescara", "chieti", "teramo", "roccaraso",
-    "pescocostanzo", "scanno", "villetta barrea", "campo imperatore",
-    "ovindoli", "campo felice", "avezzano", "sulmona", "lanciano", "vasto"
-];
+var elencoAbruzzo = "|l'aquila|pescara|chieti|teramo|roccaraso|pescocostanzo|scanno|villetta barrea|campo imperatore|ovindoli|campo felice|avezzano|sulmona|lanciano|vasto|";
 
 function aggiornaDaFile() {
     var statusEl = document.getElementById('last-update');
-    statusEl.textContent = "Lettura di Dati_meteo.txt in corso...";
-    
     var url = "Dati_meteo.txt?t=" + new Date().getTime();
 
     fetch(url)
@@ -38,29 +32,30 @@ function aggiornaDaFile() {
             var minTemp = 999, minCity = "";
             var trovate = 0;
 
-            for (var i = 0; i < righe.length; i++) {
-                var riga = righe[i].trim();
-                if (riga === "" || riga.indexOf(':') === -1) continue;
+            righe.forEach(function(rigaRaw) {
+                var riga = rigaRaw.trim();
+                var posDuePunti = riga.indexOf(':');
+                
+                if (riga !== "" && posDuePunti !== -1) {
+                    var nome = riga.substring(0, posDuePunti).trim();
+                    var tempTesto = riga.substring(posDuePunti + 1).trim();
 
-                var parti = riga.split(':');
-                var nome = parti[0].trim();
-                var tempTesto = parti[1].trim();
+                    if (elencoAbruzzo.indexOf("|" + nome.toLowerCase() + "|") !== -1) {
+                        var numeroTemp = parseFloat(tempTesto.replace('°C', '').replace(',', '.'));
 
-                if (localitaAbruzzo.indexOf(nome.toLowerCase()) !== -1) {
-                    var numeroTemp = parseFloat(tempTesto.replace('°C', '').replace(',', '.'));
+                        if (!isNaN(numeroTemp)) {
+                            trovate++;
+                            var tempFormattata = numeroTemp.toFixed(1) + "°C";
 
-                    if (!isNaN(numeroTemp)) {
-                        trovate++;
-                        var tempFormattata = numeroTemp.toFixed(1) + "°C";
+                            if (numeroTemp > maxTemp) { maxTemp = numeroTemp; maxCity = nome; }
+                            if (numeroTemp < minTemp) { minTemp = numeroTemp; minCity = nome; }
 
-                        if (numeroTemp > maxTemp) { maxTemp = numeroTemp; maxCity = nome; }
-                        if (numeroTemp < minTemp) { minTemp = numeroTemp; minCity = nome; }
-
-                        tickerHTML += '<div class="ticker-item">' + nome + ': <span>' + tempFormattata + '</span></div>';
-                        tabellaHTML += '<tr><td>' + nome + '</td><td class="temp-col">' + tempFormattata + '</td></tr>';
+                            tickerHTML += '<div class="ticker-item">' + nome + ': <span>' + tempFormattata + '</span></div>';
+                            tabellaHTML += '<tr><td>' + nome + '</td><td class="temp-col">' + tempFormattata + '</td></tr>';
+                        }
                     }
                 }
-            }
+            });
 
             if (trovate === 0) {
                 throw new Error("Nessuna località abruzzese trovata in Dati_meteo.txt");
@@ -84,5 +79,56 @@ function aggiornaDaFile() {
         });
 }
 
+function interpretaMeteo(codice) {
+    if (codice === 0) return { icona: "☀️", testo: "Sereno" };
+    if (codice <= 3) return { icona: "⛅", testo: "Poco nuvoloso" };
+    if (codice <= 48) return { icona: "🌫️", testo: "Nebbia" };
+    if (codice <= 67) return { icona: "🌧️", testo: "Pioggia" };
+    if (codice <= 77) return { icona: "❄️", testo: "Neve" };
+    if (codice <= 82) return { icona: "🌦️", testo: "Rovesci" };
+    if (codice <= 86) return { icona: "🌨️", testo: "Neve forte" };
+    return { icona: "⛈️", testo: "Temporali" };
+}
+
+function aggiornaPrevisioni() {
+    var boxPrevisioni = document.getElementById('forecast-days');
+    var urlPrev = "https://open-meteo.com";
+
+    fetch(urlPrev)
+        .then(function(r) { return r.json(); })
+        .then(function(dati) {
+            var giorni = dati.daily.time;
+            var codici = dati.daily.weathercode;
+            var maxList = dati.daily.temperature_2m_max;
+            var minList = dati.daily.temperature_2m_min;
+            var html = "";
+
+            // Mostra i prossimi 3 giorni (indice 1, 2 e 3)
+            for (var i = 1; i <= 3; i++) {
+                var dataStr = giorni.slice(i, i + 1).shift();
+                var codice = codici.slice(i, i + 1).shift();
+                var tMax = maxList.slice(i, i + 1).shift();
+                var tMin = minList.slice(i, i + 1).shift();
+
+                var dataObj = new Date(dataStr);
+                var nomeGiorno = dataObj.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+                var info = interpretaMeteo(codice);
+
+                html += '<div class="forecast-day">';
+                html += '<div class="f-day-name">' + nomeGiorno + '</div>';
+                html += '<div class="f-icon">' + info.icona + '</div>';
+                html += '<div class="f-desc">' + info.testo + '</div>';
+                html += '<div class="f-temps"><span class="f-min">' + Math.round(tMin) + '°</span> / <span class="f-max">' + Math.round(tMax) + '°</span></div>';
+                html += '</div>';
+            }
+
+            boxPrevisioni.innerHTML = html;
+        })
+        .catch(function() {
+            boxPrevisioni.innerHTML = '<div class="forecast-loading">Previsioni esterne non disponibili su questo server. <a href="https://meteoabruzzo.it" target="_blank" style="color:#005b96; font-weight:bold;">Apri bollettino regionale →</a></div>';
+        });
+}
+
 aggiornaDaFile();
+aggiornaPrevisioni();
 setInterval(aggiornaDaFile, 300000);
