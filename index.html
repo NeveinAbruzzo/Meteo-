@@ -312,7 +312,7 @@
             </tbody>
         </table>
     </section>
-    <script>
+        <script>
         const localitaAbruzzo = [
             { nome: "L'Aquila", lat: 42.3498, lon: 13.3995 },
             { nome: "Pescara", lat: 42.4618, lon: 14.2161 },
@@ -342,7 +342,10 @@
         async function aggiornaTemperatureLive() {
             const lats = localitaAbruzzo.map(l => l.lat).join(',');
             const lons = localitaAbruzzo.map(l => l.lon).join(',');
-            const url = `https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`;
+            
+            // Indirizzo API completo ricostruito
+            const baseUrl = "https://open-meteo.com";
+            const url = baseUrl + "?latitude=" + lats + "&longitude=" + lons + "&current=temperature_2m";
 
             try {
                 const risposta = await fetch(url);
@@ -364,11 +367,11 @@
 
                     const itemTicker = document.createElement('div');
                     itemTicker.className = 'ticker-item';
-                    itemTicker.innerHTML = `${nomeCitta}: <span>${tempVal}°C</span>`;
+                    itemTicker.innerHTML = nomeCitta + ': <span>' + tempVal + '°C</span>';
                     tickerContainer.appendChild(itemTicker);
 
                     const riga = document.createElement('tr');
-                    riga.innerHTML = `<td>${nomeCitta}</td><td class="temp-col">${tempVal}°C</td>`;
+                    riga.innerHTML = '<td>' + nomeCitta + '</td><td class="temp-col">' + tempVal + '°C</td>';
                     tabellaBody.appendChild(riga);
 
                     if (tempVal > tempMax) {
@@ -381,17 +384,17 @@
                     }
                 });
 
-                document.getElementById('max-temp').textContent = `${tempMax}°C`;
+                document.getElementById('max-temp').textContent = tempMax + '°C';
                 document.getElementById('max-location').textContent = cittaMax;
 
-                document.getElementById('min-temp').textContent = `${tempMin}°C`;
+                document.getElementById('min-temp').textContent = tempMin + '°C';
                 document.getElementById('min-location').textContent = cittaMin;
 
                 const ora = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                document.getElementById('last-update').textContent = `Dati reali Open-Meteo aggiornati alle ${ora}`;
+                document.getElementById('last-update').textContent = 'Dati reali Open-Meteo aggiornati alle ' + ora;
 
             } catch (errore) {
-                document.getElementById('last-update').textContent = "Errore nel caricamento dati live.";
+                document.getElementById('last-update').textContent = 'Errore nel caricamento dati live.';
                 console.error(errore);
             }
         }
@@ -401,3 +404,4 @@
 
 </body>
 </html>
+
