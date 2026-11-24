@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meteo Abruzzo Live</title>
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
     <div class="ticker-wrap">
@@ -66,17 +66,11 @@
         </table>
     </section>
 
+    <!-- Sezione che carica direttamente il tuo file dati_meteo.html -->
     <section id="sez-livecam" class="sezione">
-        <h1 class="period-title">Webcam Live in Diretta</h1>
-        <div class="webcam-grid">
-            <a href="https://skylinewebcams.com" target="_blank" class="cam-btn"><span class="cam-station">SkylineWebcams Abruzzo</span><span class="cam-altitude">Diretta streaming HD • Mare e Montagna</span></a>
-            <a href="https://roccaraso.net" target="_blank" class="cam-btn"><span class="cam-station">Live Cam Roccaraso</span><span class="cam-altitude">Aremogna • Pizzalto • Monte Pratello</span></a>
-            <a href="https://campofelice.it" target="_blank" class="cam-btn"><span class="cam-station">Live Cam Campo Felice</span><span class="cam-altitude">Piste e Rifugi in tempo reale</span></a>
-            <a href="https://ovindolimagnola.it" target="_blank" class="cam-btn"><span class="cam-station">Live Cam Ovindoli</span><span class="cam-altitude">Anfiteatro • Monte Freddo • Dolce Vita</span></a>
-            <a href="https://meteoabruzzo.it" target="_blank" class="cam-btn"><span class="cam-station">Rete Webcam Meteo Abruzzo</span><span class="cam-altitude">Gran Sasso • Majella • Costa Adriatica</span></a>
-        </div>
+        <iframe src="dati_meteo.html" class="external-frame" title="Webcam Live"></iframe>
     </section>
 
-    <script src="script.js?v=3"></script>
+    <script src="script.js?v=4"></script>
 </body>
 </html>
