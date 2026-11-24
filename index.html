@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meteo Abruzzo - Temperature in Tempo Reale</title>
+    <title>Meteo Abruzzo - Dashboard Compatta</title>
     <style>
-        /* Stile generale della pagina */
+        /* Stile generale compatto */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -19,73 +19,102 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            font-size: 14px;
         }
 
-        /* SEZIONE IN ALTO: Temperature in tempo reale */
-        header {
-            background-color: #005b96;
+        /* 1. BARRA SCORREVOLE IN ALTO (Ticker) */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background-color: #004472;
             color: white;
-            padding: 15px 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 6px 0;
+            white-space: nowrap;
+            border-bottom: 1px solid #003356;
         }
 
-        .header-title {
-            text-align: center;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            color: #b3cde0;
+        .ticker {
+            display: inline-block;
+            padding-left: 100%;
+            animation: scorrimento 35s linear infinite;
         }
 
-        .realtime-bar {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 15px;
-            max-width: 1000px;
-            margin: 0 auto;
+        /* Mette in pausa lo scorrimento quando ci passi sopra col mouse */
+        .ticker-wrap:hover .ticker {
+            animation-play-state: paused;
         }
 
-        .city-temp {
-            background-color: rgba(255, 255, 255, 0.15);
-            padding: 8px 18px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
+        .ticker-item {
+            display: inline-block;
+            padding: 0 20px;
+            font-size: 0.85rem;
         }
 
-        .city-temp span.temp {
+        .ticker-item span {
             font-weight: bold;
-            font-size: 1.3rem;
             color: #ffdd57;
+            margin-left: 4px;
         }
 
-        /* SEZIONE CENTRALE: Temperature più alte e più basse */
+        @keyframes scorrimento {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* 2. MENU CON I 3 TASTI */
+        nav {
+            background-color: #005b96;
+            padding: 8px 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 5px 14px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: #ffdd57;
+            color: #003356;
+            font-weight: bold;
+            border-color: #ffdd57;
+        }
+
+        /* 3. SEZIONE CENTRALE RIMPICCIOLITA */
         main {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 40px 20px;
-            max-width: 900px;
+            padding: 20px 15px;
+            max-width: 650px;
             margin: 0 auto;
             width: 100%;
         }
 
         .period-title {
-            font-size: 1.8rem;
-            margin-bottom: 30px;
+            font-size: 1.2rem;
+            margin-bottom: 18px;
             color: #102a43;
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .records-container {
             display: flex;
-            gap: 30px;
+            gap: 15px;
             width: 100%;
             justify-content: center;
             flex-wrap: wrap;
@@ -93,123 +122,122 @@
 
         .record-card {
             background: white;
-            border-radius: 15px;
-            padding: 35px 25px;
-            width: 340px;
+            border-radius: 8px;
+            padding: 18px 15px;
+            width: 230px;
             text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
         }
 
-        .record-card:hover {
-            transform: translateY(-5px);
-        }
-
-        /* Colori distintivi per caldo e freddo */
-        .card-max {
-            border-top: 6px solid #e63946;
-        }
-
-        .card-min {
-            border-top: 6px solid #00a8e8;
-        }
+        .card-max { border-top: 4px solid #e63946; }
+        .card-min { border-top: 4px solid #00a8e8; }
 
         .record-label {
-            font-size: 1rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             font-weight: bold;
             color: #627d98;
-            margin-bottom: 15px;
+            margin-bottom: 6px;
         }
 
         .record-value {
-            font-size: 3.5rem;
+            font-size: 2.1rem;
             font-weight: 800;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
-        .card-max .record-value {
-            color: #e63946;
-        }
-
-        .card-min .record-value {
-            color: #00a8e8;
-        }
+        .card-max .record-value { color: #e63946; }
+        .card-min .record-value { color: #00a8e8; }
 
         .record-details {
-            font-size: 1.1rem;
+            font-size: 0.85rem;
             color: #334e68;
         }
     </style>
 </head>
 <body>
 
-    <!-- 1. PARTE ALTA: Temperature in tempo reale -->
-    <header>
-        <div class="header-title">Abruzzo • Temperature in tempo reale</div>
-        <div class="realtime-bar" id="realtime-container">
-            <!-- I dati verranno inseriti qui dallo script -->
-            <div class="city-temp">Caricamento dati...</div>
+    <!-- 1. BARRA SCORREVOLE IN ALTO -->
+    <div class="ticker-wrap">
+        <div class="ticker" id="ticker-container">
+            <!-- Le località verranno inserite qui dallo script -->
         </div>
-    </header>
+    </div>
 
-    <!-- 2. PARTE CENTRALE: Extreme del periodo -->
+    <!-- 2. BARRA DI NAVIGAZIONE CON 3 TASTI -->
+    <nav>
+        <a href="#home" class="nav-btn active">Home Page</a>
+        <a href="#dati-meteo" class="nav-btn">Dati Meteo</a>
+        <a href="#temperature-abruzzo" class="nav-btn">Temperature Abruzzo</a>
+    </nav>
+
+    <!-- 3. PARTE CENTRALE COMPATTA -->
     <main>
         <h1 class="period-title">Estremi Termici del Periodo</h1>
         
         <div class="records-container">
-            <!-- Box Temperatura più alta -->
             <div class="record-card card-max">
                 <div class="record-label">Temperatura più alta</div>
                 <div class="record-value" id="max-temp">--°C</div>
-                <div class="record-details" id="max-location">Località e data</div>
+                <div class="record-details" id="max-location">--</div>
             </div>
 
-            <!-- Box Temperatura più bassa -->
             <div class="record-card card-min">
                 <div class="record-label">Temperatura più bassa</div>
                 <div class="record-value" id="min-temp">--°C</div>
-                <div class="record-details" id="min-location">Località e data</div>
+                <div class="record-details" id="min-location">--</div>
             </div>
         </div>
     </main>
 
     <!-- JAVASCRIPT PER POPOLARE I DATI -->
     <script>
-        // Dati simulati (da sostituire con una chiamata fetch() a un'API meteo reale)
         const datiAbruzzo = {
-            tempoReale: [
-                { citta: "L'Aquila", temp: "12°C" },
-                { citta: "Pescara", temp: "18°C" },
-                { citta: "Chieti", temp: "16°C" },
-                { citta: "Teramo", temp: "15°C" }
+            // Elenco località per la barra scorrevole
+            localita: [
+                { citta: "L'Aquila", temp: "11°C" },
+                { citta: "Pescara", temp: "17°C" },
+                { citta: "Chieti", temp: "15°C" },
+                { citta: "Teramo", temp: "14°C" },
+                { citta: "Avezzano", temp: "10°C" },
+                { citta: "Sulmona", temp: "12°C" },
+                { citta: "Lanciano", temp: "16°C" },
+                { citta: "Vasto", temp: "17°C" },
+                { citta: "Giulianova", temp: "16°C" },
+                { citta: "Roseto degli Abruzzi", temp: "16°C" },
+                { citta: "Montesilvano", temp: "17°C" },
+                { citta: "Francavilla al Mare", temp: "17°C" },
+                { citta: "Ortona", temp: "16°C" },
+                { citta: "Roccaraso", temp: "4°C" },
+                { citta: "Campo Imperatore", temp: "-2°C" },
+                { citta: "Castel di Sangro", temp: "7°C" }
             ],
+            // Record del periodo
             recordPeriodo: {
                 massima: {
                     valore: "24.5°C",
-                    dettagli: "Pescara • 12 Novembre"
+                    dettagli: "Pescara • 12 Nov"
                 },
                 minima: {
                     valore: "-4.2°C",
-                    dettagli: "Campo Imperatore • 18 Novembre"
+                    dettagli: "Campo Imperatore • 18 Nov"
                 }
             }
         };
 
-        // Funzione per aggiornare la pagina
         function caricaDatiMeteo() {
-            // 1. Popola la barra in alto
-            const realtimeContainer = document.getElementById('realtime-container');
-            realtimeContainer.innerHTML = ''; // Pulisce il testo di caricamento
+            // Popola il ticker scorrevole
+            const tickerContainer = document.getElementById('ticker-container');
+            tickerContainer.innerHTML = '';
 
-            datiAbruzzo.tempoReale.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'city-temp';
-                div.innerHTML = `${item.citta} <span class="temp">${item.temp}</span>`;
-                realtimeContainer.appendChild(div);
+            datiAbruzzo.localita.forEach(item => {
+                const span = document.createElement('div');
+                span.className = 'ticker-item';
+                span.innerHTML = `${item.citta}: <span>${item.temp}</span>`;
+                tickerContainer.appendChild(span);
             });
 
-            // 2. Popola i box centrali
+            // Popola le card centrali
             document.getElementById('max-temp').textContent = datiAbruzzo.recordPeriodo.massima.valore;
             document.getElementById('max-location').textContent = datiAbruzzo.recordPeriodo.massima.dettagli;
 
@@ -217,7 +245,6 @@
             document.getElementById('min-location').textContent = datiAbruzzo.recordPeriodo.minima.dettagli;
         }
 
-        // Avvia al caricamento della pagina
         window.onload = caricaDatiMeteo;
     </script>
 
