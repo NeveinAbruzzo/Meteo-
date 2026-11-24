@@ -218,22 +218,7 @@
         </div>
     </main>
 
-    <script>
-        const localitaAbruzzo = [
-            { citta: "Roccaraso", temp: "2.5°C" },
-            { citta: "Pescocostanzo", temp: "1.6°C" },
-            { citta: "Scanno", temp: "3.1°C" },
-            { citta: "Campo Imperatore", temp: "-1.5°C" },
-            { citta: "Ovindoli", temp: "2.0°C" },
-            { citta: "Campo Felice", temp: "1.8°C" },
-            { citta: "L'Aquila", temp: "6.5°C" },
-            { citta: "Chieti", temp: "4.8°C" },
-            { citta: "Pescara", temp: "11.0°C" },
-            { citta: "Teramo", temp: "9.5°C" }
-        ];
-
-        window.onload = function() {
-            const tickerContainer = document.getElementById('ticker-container');
+   document.getElementById('ticker-container');
             localitaAbruzzo.forEach(item => {
                 const span = document.createElement('div');
                 span.className = 'ticker-item';
@@ -241,6 +226,102 @@
                 tickerContainer.appendChild(span);
             });
         };
+
+    <script>
+        const localitaAbruzzo = [
+            { nome: "L'Aquila", lat: 42.3498, lon: 13.3995 },
+            { nome: "Pescara", lat: 42.4618, lon: 14.2161 },
+            { nome: "Chieti", lat: 42.3483, lon: 14.1649 },
+            { nome: "Teramo", lat: 42.6589, lon: 13.7044 },
+            { nome: "Roccaraso", lat: 41.8487, lon: 14.0785 },
+            { nome: "Pescocostanzo", lat: 41.8872, lon: 14.0661 },
+            { nome: "Scanno", lat: 41.9044, lon: 13.8796 },
+            { nome: "Villetta Barrea", lat: 41.7554, lon: 13.9909 },
+            { nome: "Campo Imperatore", lat: 42.4431, lon: 13.5586 },
+            { nome: "Ovindoli", lat: 42.1384, lon: 13.5161 },
+            { nome: "Campo Felice", lat: 42.2217, lon: 13.4561 },
+            { nome: "Avezzano", lat: 42.0312, lon: 13.4262 },
+            { nome: "Sulmona", lat: 42.0493, lon: 13.9258 },
+            { nome: "Lanciano", lat: 42.2271, lon: 14.3905 },
+            { nome: "Vasto", lat: 42.1118, lon: 14.7061 }
+        ];
+
+        function cambiaScheda(nomeScheda, btnCliccato) {
+            document.querySelectorAll('.sezione').forEach(s => s.classList.remove('attiva'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('sez-' + nomeScheda).classList.add('attiva');
+            btnCliccato.classList.add('active');
+        }
+
+        async function aggiornaTemperatureLive() {
+            const statusEl = document.getElementById('last-update');
+            try {
+                // Scarica ogni città singolarmente in parallelo (più affidabile)
+                const richieste = localitaAbruzzo.map(posto => 
+                    fetch(`https://open-meteo.com{posto.lat}&longitude=${posto.lon}&current=temperature_2m`)
+                        .then(res => {
+                            if (!res.ok) throw new Error("Errore HTTP " + res.status);
+                            return res.json();
+                        })
+                        .then(data => ({
+                            nome: posto.nome,
+                            temp: data.current.temperature_2m
+                        }))
+                );
+
+                const risultati = await Promise.all(richieste);
+
+                const tickerContainer = document.getElementById('ticker-container');
+                const tabellaBody = document.getElementById('tabella-body');
+                tickerContainer.innerHTML = '';
+                tabellaBody.innerHTML = '';
+
+                let tempMax = -999;
+                let cittaMax = '';
+                let tempMin = 999;
+                let cittaMin = '';
+
+                risultati.forEach(item => {
+                    // 1. Barra scorrevole in alto
+                    const itemTicker = document.createElement('div');
+                    itemTicker.className = 'ticker-item';
+                    itemTicker.innerHTML = `${item.nome}: <span>${item.temp}°C</span>`;
+                    tickerContainer.appendChild(itemTicker);
+
+                    // 2. Tabella nella 3ª scheda
+                    const riga = document.createElement('tr');
+                    riga.innerHTML = `<td>${item.nome}</td><td class="temp-col">${item.temp}°C</td>`;
+                    tabellaBody.appendChild(riga);
+
+                    // 3. Calcolo estremi
+                    if (item.temp > tempMax) {
+                        tempMax = item.temp;
+                        cittaMax = item.nome;
+                    }
+                    if (item.temp < tempMin) {
+                        tempMin = item.temp;
+                        cittaMin = item.nome;
+                    }
+                });
+
+                document.getElementById('max-temp').textContent = `${tempMax}°C`;
+                document.getElementById('max-location').textContent = cittaMax;
+
+                document.getElementById('min-temp').textContent = `${tempMin}°C`;
+                document.getElementById('min-location').textContent = cittaMin;
+
+                const ora = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                statusEl.textContent = `Dati reali Open-Meteo aggiornati alle ${ora}`;
+
+            } catch (errore) {
+                statusEl.textContent = `Impossibile scaricare i dati: ${errore.message}`;
+                statusEl.style.color = "#e63946";
+            }
+        }
+
+        // Avvia subito senza aspettare window.onload
+        aggiornaTemperatureLive();
     </script>
 
 </body>
