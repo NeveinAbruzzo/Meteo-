@@ -95,7 +95,10 @@ function aggiornaPrevisioni() {
     var urlPrev = "https://open-meteo.com";
 
     fetch(urlPrev)
-        .then(function(r) { return r.json(); })
+        .then(function(r) {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            return r.json();
+        })
         .then(function(dati) {
             var giorni = dati.daily.time;
             var codici = dati.daily.weathercode;
@@ -103,14 +106,14 @@ function aggiornaPrevisioni() {
             var minList = dati.daily.temperature_2m_min;
             var html = "";
 
-            // Mostra i prossimi 3 giorni (indice 1, 2 e 3)
             for (var i = 1; i <= 3; i++) {
                 var dataStr = giorni.slice(i, i + 1).shift();
                 var codice = codici.slice(i, i + 1).shift();
                 var tMax = maxList.slice(i, i + 1).shift();
                 var tMin = minList.slice(i, i + 1).shift();
 
-                var dataObj = new Date(dataStr);
+                var partiData = dataStr.split('-');
+                var dataObj = new Date(partiData.slice(0,1).shift(), partiData.slice(1,2).shift() - 1, partiData.slice(2,3).shift());
                 var nomeGiorno = dataObj.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
                 var info = interpretaMeteo(codice);
 
@@ -125,7 +128,19 @@ function aggiornaPrevisioni() {
             boxPrevisioni.innerHTML = html;
         })
         .catch(function() {
-            boxPrevisioni.innerHTML = '<div class="forecast-loading">Previsioni esterne non disponibili su questo server. <a href="https://meteoabruzzo.it" target="_blank" style="color:#005b96; font-weight:bold;">Apri bollettino regionale →</a></div>';
+            // Se il server blocca la chiamata esterna, mostra le schede con link diretti alle previsioni
+            var oggi = new Date();
+            var htmlFallback = "";
+            for (var i = 1; i <= 3; i++) {
+                var d = new Date(oggi.getTime() + (i * 86400000));
+                var nomeG = d.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+                htmlFallback += '<a href="https://ilmeteo.it" target="_blank" class="forecast-day" style="text-decoration:none;">';
+                htmlFallback += '<div class="f-day-name">' + nomeG + '</div>';
+                htmlFallback += '<div class="f-icon">🌤️</div>';
+                htmlFallback += '<div class="f-desc" style="color:#005b96; font-weight:bold;">Vedi bollettino →</div>';
+                htmlFallback += '</a>';
+            }
+            boxPrevisioni.innerHTML = htmlFallback;
         });
 }
 
