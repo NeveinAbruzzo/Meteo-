@@ -80,13 +80,85 @@
             <tbody><tr><td>L'Aquila</td><td class="temp-col">5.0°C</td></tr><tr><td>Pescara</td><td class="temp-col">5.0°C</td></tr><tr><td>Chieti</td><td class="temp-col">5.0°C</td></tr><tr><td>Teramo</td><td class="temp-col">5.0°C</td></tr><tr><td>Roccaraso</td><td class="temp-col">5.0°C</td></tr><tr><td>Pescocostanzo</td><td class="temp-col">5.0°C</td></tr><tr><td>Scanno</td><td class="temp-col">5.0°C</td></tr><tr><td>Villetta Barrea</td><td class="temp-col">5.0°C</td></tr><tr><td>Campo Imperatore</td><td class="temp-col">5.0°C</td></tr><tr><td>Ovindoli</td><td class="temp-col">5.0°C</td></tr><tr><td>Campo Felice</td><td class="temp-col">5.0°C</td></tr><tr><td>Avezzano</td><td class="temp-col">5.0°C</td></tr><tr><td>Sulmona</td><td class="temp-col">5.0°C</td></tr><tr><td>Lanciano</td><td class="temp-col">5.0°C</td></tr><tr><td>Vasto</td><td class="temp-col">5.0°C</td></tr></tbody>
         </table>
     </section>
-    <script>
+  
+     <script>
         function cambiaScheda(nome, btn) {
             document.querySelectorAll('.sezione').forEach(s => s.classList.remove('attiva'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('sez-' + nome).classList.add('attiva');
             btn.classList.add('active');
         }
+
+        const localita = [
+            { nome: "L'Aquila", lat: 42.3507, lon: 13.3999 },
+            { nome: "Pescara", lat: 42.4618, lon: 14.2161 },
+            { nome: "Chieti", lat: 42.3512, lon: 14.1675 },
+            { nome: "Teramo", lat: 42.6589, lon: 13.7044 },
+            { nome: "Roccaraso", lat: 41.8469, lon: 14.0789 },
+            { nome: "Pescocostanzo", lat: 41.8892, lon: 14.0642 },
+            { nome: "Scanno", lat: 41.9022, lon: 13.8806 },
+            { nome: "Villetta Barrea", lat: 41.7769, lon: 13.9389 },
+            { nome: "Campo Imperatore", lat: 42.4431, lon: 13.5592 },
+            { nome: "Ovindoli", lat: 42.1381, lon: 13.5169 },
+            { nome: "Campo Felice", lat: 42.2219, lon: 13.4381 },
+            { nome: "Avezzano", lat: 42.0311, lon: 13.4261 },
+            { nome: "Sulmona", lat: 42.0494, lon: 13.9258 },
+            { nome: "Lanciano", lat: 42.2311, lon: 14.3903 },
+            { nome: "Vasto", lat: 42.1117, lon: 14.7083 }
+        ];
+
+        async function aggiornaMeteo() {
+            try {
+                // Usa API Open-Meteo v1 con parametro 'current=temperature_2m' e timestamp anti-cache
+                const lats = localita.map(l => l.lat).join(',');
+                const lons = localita.map(l => l.lon).join(',');
+                const url = `https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m&timezone=Europe%2FRome&_=${Date.now()}`;
+                
+                const res = await fetch(url, { cache: "no-store" });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                const listaRisultati = Array.isArray(data) ? data : [data];
+
+                let tickerHTML = '';
+                let tabellaHTML = '';
+                let maxTemp = -Infinity, maxCity = '';
+                let minTemp = Infinity, minCity = '';
+
+                listaRisultati.forEach((item, index) => {
+                    const nome = localita[index].nome;
+                    // Legge correttamente la temperatura reale dell'oggetto current
+                    const temp = Number(item.current.temperature_2m);
+                    const tempFormattata = temp.toFixed(1) + '°C';
+
+                    tickerHTML += `<div class="ticker-item">${nome}: <span>${tempFormattata}</span></div>`;
+                    tabellaHTML += `<tr><td>${nome}</td><td class="temp-col">${tempFormattata}</td></tr>`;
+
+                    if (temp > maxTemp) { maxTemp = temp; maxCity = nome; }
+                    if (temp < minTemp) { minTemp = temp; minCity = nome; }
+                });
+
+                document.getElementById('ticker-container').innerHTML = tickerHTML;
+                document.getElementById('tabella-body').innerHTML = tabellaHTML;
+                document.getElementById('max-temp').textContent = maxTemp.toFixed(1) + '°C';
+                document.getElementById('max-city').textContent = maxCity;
+                document.getElementById('min-temp').textContent = minTemp.toFixed(1) + '°C';
+                document.getElementById('min-city').textContent = minCity;
+
+                const ora = new Date();
+                const dataStr = ora.toLocaleDateString('it-IT') + ' ' + ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                const testoAggiornamento = `Aggiornato il ${dataStr}`;
+                document.getElementById('last-update').textContent = testoAggiornamento;
+                document.getElementById('last-update-table').textContent = testoAggiornamento;
+
+            } catch (errore) {
+                const msgErrore = `Errore: ${errore.message}`;
+                document.getElementById('last-update').textContent = msgErrore;
+                document.getElementById('ticker-container').innerHTML = `<div class="ticker-item">${msgErrore}</div>`;
+            }
+        }
+
+        aggiornaMeteo();
+        setInterval(aggiornaMeteo, 900000);
     </script>
 </body>
 </html>
