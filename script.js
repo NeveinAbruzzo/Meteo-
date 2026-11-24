@@ -11,86 +11,80 @@ function cambiaScheda(nome, btn) {
     btn.classList.add('active');
 }
 
-var localita = [
-    { nome: "L'Aquila", lat: 42.3498, lon: 13.3995 },
-    { nome: "Pescara", lat: 42.4618, lon: 14.2161 },
-    { nome: "Chieti", lat: 42.3510, lon: 14.1675 },
-    { nome: "Teramo", lat: 42.6589, lon: 13.7044 },
-    { nome: "Roccaraso", lat: 41.8465, lon: 14.0792 },
-    { nome: "Pescocostanzo", lat: 41.8894, lon: 14.0653 },
-    { nome: "Scanno", lat: 41.9026, lon: 13.8803 },
-    { nome: "Villetta Barrea", lat: 41.7766, lon: 13.9392 },
-    { nome: "Campo Imperatore", lat: 42.4431, lon: 13.5592 },
-    { nome: "Ovindoli", lat: 42.1375, lon: 13.5169 },
-    { nome: "Campo Felice", lat: 42.2158, lon: 13.4561 },
-    { nome: "Avezzano", lat: 42.0312, lon: 13.4263 },
-    { nome: "Sulmona", lat: 42.0494, lon: 13.9255 },
-    { nome: "Lanciano", lat: 42.2266, lon: 14.3905 },
-    { nome: "Vasto", lat: 42.1122, lon: 14.7081 }
+// Elenco delle località abruzzesi da mostrare (in minuscolo per confronto sicuro)
+var localitaAbruzzo = [
+    "l'aquila", "pescara", "chieti", "teramo", "roccaraso",
+    "pescocostanzo", "scanno", "villetta barrea", "campo imperatore",
+    "ovindoli", "campo felice", "avezzano", "sulmona", "lanciano", "vasto"
 ];
 
-function mostraDati(dati) {
+function aggiornaDaFile() {
     var statusEl = document.getElementById('last-update');
-    var listaDati = Array.isArray(dati) ? dati : [dati];
-    var tickerHTML = "";
-    var tabellaHTML = "";
-    var maxTemp = -999, maxCity = "";
-    var minTemp = 999, minCity = "";
+    // Aggiungo ?t=... per evitare che il browser legga una vecchia copia dalla cache
+    var url = "Dati_meteo.txt?t=" + new Date().getTime();
 
-    for (var i = 0; i < listaDati.length; i++) {
-        var nome = localita[i].nome;
-        var temp = listaDati[i].current.temperature_2m;
-        var tempStr = temp.toFixed(1) + "°C";
+    fetch(url)
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error("File Dati_meteo.txt non trovato (Errore " + response.status + ")");
+            }
+            return response.text();
+        })
+        .then(function(testo) {
+            var righe = testo.split('\n');
+            var tickerHTML = "";
+            var tabellaHTML = "";
+            var maxTemp = -999, maxCity = "";
+            var minTemp = 999, minCity = "";
+            var trovate = 0;
 
-        if (temp > maxTemp) { maxTemp = temp; maxCity = nome; }
-        if (temp < minTemp) { minTemp = temp; minCity = nome; }
+            for (var i = 0; i < righe.length; i++) {
+                var riga = righe[i].trim();
+                if (riga === "" || riga.indexOf(':') === -1) continue;
 
-        tickerHTML += '<div class="ticker-item">' + nome + ': <span>' + tempStr + '</span></div>';
-        tabellaHTML += '<tr><td>' + nome + '</td><td class="temp-col">' + tempStr + '</td></tr>';
-    }
+                var parti = riga.split(':');
+                var nome = parti[0].trim();
+                var tempTesto = parti[1].trim(); // es. "6.2°C"
 
-    document.getElementById('ticker-list').innerHTML = tickerHTML;
-    document.getElementById('tabella-body').innerHTML = tabellaHTML;
-    document.getElementById('max-temp').textContent = maxTemp.toFixed(1) + "°C";
-    document.getElementById('max-city').textContent = maxCity;
-    document.getElementById('min-temp').textContent = minTemp.toFixed(1) + "°C";
-    document.getElementById('min-city').textContent = minCity;
+                // Controlla se la città appartiene all'Abruzzo
+                if (localitaAbruzzo.indexOf(nome.toLowerCase()) !== -1) {
+                    var numeroTemp = parseFloat(tempTesto.replace('°C', '').replace(',', '.'));
 
-    var ora = new Date();
-    var minuti = ora.getMinutes() < 10 ? "0" + ora.getMinutes() : ora.getMinutes();
-    statusEl.textContent = "Aggiornato alle " + ora.getHours() + ":" + minuti;
-    statusEl.style.color = "#627d98";
-}
+                    if (!isNaN(numeroTemp)) {
+                        trovate++;
+                        var tempFormattata = numeroTemp.toFixed(1) + "°C";
 
-function aggiornaMeteo() {
-    var statusEl = document.getElementById('last-update');
-    var lats = [];
-    var lons = [];
-    
-    for (var i = 0; i < localita.length; i++) {
-        lats.push(localita[i].lat);
-        lons.push(localita[i].lon);
-    }
+                        if (numeroTemp > maxTemp) { maxTemp = numeroTemp; maxCity = nome; }
+                        if (numeroTemp < minTemp) { minTemp = numeroTemp; minCity = nome; }
 
-    var apiUrl = "https://open-meteo.com" + lats.join(",") + "&longitude=" + lons.join(",") + "&current=temperature_2m";
+                        tickerHTML += '<div class="ticker-item">' + nome + ': <span>' + tempFormattata + '</span></div>';
+                        tabellaHTML += '<tr><td>' + nome + '</td><td class="temp-col">' + tempFormattata + '</td></tr>';
+                    }
+                }
+            }
 
-    // Primo tentativo diretto
-    fetch(apiUrl)
-        .then(function(r) { return r.json(); })
-        .then(function(dati) { mostraDati(dati); })
-        .catch(function() {
-            // Secondo tentativo tramite proxy CORS se il browser/hosting blocca la chiamata diretta
-            statusEl.textContent = "Connessione diretta bloccata, provo percorso alternativo...";
-            var proxyUrl = "https://corsproxy.io?" + encodeURIComponent(apiUrl);
-            fetch(proxyUrl)
-                .then(function(r) { return r.json(); })
-                .then(function(dati) { mostraDati(dati); })
-                .catch(function(err) {
-                    statusEl.textContent = "Connessione bloccata dal dispositivo o hosting (" + err.message + ")";
-                    statusEl.style.color = "red";
-                });
+            if (trovate === 0) {
+                throw new Error("Nessuna località abruzzese trovata nel file.");
+            }
+
+            document.getElementById('ticker-list').innerHTML = tickerHTML;
+            document.getElementById('tabella-body').innerHTML = tabellaHTML;
+            document.getElementById('max-temp').textContent = maxTemp.toFixed(1) + "°C";
+            document.getElementById('max-city').textContent = maxCity;
+            document.getElementById('min-temp').textContent = minTemp.toFixed(1) + "°C";
+            document.getElementById('min-city').textContent = minCity;
+
+            var ora = new Date();
+            var minuti = ora.getMinutes() < 10 ? "0" + ora.getMinutes() : ora.getMinutes();
+            statusEl.textContent = "Aggiornato da Dati_meteo.txt alle " + ora.getHours() + ":" + minuti;
+            statusEl.style.color = "#627d98";
+        })
+        .catch(function(errore) {
+            statusEl.textContent = "Errore: " + errore.message;
+            statusEl.style.color = "red";
         });
 }
 
-aggiornaMeteo();
-setInterval(aggiornaMeteo, 900000);
+aggiornaDaFile();
+// Rilegge il file ogni 5 minuti (300.000 millisecondi)
+setInterval(aggiornaDaFile, 300000);
