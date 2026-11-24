@@ -39,4 +39,54 @@
     </style>
 </head>
 <body>
- 
+    <div class="ticker-wrap">
+        <div class="ticker" id="ticker-list">
+            <div class="ticker-item">In attesa dei dati...</div>
+        </div>
+    </div>
+    <nav>
+        <button class="nav-btn active" onclick="cambiaScheda('home', this)">Home Page</button>
+        <button class="nav-btn" onclick="cambiaScheda('webcam', this)">Dati Meteo &amp; Webcam</button>
+        <button class="nav-btn" onclick="cambiaScheda('tabella', this)">Temperature Abruzzo</button>
+    </nav>
+    <main id="sez-home" class="sezione attiva">
+        <h1 class="period-title">Estremi Termici Attuali Abruzzo</h1>
+        <div class="records-container">
+            <div class="record-card card-max">
+                <div class="record-label">Temperatura più alta</div>
+                <div class="record-value" id="max-temp">--°C</div>
+                <div class="record-details" id="max-city">...</div>
+            </div>
+            <div class="record-card card-min">
+                <div class="record-label">Temperatura più bassa</div>
+                <div class="record-value" id="min-temp">--°C</div>
+                <div class="record-details" id="min-city">...</div>
+            </div>
+        </div>
+        <div class="status-msg" id="last-update">Script non ancora avviato</div>
+    </main>
+    <section id="sez-webcam" class="sezione">
+        <h1 class="period-title">Webcam Live Stazioni Sciistiche</h1>
+        <div class="webcam-grid">
+            <a href="https://roccaraso.net" target="_blank" class="cam-btn"><span class="cam-station">Roccaraso - Alto Sangro</span><span class="cam-altitude">Aremogna • Pizzalto • Monte Pratello</span></a>
+            <a href="https://campofelice.it" target="_blank" class="cam-btn"><span class="cam-station">Campo Felice</span><span class="cam-altitude">Brecciara • Cerchiare • Panoramica 360°</span></a>
+            <a href="https://ovindolimagnola.it" target="_blank" class="cam-btn"><span class="cam-station">Ovindoli - Monte Magnola</span><span class="cam-altitude">Dolce Vita • Anfiteatro • Monte Freddo</span></a>
+            <a href="https://skiresort.it" target="_blank" class="cam-btn"><span class="cam-station">Campo Imperatore</span><span class="cam-altitude">Gran Sasso • Scindarella • Funivia</span></a>
+            <a href="https://dovesciare.it" target="_blank" class="cam-btn"><span class="cam-station">Passolanciano - Majelletta</span><span class="cam-altitude">Majella • Rifugio Pomilio 1890m</span></a>
+            <a href="https://meteoregioneabruzzo.it" target="_blank" class="cam-btn"><span class="cam-station">Pescasseroli</span><span class="cam-altitude">Impianti Sci • Monte delle Vitelle</span></a>
+            <a href="https://skiinfo.it" target="_blank" class="cam-btn"><span class="cam-station">Tutte le Stazioni Abruzzo</span><span class="cam-altitude">Riepilogo piste e neve in diretta</span></a>
+        </div>
+    </section>
+    <section id="sez-tabella" class="sezione">
+        <h1 class="period-title">Temperature Live Località Abruzzo</h1>
+        <table class="meteo-table">
+            <thead><tr><th>Località</th><th style="text-align: right;">Temperatura</th></tr></thead>
+            <tbody id="tabella-body">
+                <tr><td colspan="2" style="text-align:center;">In attesa...</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
