@@ -11,7 +11,6 @@ function cambiaScheda(nome, btn) {
     btn.classList.add('active');
 }
 
-// Elenco delle località abruzzesi da mostrare (in minuscolo per confronto sicuro)
 var localitaAbruzzo = [
     "l'aquila", "pescara", "chieti", "teramo", "roccaraso",
     "pescocostanzo", "scanno", "villetta barrea", "campo imperatore",
@@ -20,13 +19,14 @@ var localitaAbruzzo = [
 
 function aggiornaDaFile() {
     var statusEl = document.getElementById('last-update');
-    // Aggiungo ?t=... per evitare che il browser legga una vecchia copia dalla cache
+    statusEl.textContent = "Lettura di Dati_meteo.txt in corso...";
+    
     var url = "Dati_meteo.txt?t=" + new Date().getTime();
 
     fetch(url)
         .then(function(response) {
             if (!response.ok) {
-                throw new Error("File Dati_meteo.txt non trovato (Errore " + response.status + ")");
+                throw new Error("File Dati_meteo.txt non trovato (Codice " + response.status + ")");
             }
             return response.text();
         })
@@ -44,9 +44,8 @@ function aggiornaDaFile() {
 
                 var parti = riga.split(':');
                 var nome = parti[0].trim();
-                var tempTesto = parti[1].trim(); // es. "6.2°C"
+                var tempTesto = parti[1].trim();
 
-                // Controlla se la città appartiene all'Abruzzo
                 if (localitaAbruzzo.indexOf(nome.toLowerCase()) !== -1) {
                     var numeroTemp = parseFloat(tempTesto.replace('°C', '').replace(',', '.'));
 
@@ -64,7 +63,7 @@ function aggiornaDaFile() {
             }
 
             if (trovate === 0) {
-                throw new Error("Nessuna località abruzzese trovata nel file.");
+                throw new Error("Nessuna località abruzzese trovata in Dati_meteo.txt");
             }
 
             document.getElementById('ticker-list').innerHTML = tickerHTML;
@@ -76,7 +75,7 @@ function aggiornaDaFile() {
 
             var ora = new Date();
             var minuti = ora.getMinutes() < 10 ? "0" + ora.getMinutes() : ora.getMinutes();
-            statusEl.textContent = "Aggiornato da Dati_meteo.txt alle " + ora.getHours() + ":" + minuti;
+            statusEl.textContent = "Aggiornato alle " + ora.getHours() + ":" + minuti;
             statusEl.style.color = "#627d98";
         })
         .catch(function(errore) {
@@ -86,5 +85,4 @@ function aggiornaDaFile() {
 }
 
 aggiornaDaFile();
-// Rilegge il file ogni 5 minuti (300.000 millisecondi)
 setInterval(aggiornaDaFile, 300000);
