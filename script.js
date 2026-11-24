@@ -1,5 +1,3 @@
-document.getElementById('last-update').textContent = 'Script avviato! Scarico i dati...';
-
 function cambiaScheda(nome, btn) {
     var sezioni = document.querySelectorAll('.sezione');
     for (var i = 0; i < sezioni.length; i++) {
@@ -31,6 +29,39 @@ var localita = [
     { nome: "Vasto", lat: 42.1122, lon: 14.7081 }
 ];
 
+function mostraDati(dati) {
+    var statusEl = document.getElementById('last-update');
+    var listaDati = Array.isArray(dati) ? dati : [dati];
+    var tickerHTML = "";
+    var tabellaHTML = "";
+    var maxTemp = -999, maxCity = "";
+    var minTemp = 999, minCity = "";
+
+    for (var i = 0; i < listaDati.length; i++) {
+        var nome = localita[i].nome;
+        var temp = listaDati[i].current.temperature_2m;
+        var tempStr = temp.toFixed(1) + "°C";
+
+        if (temp > maxTemp) { maxTemp = temp; maxCity = nome; }
+        if (temp < minTemp) { minTemp = temp; minCity = nome; }
+
+        tickerHTML += '<div class="ticker-item">' + nome + ': <span>' + tempStr + '</span></div>';
+        tabellaHTML += '<tr><td>' + nome + '</td><td class="temp-col">' + tempStr + '</td></tr>';
+    }
+
+    document.getElementById('ticker-list').innerHTML = tickerHTML;
+    document.getElementById('tabella-body').innerHTML = tabellaHTML;
+    document.getElementById('max-temp').textContent = maxTemp.toFixed(1) + "°C";
+    document.getElementById('max-city').textContent = maxCity;
+    document.getElementById('min-temp').textContent = minTemp.toFixed(1) + "°C";
+    document.getElementById('min-city').textContent = minCity;
+
+    var ora = new Date();
+    var minuti = ora.getMinutes() < 10 ? "0" + ora.getMinutes() : ora.getMinutes();
+    statusEl.textContent = "Aggiornato alle " + ora.getHours() + ":" + minuti;
+    statusEl.style.color = "#627d98";
+}
+
 function aggiornaMeteo() {
     var statusEl = document.getElementById('last-update');
     var lats = [];
@@ -41,49 +72,23 @@ function aggiornaMeteo() {
         lons.push(localita[i].lon);
     }
 
-    var url = "https://open-meteo.com" + lats.join(",") + "&longitude=" + lons.join(",") + "&current=temperature_2m";
+    var apiUrl = "https://open-meteo.com" + lats.join(",") + "&longitude=" + lons.join(",") + "&current=temperature_2m";
 
-    fetch(url)
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error("HTTP " + response.status);
-            }
-            return response.json();
-        })
-        .then(function(dati) {
-            var listaDati = Array.isArray(dati) ? dati : [dati];
-            var tickerHTML = "";
-            var tabellaHTML = "";
-            var maxTemp = -999, maxCity = "";
-            var minTemp = 999, minCity = "";
-
-            for (var i = 0; i < listaDati.length; i++) {
-                var nome = localita[i].nome;
-                var temp = listaDati[i].current.temperature_2m;
-                var tempStr = temp.toFixed(1) + "°C";
-
-                if (temp > maxTemp) { maxTemp = temp; maxCity = nome; }
-                if (temp < minTemp) { minTemp = temp; minCity = nome; }
-
-                tickerHTML += '<div class="ticker-item">' + nome + ': <span>' + tempStr + '</span></div>';
-                tabellaHTML += '<tr><td>' + nome + '</td><td class="temp-col">' + tempStr + '</td></tr>';
-            }
-
-            document.getElementById('ticker-list').innerHTML = tickerHTML;
-            document.getElementById('tabella-body').innerHTML = tabellaHTML;
-            document.getElementById('max-temp').textContent = maxTemp.toFixed(1) + "°C";
-            document.getElementById('max-city').textContent = maxCity;
-            document.getElementById('min-temp').textContent = minTemp.toFixed(1) + "°C";
-            document.getElementById('min-city').textContent = minCity;
-
-            var ora = new Date();
-            var minuti = ora.getMinutes() < 10 ? "0" + ora.getMinutes() : ora.getMinutes();
-            statusEl.textContent = "Aggiornato alle " + ora.getHours() + ":" + minuti;
-            statusEl.style.color = "#627d98";
-        })
-        .catch(function(errore) {
-            statusEl.textContent = "Errore: " + errore.message;
-            statusEl.style.color = "red";
+    // Primo tentativo diretto
+    fetch(apiUrl)
+        .then(function(r) { return r.json(); })
+        .then(function(dati) { mostraDati(dati); })
+        .catch(function() {
+            // Secondo tentativo tramite proxy CORS se il browser/hosting blocca la chiamata diretta
+            statusEl.textContent = "Connessione diretta bloccata, provo percorso alternativo...";
+            var proxyUrl = "https://corsproxy.io?" + encodeURIComponent(apiUrl);
+            fetch(proxyUrl)
+                .then(function(r) { return r.json(); })
+                .then(function(dati) { mostraDati(dati); })
+                .catch(function(err) {
+                    statusEl.textContent = "Connessione bloccata dal dispositivo o hosting (" + err.message + ")";
+                    statusEl.style.color = "red";
+                });
         });
 }
 
