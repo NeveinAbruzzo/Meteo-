@@ -12,8 +12,23 @@
         .ticker-item { display: inline-block; padding: 0 20px; font-size: 0.85rem; }
         .ticker-item span { font-weight: bold; color: #ffdd57; margin-left: 4px; }
         @keyframes scorrimento { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-        nav { background-color: #005b96; padding: 8px 15px; display: flex; justify-content: center; gap: 10px; }
-        .nav-btn { background-color: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 5px 14px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; }
+        
+        /* Intestazione principale con scritta Benvenuti in Abruzzo */
+        .main-header {
+            background-color: #003356;
+            color: #ffffff;
+            text-align: center;
+            padding: 16px 15px;
+            letter-spacing: 2px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-bottom: 2px solid #004472;
+        }
+
+        nav { background-color: #005b96; padding: 8px 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .nav-btn { background-color: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 5px 14px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; transition: background-color 0.2s; }
+        .nav-btn:hover { background-color: rgba(255, 255, 255, 0.25); }
         .nav-btn.active { background-color: #ffdd57; color: #003356; font-weight: bold; }
         .sezione { display: none; flex: 1; flex-direction: column; align-items: center; padding: 25px 15px; max-width: 750px; margin: 0 auto; width: 100%; }
         .sezione.attiva { display: flex; }
@@ -28,14 +43,15 @@
         .card-max .record-value { color: #e63946; }
         .card-min .record-value { color: #00a8e8; }
         .webcam-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; width: 100%; }
-        .cam-btn { background: white; border: 1px solid #d9e2ec; border-left: 4px solid #005b96; border-radius: 6px; padding: 14px 16px; text-decoration: none; color: #102a43; display: flex; flex-direction: column; gap: 4px; }
+        .cam-btn { background: white; border: 1px solid #d9e2ec; border-left: 4px solid #005b96; border-radius: 6px; padding: 14px 16px; text-decoration: none; color: #102a43; display: flex; flex-direction: column; gap: 4px; transition: transform 0.15s; }
+        .cam-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
         .cam-station { font-weight: bold; font-size: 0.95rem; color: #005b96; }
         .cam-altitude { font-size: 0.78rem; color: #627d98; }
         .meteo-table { width: 100%; max-width: 450px; background: white; border-radius: 8px; border-collapse: collapse; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
         .meteo-table th, .meteo-table td { padding: 10px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
         .meteo-table th { background-color: #005b96; color: white; }
         .temp-col { font-weight: bold; color: #004472; text-align: right; }
-        .status-msg { margin-top: 15px; font-size: 0.8rem; color: #627d98; }
+        .status-msg { margin-top: 15px; font-size: 0.8rem; color: #627d98; text-align: center; }
     </style>
 </head>
 <body>
@@ -44,6 +60,10 @@
             <div class="ticker-item">Caricamento temperature in tempo reale...</div>
         </div>
     </div>
+
+    <header class="main-header">
+        BENVENUTI IN ABRUZZO
+    </header>
 
     <nav>
         <button class="nav-btn active" onclick="cambiaScheda('home', this)">Home Page</button>
@@ -89,6 +109,7 @@
                 <tr><td colspan="2" style="text-align: center;">Caricamento dati...</td></tr>
             </tbody>
         </table>
+        <div class="status-msg" id="last-update-table"></div>
     </section>
     <script>
         function cambiaScheda(nome, btn) {
@@ -153,10 +174,14 @@
 
                 const ora = new Date();
                 const dataStr = ora.toLocaleDateString('it-IT') + ' ' + ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                document.getElementById('last-update').textContent = `Aggiornato automaticamente il ${dataStr}`;
+                const testoAggiornamento = `Aggiornato automaticamente il ${dataStr}`;
+                document.getElementById('last-update').textContent = testoAggiornamento;
+                document.getElementById('last-update-table').textContent = testoAggiornamento;
 
             } catch (errore) {
-                document.getElementById('last-update').textContent = "Errore nel caricamento dei dati meteo.";
+                const msgErrore = "Errore nel caricamento dei dati meteo. Verifica la connessione internet.";
+                document.getElementById('last-update').textContent = msgErrore;
+                document.getElementById('ticker-container').innerHTML = `<div class="ticker-item">${msgErrore}</div>`;
                 console.error(errore);
             }
         }
