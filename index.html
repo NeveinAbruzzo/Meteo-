@@ -71,13 +71,13 @@
     <section id="sez-webcam" class="sezione">
         <h1 class="period-title">Webcam Live Stazioni Sciistiche</h1>
         <div class="webcam-grid">
-            <a href="https://roccaraso.net" target="_blank" class="cam-btn"><span class="cam-station">Roccaraso - Alto Sangro</span><span class="cam-altitude">Aremogna • Pizzalto • Monte Pratello</span></a>
-            <a href="https://campofelice.it" target="_blank" class="cam-btn"><span class="cam-station">Campo Felice</span><span class="cam-altitude">Brecciara • Cerchiare • Panoramica 360°</span></a>
-            <a href="https://ovindolimagnola.it" target="_blank" class="cam-btn"><span class="cam-station">Ovindoli - Monte Magnola</span><span class="cam-altitude">Dolce Vita • Anfiteatro • Monte Freddo</span></a>
-            <a href="https://skiresort.it" target="_blank" class="cam-btn"><span class="cam-station">Campo Imperatore</span><span class="cam-altitude">Gran Sasso • Scindarella • Funivia</span></a>
-            <a href="https://dovesciare.it" target="_blank" class="cam-btn"><span class="cam-station">Passolanciano - Majelletta</span><span class="cam-altitude">Majella • Rifugio Pomilio 1890m</span></a>
-            <a href="https://meteoregioneabruzzo.it" target="_blank" class="cam-btn"><span class="cam-station">Pescasseroli</span><span class="cam-altitude">Impianti Sci • Monte delle Vitelle</span></a>
-            <a href="https://skiinfo.it" target="_blank" class="cam-btn"><span class="cam-station">Tutte le Stazioni Abruzzo</span><span class="cam-altitude">Riepilogo piste e neve in diretta</span></a>
+            <a href="https://roccaraso.net" target="_blank" rel="noopener noreferrer" class="cam-btn"><span class="cam-station">Roccaraso - Alto Sangro</span><span class="cam-altitude">Aremogna • Pizzalto • Monte Pratello</span></a>
+            <a href="https://campofelice.it" target="_blank" rel="noopener noreferrer" class="cam-btn"><span class="cam-station">Campo Felice</span><span class="cam-altitude">Brecciara • Cerchiare • Panoramica 360°</span></a>
+            <a href="https://ovindolimagnola.it" target="_blank" rel="noopener noreferrer" class="cam-btn"><span class="cam-station">Ovindoli - Monte Magnola</span><span class="cam-altitude">Dolce Vita • Anfiteatro • Monte Freddo</span></a>
+            <a href="https://skiresort.it" target="_blank" rel="noopener noreferrer" class="cam-btn"><span class="cam-station">Campo Imperatore</span><span class="cam-altitude">Gran Sasso • Scindarella • Funivia</span></a>
+            <a href="https://dovesciare.it" target="_blank" rel="noopener noreferrer" class="cam-btn"><span class="cam-station">Passolanciano - Majelletta</span><span class="cam-altitude">Majella • Rifugio Pomilio 1890m</span></a>
+            <a href="https://meteoregioneabruzzo.it" target="_blank" rel="noopener noreferrer" class="cam-btn"><span class="cam-station">Pescasseroli</span><span class="cam-altitude">Impianti Sci • Monte delle Vitelle</span></a>
+            <a href="https://skiinfo.it" target="_blank" rel="noopener noreferrer" class="cam-btn"><span class="cam-station">Tutte le Stazioni Abruzzo</span><span class="cam-altitude">Riepilogo piste e neve in diretta</span></a>
         </div>
     </section>
 
@@ -119,20 +119,22 @@
         async function aggiornaMeteo() {
             const lats = localita.map(l => l.lat).join(',');
             const lons = localita.map(l => l.lon).join(',');
-            const url = `https://open-meteo.com{lats}&longitude=${lons}&current_weather=true`;
+            const url = `https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`;
 
             try {
                 const response = await fetch(url);
+                if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
                 const dati = await response.json();
+                const listaDati = Array.isArray(dati) ? dati : [dati];
 
                 let tickerHTML = '';
                 let tabellaHTML = '';
                 let maxTemp = -Infinity, maxCity = '';
                 let minTemp = Infinity, minCity = '';
 
-                dati.forEach((item, index) => {
+                listaDati.forEach((item, index) => {
                     const nome = localita[index].nome;
-                    const temp = item.current_weather.temperature;
+                    const temp = item.current.temperature_2m;
                     const tempFormattata = temp.toFixed(1) + '°C';
 
                     tickerHTML += `<div class="ticker-item">${nome}: <span>${tempFormattata}</span></div>`;
