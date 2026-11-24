@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meteo Abruzzo Live</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
     <div class="ticker-wrap">
@@ -14,8 +14,9 @@
     </div>
     <nav>
         <button class="nav-btn active" onclick="cambiaScheda('home', this)">Home Page</button>
-        <button class="nav-btn" onclick="cambiaScheda('webcam', this)">Dati Meteo &amp; Webcam</button>
+        <button class="nav-btn" onclick="cambiaScheda('webcam', this)">Dati Meteo &amp; Stazioni</button>
         <button class="nav-btn" onclick="cambiaScheda('tabella', this)">Temperature Abruzzo</button>
+        <button class="nav-btn" onclick="cambiaScheda('livecam', this)">Webcam Live</button>
     </nav>
     <main id="sez-home" class="sezione attiva">
         <h1 class="period-title">Estremi Termici Attuali Abruzzo</h1>
@@ -41,8 +42,9 @@
 
         <div class="status-msg" id="last-update">Aggiornamento in corso...</div>
     </main>
+
     <section id="sez-webcam" class="sezione">
-        <h1 class="period-title">Webcam Live Stazioni Sciistiche</h1>
+        <h1 class="period-title">Stazioni Sciistiche &amp; Bollettini</h1>
         <div class="webcam-grid">
             <a href="https://roccaraso.net" target="_blank" class="cam-btn"><span class="cam-station">Roccaraso - Alto Sangro</span><span class="cam-altitude">Aremogna • Pizzalto • Monte Pratello</span></a>
             <a href="https://campofelice.it" target="_blank" class="cam-btn"><span class="cam-station">Campo Felice</span><span class="cam-altitude">Brecciara • Cerchiare • Panoramica 360°</span></a>
@@ -53,6 +55,7 @@
             <a href="https://skiinfo.it" target="_blank" class="cam-btn"><span class="cam-station">Tutte le Stazioni Abruzzo</span><span class="cam-altitude">Riepilogo piste e neve in diretta</span></a>
         </div>
     </section>
+
     <section id="sez-tabella" class="sezione">
         <h1 class="period-title">Temperature Live Località Abruzzo</h1>
         <table class="meteo-table">
@@ -63,7 +66,17 @@
         </table>
     </section>
 
-   <script src="script.js?v=2"></script>
- 
+    <section id="sez-livecam" class="sezione">
+        <h1 class="period-title">Webcam Live in Diretta</h1>
+        <div class="webcam-grid">
+            <a href="https://skylinewebcams.com" target="_blank" class="cam-btn"><span class="cam-station">SkylineWebcams Abruzzo</span><span class="cam-altitude">Diretta streaming HD • Mare e Montagna</span></a>
+            <a href="https://roccaraso.net" target="_blank" class="cam-btn"><span class="cam-station">Live Cam Roccaraso</span><span class="cam-altitude">Aremogna • Pizzalto • Monte Pratello</span></a>
+            <a href="https://campofelice.it" target="_blank" class="cam-btn"><span class="cam-station">Live Cam Campo Felice</span><span class="cam-altitude">Piste e Rifugi in tempo reale</span></a>
+            <a href="https://ovindolimagnola.it" target="_blank" class="cam-btn"><span class="cam-station">Live Cam Ovindoli</span><span class="cam-altitude">Anfiteatro • Monte Freddo • Dolce Vita</span></a>
+            <a href="https://meteoabruzzo.it" target="_blank" class="cam-btn"><span class="cam-station">Rete Webcam Meteo Abruzzo</span><span class="cam-altitude">Gran Sasso • Majella • Costa Adriatica</span></a>
+        </div>
+    </section>
+
+    <script src="script.js?v=3"></script>
 </body>
 </html>
