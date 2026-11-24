@@ -3,208 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meteo Portale - Abruzzo Live</title>
+    <title>Meteo Abruzzo - Temperature in Tempo Reale</title>
     <style>
-        * { box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background-color: #9cd1f5; margin: 0; padding: 0; color: #333; }
-        
-       /* GRIGLIA A 3 COLONNE: Sinistra 160px | Centro flessibile | Destra 380px */
-.page-wrapper { 
-    display: grid; 
-    grid-template-columns: 160px 1fr 380px; 
-    gap: 15px; 
-    max-width: 1600px; 
-    margin: 0 auto; 
-    padding: 0 10px; 
-}
-
-.sidebar-banner { padding-top: 20px; }
-
-/* Banner sinistro (Pubblicità) */
-.banner-vertical { 
-    background-color: #0b3c5d; 
-    border: 2px solid #328cc1; 
-    border-radius: 8px; 
-    color: white; 
-    text-align: center; 
-    padding: 20px 10px; 
-    font-size: 0.9rem; 
-    font-weight: bold; 
-    min-height: 400px; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
-}
-
-/* Banner destro allargato (380px) e allungato (850px) per visualizzare bene tutto */
-.sidebar-banner:last-child .banner-vertical {
-    background-color: #ffffff;
-    color: #333333;
-    padding: 6px;
-    min-height: 850px;
-    height: auto;
-    display: block;
-    overflow: hidden;
-}
-.sidebar-banner:last-child iframe {
-    width: 100%;
-    height: 835px;
-    border: none;
-    display: block;
-}
-
-        
-        /* Riquadro bianco centrale che avvolge tutta la pagina fino a sotto le webcam */
-        .main-container {
-            width: 100%;
-            margin: 20px auto;
-            background-color: #ffffff;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            border-radius: 4px;
-            overflow: clip;
-            padding-bottom: 50px;
+        /* Stile generale della pagina */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .header-logo { padding: 20px; text-align: left; border-bottom: 1px solid #eee; }
-        .header-logo h1 { margin: 0; color: #0088cc; font-size: 2.2rem; font-weight: bold; }
-        .header-logo p { margin: 5px 0 0 0; color: #666; font-size: 0.9rem; }
-        
-        .navbar { background-color: #111111; display: flex; overflow-x: auto; }
-        .navbar a { color: white; padding: 14px 20px; text-decoration: none; text-transform: uppercase; font-size: 0.85rem; font-weight: bold; white-space: nowrap; }
-        .navbar a:hover, .navbar a.active { background-color: #0088cc; }
+        body {
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-        /* Griglia Bollettino + Estremi Rilevati */
-        .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; padding: 20px; }
-        .main-card { border: 1px solid #ddd; border-radius: 4px; padding: 20px; background-color: #fafafa; min-height: 220px; }
-        .card-title { font-size: 1.3rem; color: #0088cc; border-bottom: 2px solid #0088cc; padding-bottom: 5px; margin-top: 0; margin-bottom: 15px; }
-        
-        .side-card { border: 1px solid #ddd; border-radius: 4px; padding: 15px; background-color: #f4f9fc; }
-        .weather-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e3eef5; }
-        .weather-row:last-child { border-bottom: none; }
-        .weather-label { font-weight: bold; color: #555; }
-        .weather-value { color: #0088cc; font-weight: bold; }
+        /* SEZIONE IN ALTO: Temperature in tempo reale */
+        header {
+            background-color: #005b96;
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
 
-        /* Sezione Webcam */
-        .webcam-section { padding: 10px 20px 30px 20px; }
-        .webcam-box { width: 100%; max-width: 820px; background: #1a1a1a; border: 2px solid #333; border-radius: 12px; padding: 20px; margin: 10px auto 25px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .webcam-box h3 { color: #fff; font-size: 18px; margin: 0 0 20px 0; text-transform: uppercase; border-bottom: 2px solid #ff3b30; padding-bottom: 8px; display: inline-block; }
-        .webcam-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .webcam-grid h4 { color: #ff3b30; font-size: 14px; text-transform: uppercase; margin: 0 0 10px 0; }
-        .webcam-grid ul { list-style: none; padding: 0; margin: 0; }
-        .webcam-grid li { margin-bottom: 8px; }
-        .webcam-link { color: #cccccc !important; text-decoration: none !important; font-size: 14px; display: block; padding: 4px 0; border-bottom: 1px dashed #333; transition: all 0.2s; }
-        .webcam-link:hover { color: #ffffff !important; padding-left: 5px; }
-        .webcam-frame { width: 100%; max-width: 820px; height: 420px; overflow: hidden; position: relative; border: 3px solid #333; background: #000; border-radius: 12px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        
-        @media (max-width: 1024px) { .page-wrapper { grid-template-columns: 1fr; } .sidebar-banner { display: none; } .webcam-grid { grid-template-columns: 1fr; } }
-        @media (max-width: 768px) { .content-grid { grid-template-columns: 1fr; } }
+        .header-title {
+            text-align: center;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            color: #b3cde0;
+        }
+
+        .realtime-bar {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .city-temp {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 8px 18px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .city-temp span.temp {
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: #ffdd57;
+        }
+
+        /* SEZIONE CENTRALE: Temperature più alte e più basse */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .period-title {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: #102a43;
+            text-align: center;
+        }
+
+        .records-container {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .record-card {
+            background: white;
+            border-radius: 15px;
+            padding: 35px 25px;
+            width: 340px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+
+        .record-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Colori distintivi per caldo e freddo */
+        .card-max {
+            border-top: 6px solid #e63946;
+        }
+
+        .card-min {
+            border-top: 6px solid #00a8e8;
+        }
+
+        .record-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #627d98;
+            margin-bottom: 15px;
+        }
+
+        .record-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .card-max .record-value {
+            color: #e63946;
+        }
+
+        .card-min .record-value {
+            color: #00a8e8;
+        }
+
+        .record-details {
+            font-size: 1.1rem;
+            color: #334e68;
+        }
     </style>
 </head>
-
 <body>
-    <div class="page-wrapper">
-        <!-- COLONNA SINISTRA -->
-        <div class="sidebar-banner">
-            <div class="banner-vertical">
-                <span>PUBBLICITÀ<br><br>SPAZIO<br>DISPONIBILE</span>
-            </div>
+
+    <!-- 1. PARTE ALTA: Temperature in tempo reale -->
+    <header>
+        <div class="header-title">Abruzzo • Temperature in tempo reale</div>
+        <div class="realtime-bar" id="realtime-container">
+            <!-- I dati verranno inseriti qui dallo script -->
+            <div class="city-temp">Caricamento dati...</div>
         </div>
+    </header>
+
+    <!-- 2. PARTE CENTRALE: Extreme del periodo -->
+    <main>
+        <h1 class="period-title">Estremi Termici del Periodo</h1>
         
-        <!-- CONTENITORE PRINCIPALE BIANCO -->
-        <div class="main-container">
-            <div class="header-logo">
-                <h1>Meteo Portale</h1>
-                <p id="update-time">Caricamento ultimo aggiornamento...</p>
+        <div class="records-container">
+            <!-- Box Temperatura più alta -->
+            <div class="record-card card-max">
+                <div class="record-label">Temperatura più alta</div>
+                <div class="record-value" id="max-temp">--°C</div>
+                <div class="record-details" id="max-location">Località e data</div>
             </div>
-            
-            <div class="navbar">
-                <a href="index.html" class="active">HOME</a>
-                <a href="dati_meteo.html">DATI METEO</a>
-                <a href="#">SITUAZIONE</a>
-                <a href="#">MODELLI</a>
-                <a href="#">PREVISIONI</a>
-                <a href="webcam.html">WEBCAM</a>
-            </div>
-            
-            <!-- BOLLETTINO IN TEMPO REALE + ESTREMI RILEVATI -->
-            <div class="content-grid">
-                <div class="main-card">
-                    <h2 class="card-title">Bollettino Meteorologico Generale</h2>
-                    <p id="bollettino-testo-1">Connessione alle stazioni meteo dell'Abruzzo in corso...</p>
-                    <p id="bollettino-testo-2">Recupero dati live di temperatura, umidità e vento...</p>
-                </div>
-                
-                <div class="side-card">
-                    <h3 class="card-title" style="font-size: 1.1rem;">Estremi Rilevati</h3>
-                    <div class="weather-row"><span class="weather-label">Località più calda:</span><span class="weather-value" id="max-city">--</span></div>
-                    <div class="weather-row"><span class="weather-label">Località più fredda:</span><span class="weather-value" id="min-city">--</span></div>
-                    <div class="weather-row"><span class="weather-label">Stazioni attive:</span><span class="weather-value" id="active-stations">0</span></div>
-                </div>
-            </div>
-            <!-- SEZIONE WEBCAM COMPLETA (ELENCO + FINESTRA VIDEO) -->
-            <div class="webcam-section">
-                <div class="webcam-box">
-                    <h3>⛷️ Elenco Webcam per Comprensorio</h3>
-                    <div class="webcam-grid">
-                        <div>
-                            <h4>🏔️ Alto Sangro (AQ)</h4>
-                            <ul>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -835, -110, 0.85);">👉 Roccaraso Pizzalto</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -835, -110, 0.85);">👉 San Gregorio Matese</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -685, -110, 0.85);">👉 Campitello Matese</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -835, -100, 0.85);">👉 Pescasseroli</a></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4>🏔️ Centro Appennino</h4>
-                            <ul>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -685, -80, 0.85);">👉 Roccaraso citta'</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -800, -100, 0.85);">👉 Villetta Barrea</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -730, -100, 0.85);">👉 Piana 5 Miglia</a></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4>🏔️ Alpi & Nord</h4>
-                            <ul>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://feratel.com', -380, -120, 0.85);">👉 Val Gardena</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://feratel.com', -380, -100, 0.85);">👉 Rocca di Cambio Lago</a></li>
-                                <li><a class="webcam-link" href="javascript:void(0);" onclick="cambiaWebcam('https://turismometeo.it', -800, -100, 0.85);">👉 Bocca della Selva</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="webcam-frame">
-                    <iframe id="webcam-iframe"
-                        src="https://turismometeo.it"
-                        style="width: 1400px; height: 900px; border: none; position: absolute; top: -110px; left: -835px; transform: scale(0.85); transform-origin: top left;"
-                        scrolling="no">
-                    </iframe>
-                </div>
+            <!-- Box Temperatura più bassa -->
+            <div class="record-card card-min">
+                <div class="record-label">Temperatura più bassa</div>
+                <div class="record-value" id="min-temp">--°C</div>
+                <div class="record-details" id="min-location">Località e data</div>
             </div>
         </div>
+    </main>
 
-        <!-- COLONNA DESTRA (BANNER PREVISIONI ALLARGATO E ALLUNGATO) -->
-        <div class="sidebar-banner">
-            <div class="banner-vertical">
-                <iframe src="https://meteoam.it" title="Previsioni Italia"></iframe>
-            </div>
-        </div>
-    </div>
-
+    <!-- JAVASCRIPT PER POPOLARE I DATI -->
     <script>
-        function cambiaWebcam(url, leftOffset, topOffset, scaleVal) {
-            const iframe = document.getElementById("webcam-iframe");
-            if (iframe) {
-                iframe.src = url;
-                iframe.style.left = leftOffset + "px";
-                iframe.style.top = topOffset + "px";
-                iframe.style.transform = "scale(" + scaleVal + ")";
+        // Dati simulati (da sostituire con una chiamata fetch() a un'API meteo reale)
+        const datiAbruzzo = {
+            tempoReale: [
+                { citta: "L'Aquila", temp: "12°C" },
+                { citta: "Pescara", temp: "18°C" },
+                { citta: "Chieti", temp: "16°C" },
+                { citta: "Teramo", temp: "15°C" }
+            ],
+            recordPeriodo: {
+                massima: {
+                    valore: "24.5°C",
+                    dettagli: "Pescara • 12 Novembre"
+                },
+                minima: {
+                    valore: "-4.2°C",
+                    dettagli: "Campo Imperatore • 18 Novembre"
+                }
             }
+        };
+
+        // Funzione per aggiornare la pagina
+        function caricaDatiMeteo() {
+            // 1. Popola la barra in alto
+            const realtimeContainer = document.getElementById('realtime-container');
+            realtimeContainer.innerHTML = ''; // Pulisce il testo di caricamento
+
+            datiAbruzzo.tempoReale.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'city-temp';
+                div.innerHTML = `${item.citta} <span class="temp">${item.temp}</span>`;
+                realtimeContainer.appendChild(div);
+            });
+
+            // 2. Popola i box centrali
+            document.getElementById('max-temp').textContent = datiAbruzzo.recordPeriodo.massima.valore;
+            document.getElementById('max-location').textContent = datiAbruzzo.recordPeriodo.massima.dettagli;
+
+            document.getElementById('min-temp').textContent = datiAbruzzo.recordPeriodo.minima.valore;
+            document.getElementById('min-location').textContent = datiAbruzzo.recordPeriodo.minima.dettagli;
         }
+
+        // Avvia al caricamento della pagina
+        window.onload = caricaDatiMeteo;
     </script>
 
-    <script src="barra-meteo.js"></script>
 </body>
 </html>
