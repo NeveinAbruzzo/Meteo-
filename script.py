@@ -7,7 +7,7 @@ function cambiaScheda(nome, btn) {
 
 async function aggiornaDatiMeteo() {
     try {
-        const risposta = await fetch('dati-meteo.txt?t=' + new Date().getTime());
+        const risposta = await fetch('dati_meteo.txt?t=' + new Date().getTime());
         if (!risposta.ok) throw new Error('Impossibile leggere dati-meteo.txt');
         
         const testo = await risposta.text();
