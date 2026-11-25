@@ -7,8 +7,8 @@ function cambiaScheda(nome, btn) {
 
 async function aggiornaDatiMeteo() {
     try {
-        const risposta = await fetch('dati_meteo.txt?t=' + new Date().getTime());
-        if (!risposta.ok) throw new Error('Impossibile leggere dati-meteo.txt');
+        const risposta = await fetch('dati-meteo.txt?t=' + new Date().getTime());
+        if (!risposta.ok) throw new Error('HTTP ' + risposta.status);
         
         const testo = await risposta.text();
         const righe = testo.trim().split('\n');
@@ -18,15 +18,15 @@ async function aggiornaDatiMeteo() {
             if (!riga.trim()) return;
             const match = riga.match(/^([^:]+):\s*(-?\d+(?:[.,]\d+)?)/);
             if (match) {
-                const localita = match.trim();
-                const temp = parseFloat(match.replace(',', '.'));
+                const localita = match[1].trim();
+                const temp = parseFloat(match[2].replace(',', '.'));
                 if (!isNaN(temp)) {
                     dati.push({ localita, temp });
                 }
             }
         });
 
-        if (dati.length === 0) return;
+        if (dati.length === 0) throw new Error('File vuoto o formato non valido');
 
         const tickerBox = document.getElementById('ticker-box');
         const tabellaBody = document.getElementById('tabella-body');
@@ -34,8 +34,8 @@ async function aggiornaDatiMeteo() {
         tickerBox.innerHTML = '';
         tabellaBody.innerHTML = '';
 
-        let max = dati;
-        let min = dati;
+        let max = dati[0];
+        let min = dati[0];
 
         dati.forEach(item => {
             const tempFormattata = item.temp.toFixed(1) + '°C';
@@ -57,8 +57,8 @@ async function aggiornaDatiMeteo() {
         document.getElementById('ultimo-aggiornamento').textContent = `Aggiornato automaticamente il ${ora}`;
 
     } catch (errore) {
-        console.error('Errore:', errore);
-        document.getElementById('ultimo-aggiornamento').textContent = 'Errore nel caricamento di dati-meteo.txt';
+        console.error('Dettaglio errore:', errore);
+        document.getElementById('ultimo-aggiornamento').textContent = 'Errore: ' + errore.message;
     }
 }
 
