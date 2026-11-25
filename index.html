@@ -3,64 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meteo Abruzzo Live</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f0f4f8; color: #333; display: flex; flex-direction: column; min-height: 100vh; font-size: 14px; }
-        .ticker-wrap { width: 100%; overflow: hidden; background-color: #004472; color: white; padding: 6px 0; white-space: nowrap; }
-        .ticker { display: inline-block; padding-left: 100%; animation: scorrimento 35s linear infinite; }
-        .ticker-item { display: inline-block; padding: 0 20px; font-size: 0.85rem; }
-        .ticker-item span { font-weight: bold; color: #ffdd57; margin-left: 4px; }
-        @keyframes scorrimento { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-        nav { background-color: #005b96; padding: 8px 15px; display: flex; justify-content: center; gap: 10px; }
-        .nav-btn { background-color: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 5px 14px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; }
-        .nav-btn.active { background-color: #ffdd57; color: #003356; font-weight: bold; }
-        .sezione { display: none; flex: 1; flex-direction: column; align-items: center; padding: 25px 15px; max-width: 750px; margin: 0 auto; width: 100%; }
-        .sezione.attiva { display: flex; }
-        #sez-home { justify-content: center; }
-        .period-title { font-size: 1.15rem; margin-bottom: 18px; color: #102a43; text-align: center; text-transform: uppercase; }
-        .records-container { display: flex; gap: 15px; width: 100%; justify-content: center; flex-wrap: wrap; }
-        .record-card { background: white; border-radius: 8px; padding: 18px 15px; width: 230px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-        .card-max { border-top: 4px solid #e63946; }
-        .card-min { border-top: 4px solid #00a8e8; }
-        .record-label { font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: #627d98; margin-bottom: 6px; }
-        .record-value { font-size: 2.1rem; font-weight: 800; margin-bottom: 5px; }
-        .card-max .record-value { color: #e63946; }
-        .card-min .record-value { color: #00a8e8; }
-        .webcam-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; width: 100%; }
-        .cam-btn { background: white; border: 1px solid #d9e2ec; border-left: 4px solid #005b96; border-radius: 6px; padding: 14px 16px; text-decoration: none; color: #102a43; display: flex; flex-direction: column; gap: 4px; }
-        .cam-station { font-weight: bold; font-size: 0.95rem; color: #005b96; }
-        .cam-altitude { font-size: 0.78rem; color: #627d98; }
-        .meteo-table { width: 100%; max-width: 450px; background: white; border-radius: 8px; border-collapse: collapse; }
-        .meteo-table th, .meteo-table td { padding: 10px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        .meteo-table th { background-color: #005b96; color: white; }
-        .temp-col { font-weight: bold; color: #004472; text-align: right; }
-        .status-msg { margin-top: 15px; font-size: 0.8rem; color: #627d98; }
-    </style>
+    <title>Meteo Live</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="ticker-wrap"><div class="ticker"><div class="ticker-item">L'Aquila: <span>5.0°C</span></div><div class="ticker-item">Pescara: <span>5.0°C</span></div><div class="ticker-item">Chieti: <span>5.0°C</span></div><div class="ticker-item">Teramo: <span>5.0°C</span></div><div class="ticker-item">Roccaraso: <span>5.0°C</span></div><div class="ticker-item">Pescocostanzo: <span>5.0°C</span></div><div class="ticker-item">Scanno: <span>5.0°C</span></div><div class="ticker-item">Villetta Barrea: <span>5.0°C</span></div><div class="ticker-item">Campo Imperatore: <span>5.0°C</span></div><div class="ticker-item">Ovindoli: <span>5.0°C</span></div><div class="ticker-item">Campo Felice: <span>5.0°C</span></div><div class="ticker-item">Avezzano: <span>5.0°C</span></div><div class="ticker-item">Sulmona: <span>5.0°C</span></div><div class="ticker-item">Lanciano: <span>5.0°C</span></div><div class="ticker-item">Vasto: <span>5.0°C</span></div></div></div>
+    <div class="ticker-wrap">
+        <div class="ticker" id="ticker-box">Caricamento dati...</div>
+    </div>
+
     <nav>
         <button class="nav-btn active" onclick="cambiaScheda('home', this)">Home Page</button>
         <button class="nav-btn" onclick="cambiaScheda('webcam', this)">Dati Meteo &amp; Webcam</button>
-        <button class="nav-btn" onclick="cambiaScheda('tabella', this)">Temperature Abruzzo</button>
+        <button class="nav-btn" onclick="cambiaScheda('tabella', this)">Temperature Live</button>
     </nav>
+
     <main id="sez-home" class="sezione attiva">
-        <h1 class="period-title">Estremi Termici Attuali Abruzzo</h1>
+        <h1 class="period-title">Estremi Termici Attuali</h1>
         <div class="records-container">
             <div class="record-card card-max">
                 <div class="record-label">Temperatura più alta</div>
-                <div class="record-value">5.0°C</div>
-                <div class="record-details">L'Aquila</div>
+                <div class="record-value" id="max-temp">--°C</div>
+                <div class="record-details" id="max-loc">Caricamento...</div>
             </div>
             <div class="record-card card-min">
                 <div class="record-label">Temperatura più bassa</div>
-                <div class="record-value">5.0°C</div>
-                <div class="record-details">L'Aquila</div>
+                <div class="record-value" id="min-temp">--°C</div>
+                <div class="record-details" id="min-loc">Caricamento...</div>
             </div>
         </div>
-        <div class="status-msg">Aggiornato automaticamente il 25/11/2026 00:41</div>
+        <div class="status-msg" id="ultimo-aggiornamento">In attesa dei dati...</div>
     </main>
+
     <section id="sez-webcam" class="sezione">
         <h1 class="period-title">Webcam Live Stazioni Sciistiche</h1>
         <div class="webcam-grid">
@@ -73,20 +46,22 @@
             <a href="https://skiinfo.it" target="_blank" class="cam-btn"><span class="cam-station">Tutte le Stazioni Abruzzo</span><span class="cam-altitude">Riepilogo piste e neve in diretta</span></a>
         </div>
     </section>
+
     <section id="sez-tabella" class="sezione">
-        <h1 class="period-title">Temperature Live Località Abruzzo</h1>
+        <h1 class="period-title">Temperature Live Località</h1>
         <table class="meteo-table">
-            <thead><tr><th>Località</th><th style="text-align: right;">Temperatura</th></tr></thead>
-            <tbody><tr><td>L'Aquila</td><td class="temp-col">5.0°C</td></tr><tr><td>Pescara</td><td class="temp-col">5.0°C</td></tr><tr><td>Chieti</td><td class="temp-col">5.0°C</td></tr><tr><td>Teramo</td><td class="temp-col">5.0°C</td></tr><tr><td>Roccaraso</td><td class="temp-col">5.0°C</td></tr><tr><td>Pescocostanzo</td><td class="temp-col">5.0°C</td></tr><tr><td>Scanno</td><td class="temp-col">5.0°C</td></tr><tr><td>Villetta Barrea</td><td class="temp-col">5.0°C</td></tr><tr><td>Campo Imperatore</td><td class="temp-col">5.0°C</td></tr><tr><td>Ovindoli</td><td class="temp-col">5.0°C</td></tr><tr><td>Campo Felice</td><td class="temp-col">5.0°C</td></tr><tr><td>Avezzano</td><td class="temp-col">5.0°C</td></tr><tr><td>Sulmona</td><td class="temp-col">5.0°C</td></tr><tr><td>Lanciano</td><td class="temp-col">5.0°C</td></tr><tr><td>Vasto</td><td class="temp-col">5.0°C</td></tr></tbody>
+            <thead>
+                <tr>
+                    <th>Località</th>
+                    <th style="text-align: right;">Temperatura</th>
+                </tr>
+            </thead>
+            <tbody id="tabella-body">
+                <tr><td colspan="2" style="text-align:center;">Caricamento dati...</td></tr>
+            </tbody>
         </table>
     </section>
-    <script>
-        function cambiaScheda(nome, btn) {
-            document.querySelectorAll('.sezione').forEach(s => s.classList.remove('attiva'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('sez-' + nome).classList.add('attiva');
-            btn.classList.add('active');
-        }
-    </script>
+
+    <script src="script.js"></script>
 </body>
 </html>
