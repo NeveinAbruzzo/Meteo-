@@ -54,7 +54,7 @@ function mostraDatiInPagina(testo, fonte) {
 
 async function aggiornaDatiMeteo() {
     try {
-        const risposta = await fetch('dati-meteo.txt?t=' + Date.now());
+        const risposta = await fetch('Dati_meteo.txt?t=' + Date.now());
         if (!risposta.ok) throw new Error('File non trovato');
         const testo = await risposta.text();
         mostraDatiInPagina(testo, 'da dati-meteo.txt');
