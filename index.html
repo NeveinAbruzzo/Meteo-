@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neve in Abruzzo - Meteo e Webcam Live</title>
-
-
-  
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
 body{background:#e9ecef;color:#333;font-size:13px}
@@ -32,7 +29,10 @@ header{padding:10px 18px;display:flex;justify-content:space-between;align-items:
 .nav-item{flex:1;text-align:center;padding:8px 6px;color:#fff;font-weight:700;font-size:.72rem;letter-spacing:.3px;text-transform:uppercase;cursor:pointer;border-right:1px solid rgba(255,255,255,.15);transition:.2s}
 .nav-item:hover{background:#0066c0}
 .nav-item.active{background:#0088cc;color:#fff;box-shadow:inset 0 -3px 0 #4cc9f0}
-.breadcrumb{padding:7px 18px;font-size:.72rem;color:#777;border-bottom:1px solid #eee}
+.breadcrumb{padding:7px 18px;font-size:.72rem;color:#777;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.live-pill{display:inline-flex;align-items:center;gap:4px;background:#fee2e2;color:#b91c1c;border:1px solid #fecaca;padding:2px 7px;border-radius:3px;font-size:.64rem;font-weight:800;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap}
+.live-dot{width:6px;height:6px;background:#dc2626;border-radius:50%;animation:lampeggio 1.2s infinite}
+@keyframes lampeggio{0%,100%{opacity:1}50%{opacity:.2}}
 .news-strip{background:#f4f7fa;padding:10px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;border-bottom:1px solid #dce4ec}
 .news-card{background:#fff;border:1px solid #dce4ec;padding:7px 9px;display:flex;gap:8px;align-items:center;border-radius:3px}
 .news-icon{width:36px;height:36px;background:#00529b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1rem;border-radius:3px;flex-shrink:0}
@@ -40,11 +40,21 @@ header{padding:10px 18px;display:flex;justify-content:space-between;align-items:
 .content-area{padding:16px 18px}
 .section-head{border-left:3px solid #00529b;padding-left:10px;margin-bottom:6px;font-size:1.12rem;font-weight:700;color:#002b52}
 .section-desc{color:#666;font-size:.8rem;margin-bottom:14px}
-.search-panel{background:#00447c;border-radius:4px;padding:12px 15px;color:#fff;margin-bottom:18px}
+.main-split{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;align-items:start;margin-bottom:20px}
+.search-panel{background:#00447c;border-radius:4px;padding:12px 15px;color:#fff;margin-bottom:0}
 .search-panel label{display:block;font-weight:600;margin-bottom:7px;font-size:.82rem}
 .search-row{display:flex;gap:6px}
 .search-row input{flex:1;padding:7px 10px;border:none;border-radius:3px;font-size:.82rem}
 .search-row button{background:#0088cc;color:#fff;border:none;padding:0 14px;font-weight:bold;font-size:.75rem;border-radius:3px;cursor:pointer;text-transform:uppercase}
+.news-col{background:#f8fafc;border:1px solid #dce4ec;border-radius:4px;padding:12px}
+.news-col-head{font-size:.82rem;font-weight:800;color:#002b52;text-transform:uppercase;border-bottom:2px solid #00529b;padding-bottom:6px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.news-col-head span{font-size:.68rem;background:#e63946;color:#fff;padding:1px 6px;border-radius:3px}
+.v-news{display:flex;flex-direction:column;gap:8px}
+.v-news-item{background:#fff;border:1px solid #e2e8f0;border-left:3px solid #0088cc;padding:8px;border-radius:3px;font-size:.76rem;line-height:1.35;color:#222;display:flex;gap:9px;align-items:center}
+.v-news-img{width:64px;height:52px;object-fit:cover;border-radius:3px;flex-shrink:0;background:#dbeafe}
+.v-news-body{flex:1;min-width:0}
+.v-news-item strong{display:block;color:#00529b;font-size:.79rem;margin-bottom:2px}
+.v-news-item small{display:block;color:#64748b;font-size:.68rem;margin-top:2px}
 .tab-content{display:none}
 .tab-content.active{display:block}
 .meteo-table{width:100%;border-collapse:collapse;font-size:.84rem}
@@ -69,38 +79,9 @@ header{padding:7px 10px;gap:5px}
 .content-area{padding:12px}
 .section-head{font-size:.98rem}
 .section-desc{font-size:.74rem;margin-bottom:10px}
-}
-
-.main-split{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;align-items:start;margin-bottom:20px}
-.search-panel{margin-bottom:0}
-.news-col{background:#f8fafc;border:1px solid #dce4ec;border-radius:4px;padding:12px}
-.news-col-head{font-size:.82rem;font-weight:800;color:#002b52;text-transform:uppercase;border-bottom:2px solid #00529b;padding-bottom:6px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-.news-col-head span{font-size:.68rem;background:#e63946;color:#fff;padding:1px 6px;border-radius:3px}
-.v-news{display:flex;flex-direction:column;gap:8px}
-.v-news-item{background:#fff;border:1px solid #e2e8f0;border-left:3px solid #0088cc;padding:8px 10px;border-radius:3px;font-size:.76rem;line-height:1.35;color:#222}
-.v-news-item strong{display:block;color:#00529b;font-size:.79rem;margin-bottom:2px}
-.v-news-item small{color:#64748b;font-size:.68rem}
-@media(max-width:768px){
 .main-split{grid-template-columns:1fr;gap:12px}
 }
-
-.live-pill{display:inline-flex;align-items:center;gap:4px;background:#fee2e2;color:#b91c1c;border:1px solid #fecaca;padding:2px 6px;border-radius:3px;font-size:.62rem;font-weight:800;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap}
-.live-dot{width:6px;height:6px;background:#dc2626;border-radius:50%;animation:lampeggio 1.2s infinite}
-@keyframes lampeggio{0%,100%{opacity:1}50%{opacity:.2}}
-@media(max-width:768px){
-.live-pill{padding:1px 4px;font-size:.54rem;gap:3px}
-.live-dot{width:5px;height:5px}
-}
-
-
-  
-
 </style>
-
-
-
-
-  
 </head>
 <body>
 <div class="page-wrap">
@@ -110,18 +91,11 @@ header{padding:7px 10px;gap:5px}
 <div class="logo-badge">Neve in Abruzzo<span>.it</span></div>
 <div class="logo-sub">Bollettini neve, webcam e temperature live</div>
 </div>
-
-  
 <div class="header-right">
 <div class="ext-stack">
 <div class="mini-ext hot"><span>MAX</span> <strong id="max-temp">--°C</strong> <span id="max-city">...</span></div>
 <div class="mini-ext cold"><span>MIN</span> <strong id="min-temp">--°C</strong> <span id="min-city">...</span></div>
 </div>
-<div id="data-oggi"></div>
-</div>
-
-
-  
 <div id="data-oggi"></div>
 </div>
 </header>
@@ -131,17 +105,17 @@ header{padding:7px 10px;gap:5px}
 <div class="nav-item" onclick="apriSezione('webcam')">Webcam</div>
 <div class="nav-item" onclick="apriSezione('bollettino')">Comprensori</div>
 </nav>
-
-  
-<div class="breadcrumb" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+<div class="breadcrumb">
 <span>Home › Previsioni Meteo › Italia › <strong>Abruzzo</strong></span>
 <span class="live-pill"><span class="live-dot"></span>LIVE REAL TIME • Valori in tempo reale</span>
 </div>
-
-
-
-  
+<div class="news-strip">
+<div class="news-card"><div class="news-icon" style="background:#0088cc">❄</div><div class="news-text" id="news-min">Rilevamento minima in Abruzzo...</div></div>
+<div class="news-card"><div class="news-icon">☀</div><div class="news-text" id="news-max">Rilevamento massima in Abruzzo...</div></div>
+<div class="news-card"><div class="news-icon" style="background:#003b70">📷</div><div class="news-text">Webcam in diretta da Roccaraso, Campo Felice e Ovindoli</div></div>
+</div>
 <div class="content-area">
+
 <h1 class="section-head" id="titolo-pagina">Meteo Abruzzo Live</h1>
 <p class="section-desc">Monitoraggio in tempo reale delle temperature, estremi termici e webcam delle principali località abruzzesi.</p>
 
