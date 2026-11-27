@@ -57,13 +57,27 @@ footer{padding:15px 25px;background:#f4f7fa;border-top:1px solid #dce4ec;font-si
 <body>
 <div class="page-wrap">
 <div class="ticker-wrap"><div class="ticker" id="ticker-box">Caricamento dati meteo Abruzzo...</div></div>
+
 <header>
 <div class="logo-box">
 <div class="logo-badge">Neve in Abruzzo<span>.it</span></div>
 <div class="logo-sub">Bollettini neve, webcam e temperature live</div>
 </div>
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<div style="display:flex;gap:8px;align-items:center;font-size:.78rem">
+<div style="background:#fff5f5;border:1px solid #fecaca;border-left:3px solid #e63946;padding:4px 9px;border-radius:4px;line-height:1.2">
+<span style="color:#666;font-weight:600">MAX:</span> <strong id="max-temp" style="color:#e63946;font-size:.9rem">--°C</strong> <span id="max-city" style="color:#444">...</span>
+</div>
+<div style="background:#f0f9ff;border:1px solid #bae6fd;border-left:3px solid #0088cc;padding:4px 9px;border-radius:4px;line-height:1.2">
+<span style="color:#666;font-weight:600">MIN:</span> <strong id="min-temp" style="color:#0077cc;font-size:.9rem">--°C</strong> <span id="min-city" style="color:#444">...</span>
+</div>
+</div>
 <div id="data-oggi" style="font-weight:bold;color:#00529b;font-size:.85rem"></div>
+</div>
 </header>
+-
+
+  
 <nav class="main-nav">
 <div class="nav-item active" onclick="apriSezione('home')">Estremi Termici</div>
 <div class="nav-item" onclick="apriSezione('tabella')">Tutte le Località</div>
@@ -89,12 +103,11 @@ footer{padding:15px 25px;background:#f4f7fa;border-top:1px solid #dce4ec;font-si
 </div>
 
 <div id="tab-home" class="tab-content active">
-<div class="records-grid">
-<div class="rec-box"><div class="rec-title">Temperatura Più Alta</div><div class="rec-val" id="max-temp">--°C</div><div id="max-city">Caricamento...</div></div>
-<div class="rec-box cold"><div class="rec-title">Temperatura Più Bassa</div><div class="rec-val" id="min-temp">--°C</div><div id="min-city">Caricamento...</div></div>
-</div>
 <div class="live-bar" id="last-update">Connessione alle stazioni meteo...</div>
 </div>
+
+
+  
 
 <div id="tab-tabella" class="tab-content">
 <table class="meteo-table">
