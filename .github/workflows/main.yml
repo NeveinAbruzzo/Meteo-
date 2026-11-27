@@ -26,7 +26,8 @@ jobs:
           FIRST=1
           for item in "${CITTA[@]}"; do
             IFS="|" read -r NOME LAT LON <<< "$item"
-            TEMP=$(curl -sS -A "NeveInAbruzzo/1.0" "https://met.no" | jq '.properties.timeseries.data.instant.details.air_temperature')
+            TEMP=$(curl -sS -A "NeveInAbruzzo/1.0" "https://met.no" | grep -o '"air_temperature":[-0-9.]*' | head -n 1 | cut -d':' -f2)
+            [ -z "$TEMP" ] && TEMP=0
             [ $FIRST -eq 0 ] && echo "," >> dati.json
             FIRST=0
             echo "{\"nome\":\"$NOME\",\"temp\":$TEMP}" >> dati.json
