@@ -118,6 +118,9 @@ header{padding:7px 10px;gap:5px}
 <div class="content-area">
 <h1 class="section-head" id="titolo-pagina">Meteo Abruzzo Live</h1>
 <p class="section-desc">Monitoraggio in tempo reale delle temperature, estremi termici e webcam delle principali località abruzzesi.</p>
+
+<div class="main-split">
+<div>
 <div class="search-panel">
 <label for="filtro-citta">Cerca una località italiana (es. Tagliacozzo, Napoli, Milano, Roccaraso...):</label>
 <div class="search-row">
@@ -126,6 +129,33 @@ header{padding:7px 10px;gap:5px}
 </div>
 <div id="risultato-ricerca" style="display:none;margin-top:10px;background:#fff;color:#222;padding:12px 14px;border-radius:4px;border-left:4px solid #4cc9f0"></div>
 </div>
+</div>
+
+<aside class="news-col">
+<div class="news-col-head">Notizie Meteo del Giorno <span>LIVE</span></div>
+<div class="v-news">
+<div class="v-news-item">
+<strong id="vnews-1-titolo">Aggiornamento termico in Abruzzo</strong>
+<span id="vnews-1-testo">Analisi delle temperature minime e massime rilevate oggi sulle principali stazioni regionali.</span>
+<small id="vnews-1-ora">Oggi</small>
+</div>
+<div class="v-news-item" style="border-left-color:#0284c7">
+<strong id="vnews-2-titolo">Situazione neve in quota e Appennino</strong>
+<span id="vnews-2-testo">Monitoraggio costante su Campo Imperatore, Roccaraso, Ovindoli e Campo Felice.</span>
+<small id="vnews-2-ora">Bollettino giornaliero</small>
+</div>
+<div class="v-news-item" style="border-left-color:#e63946">
+<strong>Previsioni Italia e tendenza prossima giornata</strong>
+<span>Consulta in tempo reale qualsiasi comune italiano usando la barra di ricerca qui accanto.</span>
+<small id="vnews-3-ora">Servizio automatico 24/7</small>
+</div>
+</div>
+</aside>
+</div>
+
+
+  
+
 
 <div id="tab-home" class="tab-content active">
 <div class="live-bar" id="last-update">Connessione alle stazioni meteo...</div>
@@ -178,30 +208,28 @@ document.querySelectorAll('.nav-item')[idx].classList.add('active');
 }
 
 function iconaMeteo(c){
-if(c===undefined||c===null)return'☀';
-if(c===0)return'☀️';
+if(c===undefined||c===null||c===0)return'<span style="color:#facc15;text-shadow:0 0 4px rgba(250,204,21,.6)">☀️</span>';
 if(c===1)return'🌤️';
 if(c===2)return'⛅';
-if(c===3)return'☁';
-if(c===45||c===48)return'🌫';
-if(c>=51&&c<=67)return'🌦️';
-if((c>=71&&c<=77)||c===85||c===86)return'❄️';
-if(c>=80&&c<=82)return'🌦';
+if(c===3)return'☁️';
+if(c===45||c===48)return'🌫️';
+if(c>=51&&c<=67)return'🌧️';
+if((c>=71&&c<=77)||c===85||c===86)return'<span style="color:#7dd3fc">❄️</span>';
+if(c>=80&&c<=82)return'🌦️';
 if(c>=95)return'⛈️';
 return'🌤️';
 }
 
 function descriviMeteo(c){
-if(c===undefined||c===null)return'☀ Condizioni variabili';
-if(c===0)return'☀️ Cielo sereno';
+if(c===undefined||c===null||c===0)return'<span style="color:#eab308">☀️</span> Cielo sereno';
 if(c===1)return'🌤️ Poco nuvoloso';
-if(c===2)return'🌤️ Parzialmente nuvoloso';
-if(c===3)return'☁ Nuvoloso / Coperto';
-if(c===45||c===48)return'🌫 Nebbia o foschia';
-if(c>=51&&c<=67)return'🌦️ Pioggia';
-if((c>=71&&c<=77)||c===85||c===86)return'❄️ Neve in corso';
-if(c>=80&&c<=82)return'⛈️ Rovesci di pioggia';
-if(c>=95)return'⛈ Temporale';
+if(c===2)return'⛅ Parzialmente nuvoloso';
+if(c===3)return'☁️ Nuvoloso / Coperto';
+if(c===45||c===48)return'🌫️ Nebbia o foschia';
+if(c>=51&&c<=67)return'🌧️ Pioggia';
+if((c>=71&&c<=77)||c===85||c===86)return'<span style="color:#0284c7">❄️</span> Neve in corso';
+if(c>=80&&c<=82)return'🌦️ Rovesci di pioggia';
+if(c>=95)return'⛈️ Temporale';
 return'🌤️ Variabile';
 }
 
@@ -276,6 +304,11 @@ document.getElementById('min-city').textContent=min.n;
 document.getElementById('news-min').textContent='Gelo in Abruzzo: minima attuale di '+min.t.toFixed(1)+'°C a '+min.n;
 document.getElementById('news-max').textContent='Valore più mite: massima attuale di '+max.t.toFixed(1)+'°C a '+max.n;
 document.getElementById('last-update').innerHTML='Dati reali aggiornati il <strong>'+json.ora+'</strong>';
+document.getElementById('vnews-1-testo').textContent='Escursione termica regionale tra '+min.t.toFixed(1)+'°C ('+min.n+') e '+max.t.toFixed(1)+'°C ('+max.n+').';
+document.getElementById('vnews-1-ora').textContent='Rilevamento del '+json.ora;
+const ci=json.dati.find(x=>x.nome==='Campo Imperatore');
+if(ci)document.getElementById('vnews-2-testo').textContent='A Campo Imperatore (2.130m) si registrano attualmente '+ci.temp.toFixed(1)+'°C ('+descriviMeteo(ci.code).replace(/<[^>]*>/g,'').trim()+').';
+document.getElementById('vnews-3-ora').textContent='Aggiornato al '+oggi;
 }catch(e){
 document.getElementById('last-update').textContent=e.message;
 }
@@ -285,4 +318,3 @@ setInterval(aggiornaMeteo,60000);
 </script>
 </body>
 </html>
-
