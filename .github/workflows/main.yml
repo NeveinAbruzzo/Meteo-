@@ -30,7 +30,8 @@ jobs:
             req = urllib.request.Request(url, headers=headers)
             res = urllib.request.urlopen(req, timeout=15)
             data = json.loads(res.read().decode())
-            temp = data["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"]
+            primo = next(iter(data["properties"]["timeseries"]))
+            temp = primo["data"]["instant"]["details"]["air_temperature"]
             out.append({"nome": nome, "temp": temp})
           ora = (datetime.datetime.utcnow() + datetime.timedelta(hours=1)).strftime("%d/%m/%Y %H:%M")
           with open("dati.json", "w", encoding="utf-8") as f:
