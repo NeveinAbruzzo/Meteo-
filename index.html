@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neve in Abruzzo - Meteo e Webcam Live</title>
-
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
 body{background:#e9ecef;color:#333;font-size:13px}
@@ -70,11 +68,6 @@ header{padding:7px 10px;gap:5px}
 .section-desc{font-size:.74rem;margin-bottom:10px}
 }
 </style>
-
-
-
-
-  
 </head>
 <body>
 <div class="page-wrap">
@@ -99,12 +92,7 @@ header{padding:7px 10px;gap:5px}
 <div class="nav-item" onclick="apriSezione('bollettino')">Comprensori</div>
 </nav>
 <div class="breadcrumb">Home › Previsioni Meteo › Italia › <strong>Abruzzo</strong></div>
-
-
-
-
-
-  <div class="news-strip">
+<div class="news-strip">
 <div class="news-card"><div class="news-icon" style="background:#0088cc">❄</div><div class="news-text" id="news-min">Rilevamento minima in Abruzzo...</div></div>
 <div class="news-card"><div class="news-icon">☀</div><div class="news-text" id="news-max">Rilevamento massima in Abruzzo...</div></div>
 <div class="news-card"><div class="news-icon" style="background:#003b70">📷</div><div class="news-text">Webcam in diretta da Roccaraso, Campo Felice e Ovindoli</div></div>
@@ -112,11 +100,10 @@ header{padding:7px 10px;gap:5px}
 <div class="content-area">
 <h1 class="section-head" id="titolo-pagina">Meteo Abruzzo Live</h1>
 <p class="section-desc">Monitoraggio in tempo reale delle temperature, estremi termici e webcam delle principali località abruzzesi.</p>
-
 <div class="search-panel">
-<label for="filtro-citta">Cerca una località italiana (es. Tagliacozzo, Castel di Sangro, Giulianova, Roccaraso...):</label>
+<label for="filtro-citta">Cerca una località italiana (es. Tagliacozzo, Napoli, Milano, Roccaraso...):</label>
 <div class="search-row">
-<input type="text" id="filtro-citta" placeholder="Scrivi il nome del comune o località e premi Invio..." onkeydown="if(event.key==='Enter')cercaLocalitaLive()">
+<input type="text" id="filtro-citta" placeholder="Scrivi il nome del comune e premi Invio..." onkeydown="if(event.key==='Enter')cercaLocalitaLive()">
 <button onclick="cercaLocalitaLive()">Cerca</button>
 </div>
 <div id="risultato-ricerca" style="display:none;margin-top:10px;background:#fff;color:#222;padding:12px 14px;border-radius:4px;border-left:4px solid #4cc9f0"></div>
@@ -211,10 +198,11 @@ if(!q)return;
 box.style.display='block';
 box.innerHTML='<span style="color:#00529b;font-weight:600">Ricerca dati meteo per "'+q+'" in corso...</span>';
 try{
-const r=await fetch('https://workers.dev);
+const wHost=['young-firefly-613b','subito73','workers','dev'].join('.');
+const r=await fetch('https://'+wHost+'/?cerca='+encodeURIComponent(q));
 const d=await r.json();
 if(d.errore){
-box.innerHTML='<span style="color:#dc2626;font-weight:600">Nessuna località trovata per "'+q+'". Controlla il nome e riprova.</span>';
+box.innerHTML='<span style="color:#dc2626;font-weight:600">Nessuna località trovata per "'+q+'".</span>';
 return;
 }
 const col=coloreTempTabella(d.attuale);
