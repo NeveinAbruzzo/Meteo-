@@ -486,26 +486,27 @@ let html="";
 STANZE.forEach(s=>{
 const argomentiStanza=tuttiPost.filter(p=>p.stanza===s.id && (!p.parent_id || p.parent_id===0));
 const messaggiStanza=tuttiPost.filter(p=>p.stanza===s.id);
-const ultimo=messaggiStanza.length>0?messaggiStanza[0]:null;
+const ultimo=messaggiStanza.length>0?messaggiStanza:null;
 const titoloUltimo=ultimo?(ultimo.titolo||"Risposta nella discussione"):"";
 const dataFmt=ultimo?new Date(ultimo.created_at.replace(" ","T")+"Z").toLocaleString("it-IT",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"";
 const lastHtml=ultimo
-?'<span onclick="apriStanza(\''+s.id+'\')">'+titoloUltimo+'</span><br>da <strong>'+ultimo.autore+'</strong><br><small>'+dataFmt+'</small>'
+?'<span onclick="event.stopPropagation();apriStanza(\''+s.id+'\')">'+titoloUltimo+'</span><br>da <strong>'+ultimo.autore+'</strong><br><small>'+dataFmt+'</small>'
 :'<span style="color:#9ca3af">Nessun messaggio ancora</span>';
 html+='<div class="forum-row"><div class="forum-room" onclick="apriStanza(\''+s.id+'\')"><div class="forum-ico">💬</div><div><strong>'+s.titolo+'</strong><p>'+s.desc+'</p><small style="color:#94a3b8">Moderatore: '+s.mod+'</small></div></div><div class="forum-stat">'+argomentiStanza.length+'</div><div class="forum-stat">'+messaggiStanza.length+'</div><div class="forum-last">'+lastHtml+'</div></div>';
 });
 document.getElementById("forum-stanze-body").innerHTML=html;
 }
 
-
 function apriStanza(id){
 stanzaCorrente=STANZE.find(s=>s.id===id);
+if(!stanzaCorrente)return;
 document.getElementById("forum-lista-stanze").style.display="none";
-document.getElementById("forum-stanza-aperta").style.display="block";
+const boxAperta=document.getElementById("forum-stanza-aperta");
+boxAperta.style.display="block";
 document.getElementById("stanza-titolo").textContent=stanzaCorrente.titolo;
-const btnNuovo=document.querySelector("#forum-stanza-aperta .forum-btn.red");
+const btnNuovo=boxAperta.querySelector(".forum-btn.red");
 const puoCreare=utenteForum && (utenteForum.ruolo==="admin" || utenteForum.ruolo==="mod");
-btnNuovo.style.display=puoCreare?"inline-block":"none";
+if(btnNuovo)btnNuovo.style.display=puoCreare?"inline-block":"none";
 mostraMessaggiStanza();
 }
 
