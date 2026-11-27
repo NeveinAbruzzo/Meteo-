@@ -116,6 +116,11 @@ header{padding:7px 10px;gap:5px}
 .forum-stat{text-align:left;font-size:.7rem;color:#666}
 }
 </style>
+<link rel="stylesheet" href="https://unpkg.com" />
+<script src="https://unpkg.com"></script>
+
+
+  
 </head>
 <body>
 <div class="page-wrap">
@@ -138,8 +143,30 @@ header{padding:7px 10px;gap:5px}
 <div class="nav-item" onclick="apriSezione('tabella')">Tutte le Località</div>
 <div class="nav-item" onclick="apriSezione('webcam')">Webcam</div>
 <div class="nav-item" onclick="apriSezione('bollettino')">Comprensori</div>
+<div class="nav-item" onclick="apriSezione('radar')">Radar Live</div>
 <div class="nav-item" onclick="apriSezione('community')">Community</div>
 </nav>
+
+<div id="tab-radar" class="tab-content">
+  <div style="background:#0f172a;color:#f1f5f9;border:1px solid #334155;border-radius:4px;overflow:hidden;margin-bottom:16px">
+    <div style="background:#00529b;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <strong style="font-size:.85rem">📡 Radar Precipitazioni Italia & Abruzzo — Protezione Civile (Animato)</strong>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="radar-ora" style="background:#002b52;padding:3px 8px;border-radius:3px;font-size:.74rem;font-weight:700;color:#38bdf8">Caricamento...</span>
+        <button onclick="toggleRadarPlay()" id="radar-btn" style="background:#c84b31;color:#fff;border:none;padding:4px 10px;border-radius:3px;font-size:.72rem;font-weight:700;cursor:pointer">⏸ Pausa</button>
+      </div>
+    </div>
+    <div id="radar-map" style="width:100%;height:480px;background:#09111e"></div>
+    <div style="padding:8px 14px;background:#1e293b;font-size:.72rem;color:#94a3b8;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px">
+      <span>Fonte dati ufficiali: Dipartimento della Protezione Civile (Rete Radar Nazionale - VMI)</span>
+      <span>Intensità: <strong style="color:#4ade80">Debole</strong> • <strong style="color:#facc15">Moderata</strong> • <strong style="color:#f87171">Forte</strong> • <strong style="color:#e879f9">Nubifragio/Grandine</strong></span>
+    </div>
+  </div>
+</div>
+
+
+
+  
 <div class="breadcrumb">
 <span>Home › Previsioni Meteo › Italia › <strong>Abruzzo</strong></span>
 <span class="live-pill"><span class="live-dot"></span>LIVE REAL TIME • Valori in tempo reale</span>
@@ -278,7 +305,7 @@ function apriSezione(nome){
 document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
 document.getElementById('tab-'+nome).classList.add('active');
 document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-const idx={home:0,tabella:1,webcam:2,bollettino:3,community:4}[nome];
+const idx={home:0,tabella:1,webcam:2,bollettino:3,radar:4,community:5}[nome];
 if(idx!==undefined){
 document.querySelectorAll('.nav-item')[idx].classList.add('active');
 }
@@ -607,6 +634,54 @@ alert("Errore durante la pubblicazione del messaggio.");
 }
 
 caricaForum();
+
+  let radarMap = null;
+let radarLayers = [];
+let radarTimes = [];
+let radarIdx = 0;
+let radarPlaying = true;
+let radarTimer = null;
+
+async function initRadar() {
+  if (radarMap) { setTimeout(() => radarMap.invalidateSize(), 150); return; }
+  radarMap = L.map('radar-map').setView([42.25, 13.85], 7);
+  L.tileLayer('https://{s}://{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO',
+    maxZoom: 14
+  }).addTo(radarMap);
+
+  const wmsUrl = "https://protezionecivile.it";
+  const now = new Date();
+  now.setMinutes(Math.floor(now.getMinutes() / 10) * 10, 0, 0);
+
+  for (let i = 7; i >= 0; i--) {
+    const t = new Date(now.getTime() - i * 10 * 60000);
+    const iso = t.toISOString().slice(0, 16) + ":00.000Z";
+    const oraLoc = t.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+    const layer = L.tileLayer.wms(wmsUrl, {
+      layers: 'radar:VMI',
+      format: 'image/png',
+      transparent: true,
+      opacity: 0,
+      time: iso
+    }).addTo(radarMap);
+    radarLayers.push(layer);
+    radarTimes.push(oraLoc);
+  }
+
+  radarTimer = setInterval(() => {
+    if (!radarPlaying || radarLayers.length === 0) return;
+    radarLayers.forEach((l, idx) => l.setOpacity(idx === radarIdx ? 0.78 : 0));
+    document.getElementById("radar-ora").textContent = "Scatto delle " + radarTimes[radarIdx];
+    radarIdx = (radarIdx + 1) % radarLayers.length;
+  }, 700);
+}
+
+function toggleRadarPlay() {
+  radarPlaying = !radarPlaying;
+  document.getElementById("radar-btn").textContent = radarPlaying ? "⏸ Pausa" : "▶ Play";
+}
+
 </script>
 </body>
 </html>
