@@ -116,8 +116,8 @@ header{padding:7px 10px;gap:5px}
 .forum-stat{text-align:left;font-size:.7rem;color:#666}
 }
 </style>
-<link rel="stylesheet" href="https://unpkg.com" />
-<script src="https://unpkg.com"></script>
+<link rel="stylesheet" href="https://cloudflare.com" />
+<script src="https://cloudflare.com"></script>
 
 
   
@@ -147,22 +147,7 @@ header{padding:7px 10px;gap:5px}
 <div class="nav-item" onclick="apriSezione('community')">Community</div>
 </nav>
 
-<div id="tab-radar" class="tab-content">
-  <div style="background:#0f172a;color:#f1f5f9;border:1px solid #334155;border-radius:4px;overflow:hidden;margin-bottom:16px">
-    <div style="background:#00529b;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-      <strong style="font-size:.85rem">📡 Radar Precipitazioni Italia & Abruzzo — Protezione Civile (Animato)</strong>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span id="radar-ora" style="background:#002b52;padding:3px 8px;border-radius:3px;font-size:.74rem;font-weight:700;color:#38bdf8">Caricamento...</span>
-        <button onclick="toggleRadarPlay()" id="radar-btn" style="background:#c84b31;color:#fff;border:none;padding:4px 10px;border-radius:3px;font-size:.72rem;font-weight:700;cursor:pointer">⏸ Pausa</button>
-      </div>
-    </div>
-    <div id="radar-map" style="width:100%;height:480px;background:#09111e"></div>
-    <div style="padding:8px 14px;background:#1e293b;font-size:.72rem;color:#94a3b8;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px">
-      <span>Fonte dati ufficiali: Dipartimento della Protezione Civile (Rete Radar Nazionale - VMI)</span>
-      <span>Intensità: <strong style="color:#4ade80">Debole</strong> • <strong style="color:#facc15">Moderata</strong> • <strong style="color:#f87171">Forte</strong> • <strong style="color:#e879f9">Nubifragio/Grandine</strong></span>
-    </div>
-  </div>
-</div>
+
 
 
 
@@ -253,6 +238,25 @@ header{padding:7px 10px;gap:5px}
 </div>
 </div>
 
+<div id="tab-radar" class="tab-content">
+  <div style="background:#0f172a;color:#f1f5f9;border:1px solid #334155;border-radius:4px;overflow:hidden;margin-bottom:16px">
+    <div style="background:#00529b;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <strong style="font-size:.85rem">📡 Radar Precipitazioni Italia & Abruzzo — Protezione Civile (Animato)</strong>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="radar-ora" style="background:#002b52;padding:3px 8px;border-radius:3px;font-size:.74rem;font-weight:700;color:#38bdf8">Caricamento...</span>
+        <button onclick="toggleRadarPlay()" id="radar-btn" style="background:#c84b31;color:#fff;border:none;padding:4px 10px;border-radius:3px;font-size:.72rem;font-weight:700;cursor:pointer">⏸ Pausa</button>
+      </div>
+    </div>
+    <div id="radar-map" style="width:100%;height:480px;background:#09111e"></div>
+    <div style="padding:8px 14px;background:#1e293b;font-size:.72rem;color:#94a3b8;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px">
+      <span>Fonte dati ufficiali: Dipartimento della Protezione Civile (Rete Radar Nazionale - VMI)</span>
+      <span>Intensità: <strong style="color:#4ade80">Debole</strong> • <strong style="color:#facc15">Moderata</strong> • <strong style="color:#f87171">Forte</strong> • <strong style="color:#e879f9">Nubifragio/Grandine</strong></span>
+    </div>
+  </div>
+</div>
+
+
+  
 <div id="tab-community" class="tab-content">
 <div class="forum-top">
 <div id="forum-user-bar" style="font-size:.8rem;color:#f1f5f9">Benvenuto ospite! Accedi o registrati per aprire nuove discussioni.</div>
