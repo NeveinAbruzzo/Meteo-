@@ -231,8 +231,8 @@ header{padding:7px 10px;gap:5px}
 <div id="forum-stanze-body"></div>
 </div>
 
-<div id="forum-stanza-aperta" style="display:none">
-  <div id="forum-stanza-aperta" style="display:none;background:#0f172a;padding:14px;border-radius:5px;border:1px solid #334155">
+  
+<div id="forum-stanza-aperta" style="display:none;background:#0f172a;padding:14px;border-radius:5px;border:1px solid #334155">
 
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
 <button class="forum-btn" onclick="chiudiStanza()">← Torna alle stanze del Forum</button>
@@ -470,6 +470,14 @@ alert("Errore: "+e.message);
 }
 }
 
+if (stanzaCorrente) {
+  apriStanza(stanzaCorrente.id);
+} else {
+  caricaForum();
+}
+
+
+  
 function logoutForum(){
 utenteForum=null;
 localStorage.removeItem("forum_user");
@@ -486,7 +494,9 @@ let html="";
 STANZE.forEach(s=>{
 const argomentiStanza=tuttiPost.filter(p=>p.stanza===s.id && (!p.parent_id || p.parent_id===0));
 const messaggiStanza=tuttiPost.filter(p=>p.stanza===s.id);
-const ultimo=messaggiStanza.length>0?messaggiStanza:null;
+
+const ultimo = messaggiStanza.length > 0 ? messaggiStanza[0] : null;
+
 const titoloUltimo=ultimo?(ultimo.titolo||"Risposta nella discussione"):"";
 const dataFmt=ultimo?new Date(ultimo.created_at.replace(" ","T")+"Z").toLocaleString("it-IT",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"";
 const lastHtml=ultimo
@@ -508,6 +518,7 @@ const btnNuovo=boxAperta.querySelector(".forum-btn.red");
 const puoCreare=utenteForum && (utenteForum.ruolo==="admin" || utenteForum.ruolo==="mod");
 if(btnNuovo)btnNuovo.style.display=puoCreare?"inline-block":"none";
 mostraMessaggiStanza();
+  
 }
 
 function chiudiStanza(){
