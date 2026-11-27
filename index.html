@@ -273,7 +273,14 @@ document.querySelector('.news-strip').style.display=isComm?'none':'grid';
 document.querySelector('.main-split').style.display=isComm?'none':'grid';
 document.getElementById('titolo-pagina').style.display=isComm?'none':'block';
 document.querySelector('.section-desc').style.display=isComm?'none':'block';
+history.replaceState(null,'','#'+nome);
 }
+
+const sezIniziale=location.hash.replace('#','');
+if(['home','tabella','webcam','bollettino','community'].includes(sezIniziale)){
+apriSezione(sezIniziale);
+}
+
 
 
 
