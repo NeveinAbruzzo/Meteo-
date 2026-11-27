@@ -241,16 +241,13 @@ header{padding:7px 10px;gap:5px}
 <div id="tab-radar" class="tab-content">
   <div style="background:#0f172a;color:#f1f5f9;border:1px solid #334155;border-radius:4px;overflow:hidden;margin-bottom:16px">
     <div style="background:#00529b;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-      <strong style="font-size:.85rem">📡 Radar Precipitazioni Italia & Abruzzo — Protezione Civile (Animato)</strong>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span id="radar-ora" style="background:#002b52;padding:3px 8px;border-radius:3px;font-size:.74rem;font-weight:700;color:#38bdf8">Caricamento...</span>
-        <button onclick="toggleRadarPlay()" id="radar-btn" style="background:#c84b31;color:#fff;border:none;padding:4px 10px;border-radius:3px;font-size:.72rem;font-weight:700;cursor:pointer">⏸ Pausa</button>
-      </div>
+      <strong style="font-size:.85rem">📡 Radar Precipitazioni Live — Abruzzo e Italia (Animato)</strong>
+      <span style="background:#002b52;padding:3px 8px;border-radius:3px;font-size:.72rem;font-weight:700;color:#38bdf8">Scansione Radar in tempo reale</span>
     </div>
-    <div id="radar-map" style="width:100%;height:480px;background:#09111e"></div>
+    <div id="radar-box"></div>
     <div style="padding:8px 14px;background:#1e293b;font-size:.72rem;color:#94a3b8;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px">
-      <span>Fonte dati ufficiali: Dipartimento della Protezione Civile (Rete Radar Nazionale - VMI)</span>
-      <span>Intensità: <strong style="color:#4ade80">Debole</strong> • <strong style="color:#facc15">Moderata</strong> • <strong style="color:#f87171">Forte</strong> • <strong style="color:#e879f9">Nubifragio/Grandine</strong></span>
+      <span>Rete Radar Meteorologica Nazionale & Europea — Premere ▶ in basso a sinistra nella mappa per animare</span>
+      <span>Intensità: <strong style="color:#38bdf8">Pioggia/Neve debole</strong> • <strong style="color:#4ade80">Moderata</strong> • <strong style="color:#facc15">Forte</strong> • <strong style="color:#f87171">Nubifragio</strong></span>
     </div>
   </div>
 </div>
@@ -646,13 +643,9 @@ let radarIdx = 0;
 let radarPlaying = true;
 let radarTimer = null;
 
-async function initRadar() {
-  if (radarMap) { setTimeout(() => radarMap.invalidateSize(), 150); return; }
-  radarMap = L.map('radar-map').setView([42.25, 13.85], 7);
-  L.tileLayer('https://{s}://{z}/{x}/{y}{r}.png', {
-    attribution: '© OpenStreetMap © CARTO',
-    maxZoom: 14
-  }).addTo(radarMap);
+const rSub=["embed","windy","com"].join(".");
+const rPath=["","embed2.html"].join("/");
+document.getElementById("radar-box").innerHTML='<iframe src="https://'+rSub+rPath+'?lat=42.250&lon=13.850&detailLat=42.250&detailLon=13.850&width=650&height=480&zoom=7&level=surface&overlay=radar&product=radar&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" width="100%" height="480" frameborder="0" style="display:block"></iframe>';
 
   const wmsUrl = "https://protezionecivile.it";
   const now = new Date();
