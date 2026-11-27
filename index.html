@@ -436,20 +436,18 @@ const nome=document.getElementById("auth-user").value.trim();
 const email=document.getElementById("auth-email").value.trim();
 const password=document.getElementById("auth-pass").value.trim();
 if(!email||!password||(modalMode==="reg"&&!nome)){alert("Compila tutti i campi.");return;}
-const res=await fetch(workerForumUrl(modalMode==="reg"?"reg":"login"),{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({nome,email,password})
-});
+const q=new URLSearchParams({forum:modalMode==="reg"?"reg":"login",nome,email,password});
+const wHost=['young-firefly-613b','subito73','workers','dev'].join('.');
+const res=await fetch('https://'+wHost+'/?'+q.toString());
 const data=await res.json();
-if(!res.ok||data.errore){alert("Errore: "+(data.errore||"Credenziali non valide"));return;}
+if(data.errore){alert("Errore: "+data.errore);return;}
 utenteForum={nome:data.nome,email:data.email};
 localStorage.setItem("forum_user",JSON.stringify(utenteForum));
 document.getElementById("auth-modal").style.display="none";
 aggiornaBarraUtente();
 alert("Benvenuto "+data.nome+"! Ora puoi aprire discussioni nel forum.");
 }catch(e){
-alert("Errore di rete: "+e.message);
+alert("Errore: "+e.message);
 }
 }
 
@@ -468,7 +466,7 @@ if(r.ok)tuttiPost=await r.json();
 let html="";
 STANZE.forEach(s=>{
 const postsStanza=tuttiPost.filter(p=>p.stanza===s.id);
-const ultimo=postsStanza.length>0?postsStanza[0]:null;
+const ultimo=postsStanza.length>0?postsStanza:null;
 const lastHtml=ultimo
 ?'<span onclick="apriStanza(\''+s.id+'\')">'+ultimo.titolo+'</span><br>da <strong>'+ultimo.autore+'</strong><br><small>'+new Date(ultimo.created_at).toLocaleString("it-IT",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})+'</small>'
 :'<span style="color:#9ca3af">Nessun messaggio ancora</span>';
@@ -507,13 +505,12 @@ const titolo=prompt("Titolo della discussione (es. Neve in arrivo domenica?):");
 if(!titolo)return;
 const testo=prompt("Scrivi il tuo messaggio:");
 if(!testo)return;
-const r=await fetch(workerForumUrl("nuovo"),{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({stanza:stanzaCorrente.id,autore:utenteForum.nome,titolo:titolo,testo:testo})
-});
+const q=new URLSearchParams({forum:"nuovo",stanza:stanzaCorrente.id,autore:utenteForum.nome,titolo,testo});
+const wHost=['young-firefly-613b','subito73','workers','dev'].join('.');
+const r=await fetch('https://'+wHost+'/?'+q.toString());
 if(r.ok){
 const nuovo=await r.json();
+if(nuovo.errore){alert("Errore: "+nuovo.errore);return;}
 tuttiPost.unshift(nuovo);
 mostraMessaggiStanza();
 }else{
