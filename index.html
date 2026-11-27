@@ -268,7 +268,14 @@ const idx={home:0,tabella:1,webcam:2,bollettino:3,community:4}[nome];
 if(idx!==undefined){
 document.querySelectorAll('.nav-item')[idx].classList.add('active');
 }
+const isComm=(nome==='community');
+document.querySelector('.news-strip').style.display=isComm?'none':'grid';
+document.querySelector('.main-split').style.display=isComm?'none':'grid';
+document.getElementById('titolo-pagina').style.display=isComm?'none':'block';
+document.querySelector('.section-desc').style.display=isComm?'none':'block';
+document.querySelector('.page-wrap').style.maxWidth=isComm?'100%':'1280px';
 }
+
 
 function iconaMeteo(c){
 if(c===undefined||c===null||c===0)return'<span style="color:#facc15;text-shadow:0 0 4px rgba(250,204,21,.6)">☀️</span>';
@@ -472,15 +479,17 @@ let html="";
 STANZE.forEach(s=>{
 const argomentiStanza=tuttiPost.filter(p=>p.stanza===s.id && (!p.parent_id || p.parent_id===0));
 const messaggiStanza=tuttiPost.filter(p=>p.stanza===s.id);
-const ultimo=messaggiStanza.length>0?messaggiStanza:null;
+const ultimo=messaggiStanza.length>0?messaggiStanza[0]:null;
 const titoloUltimo=ultimo?(ultimo.titolo||"Risposta nella discussione"):"";
+const dataFmt=ultimo?new Date(ultimo.created_at.replace(" ","T")+"Z").toLocaleString("it-IT",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"";
 const lastHtml=ultimo
-?'<span onclick="apriStanza(\''+s.id+'\')">'+titoloUltimo+'</span><br>da <strong>'+ultimo.autore+'</strong><br><small>'+new Date(ultimo.created_at).toLocaleString("it-IT",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})+'</small>'
+?'<span onclick="apriStanza(\''+s.id+'\')">'+titoloUltimo+'</span><br>da <strong>'+ultimo.autore+'</strong><br><small>'+dataFmt+'</small>'
 :'<span style="color:#9ca3af">Nessun messaggio ancora</span>';
-html+='<div class="forum-row"><div class="forum-room" onclick="apriStanza(\''+s.id+'\')"><div class="forum-ico">💬</div><div><strong>'+s.titolo+'</strong><p>'+s.desc+'</p><small style="color:#6b7280">Moderatore: '+s.mod+'</small></div></div><div class="forum-stat">'+argomentiStanza.length+'</div><div class="forum-stat">'+messaggiStanza.length+'</div><div class="forum-last">'+lastHtml+'</div></div>';
+html+='<div class="forum-row"><div class="forum-room" onclick="apriStanza(\''+s.id+'\')"><div class="forum-ico">💬</div><div><strong>'+s.titolo+'</strong><p>'+s.desc+'</p><small style="color:#94a3b8">Moderatore: '+s.mod+'</small></div></div><div class="forum-stat">'+argomentiStanza.length+'</div><div class="forum-stat">'+messaggiStanza.length+'</div><div class="forum-last">'+lastHtml+'</div></div>';
 });
 document.getElementById("forum-stanze-body").innerHTML=html;
 }
+
 
 function apriStanza(id){
 stanzaCorrente=STANZE.find(s=>s.id===id);
