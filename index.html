@@ -116,8 +116,7 @@ header{padding:7px 10px;gap:5px}
 .forum-stat{text-align:left;font-size:.7rem;color:#666}
 }
 </style>
-<link rel="stylesheet" href="https://cloudflare.com" />
-<script src="https://cloudflare.com"></script>
+
 
 
   
@@ -280,7 +279,8 @@ header{padding:7px 10px;gap:5px}
 <button class="forum-btn" onclick="chiudiStanza()">← Torna alle stanze del Forum</button>
 <button class="forum-btn red" onclick="nuovoPostPrompt()">+ Nuova Discussione</button>
 </div>
-<h3 id="stanza-titolo" style="color:#002b52;margin-bottom:10px;border-left:3px solid #c84b31;padding-left:8px"></h3>
+<h3 id="stanza-titolo" style="color:#f8fafc;margin-bottom:10px;border-left:3px solid #c84b31;padding-left:8px"></h3>
+
 <div id="stanza-messaggi" style="display:flex;flex-direction:column;gap:8px"></div>
 </div>
 </div>
@@ -301,7 +301,6 @@ const isMobile=window.innerWidth<=768;
 const oggi=isMobile?new Date().toLocaleDateString('it-IT'):new Date().toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
 document.getElementById('data-oggi').textContent=oggi.charAt(0).toUpperCase()+oggi.slice(1);
 document.getElementById('titolo-pagina').textContent='Meteo Abruzzo '+oggi;
-
 function apriSezione(nome){
 document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
 document.getElementById('tab-'+nome).classList.add('active');
@@ -310,18 +309,19 @@ const idx={home:0,tabella:1,webcam:2,bollettino:3,radar:4,community:5}[nome];
 if(idx!==undefined){
 document.querySelectorAll('.nav-item')[idx].classList.add('active');
 }
-const isComm=(nome==='community');
-document.querySelector('.news-strip').style.display=isComm?'none':'grid';
-document.querySelector('.main-split').style.display=isComm?'none':'grid';
-document.getElementById('titolo-pagina').style.display=isComm?'none':'block';
-document.querySelector('.section-desc').style.display=isComm?'none':'block';
+const isFull=(nome==='community' || nome==='radar');
+document.querySelector('.news-strip').style.display=isFull?'none':'grid';
+document.querySelector('.main-split').style.display=isFull?'none':'grid';
+document.getElementById('titolo-pagina').style.display=isFull?'none':'block';
+document.querySelector('.section-desc').style.display=isFull?'none':'block';
 history.replaceState(null,'','#'+nome);
 }
 
 const sezIniziale=location.hash.replace('#','');
-if(['home','tabella','webcam','bollettino','community'].includes(sezIniziale)){
+if(['home','tabella','webcam','bollettino','radar','community'].includes(sezIniziale)){
 apriSezione(sezIniziale);
 }
+
 
 
 
@@ -635,50 +635,10 @@ alert("Errore durante la pubblicazione del messaggio.");
 }
 
 caricaForum();
-
-  let radarMap = null;
-let radarLayers = [];
-let radarTimes = [];
-let radarIdx = 0;
-let radarPlaying = true;
-let radarTimer = null;
-
 const rSub=["embed","windy","com"].join(".");
 const rPath=["","embed2.html"].join("/");
 document.getElementById("radar-box").innerHTML='<iframe src="https://'+rSub+rPath+'?lat=42.250&lon=13.850&detailLat=42.250&detailLon=13.850&width=650&height=480&zoom=7&level=surface&overlay=radar&product=radar&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" width="100%" height="480" frameborder="0" style="display:block"></iframe>';
-
-  const wmsUrl = "https://protezionecivile.it";
-  const now = new Date();
-  now.setMinutes(Math.floor(now.getMinutes() / 10) * 10, 0, 0);
-
-  for (let i = 7; i >= 0; i--) {
-    const t = new Date(now.getTime() - i * 10 * 60000);
-    const iso = t.toISOString().slice(0, 16) + ":00.000Z";
-    const oraLoc = t.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
-    const layer = L.tileLayer.wms(wmsUrl, {
-      layers: 'radar:VMI',
-      format: 'image/png',
-      transparent: true,
-      opacity: 0,
-      time: iso
-    }).addTo(radarMap);
-    radarLayers.push(layer);
-    radarTimes.push(oraLoc);
-  }
-
-  radarTimer = setInterval(() => {
-    if (!radarPlaying || radarLayers.length === 0) return;
-    radarLayers.forEach((l, idx) => l.setOpacity(idx === radarIdx ? 0.78 : 0));
-    document.getElementById("radar-ora").textContent = "Scatto delle " + radarTimes[radarIdx];
-    radarIdx = (radarIdx + 1) % radarLayers.length;
-  }, 700);
-}
-
-function toggleRadarPlay() {
-  radarPlaying = !radarPlaying;
-  document.getElementById("radar-btn").textContent = radarPlaying ? "⏸ Pausa" : "▶ Play";
-}
-
 </script>
+
 </body>
 </html>
