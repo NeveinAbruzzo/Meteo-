@@ -161,38 +161,13 @@ tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';
 });
 }
 
-const localita=[
-{nome:"L'Aquila",lat:42.35,lon:13.40},{nome:"Pescara",lat:42.46,lon:14.21},
-{nome:"Chieti",lat:42.35,lon:14.17},{nome:"Teramo",lat:42.66,lon:13.70},
-{nome:"Roccaraso",lat:41.85,lon:14.08},{nome:"Pescocostanzo",lat:41.89,lon:14.07},
-{nome:"Scanno",lat:41.90,lon:13.88},{nome:"Villetta Barrea",lat:41.78,lon:13.94},
-{nome:"Campo Imperatore",lat:42.44,lon:13.56},{nome:"Ovindoli",lat:42.14,lon:13.52},
-{nome:"Campo Felice",lat:42.22,lon:13.43},{nome:"Avezzano",lat:42.03,lon:13.43},
-{nome:"Sulmona",lat:42.05,lon:13.93},{nome:"Lanciano",lat:42.23,lon:14.39},
-{nome:"Vasto",lat:42.11,lon:14.71}
-];
-
-let secondiMancanti=300;
-let ultimoOrario='--:--';
-
-async function prendiTemp(l){
-const r=await fetch('https://met.no);
-if(!r.ok)throw new Error('HTTP '+r.status);
-const j=await r.json();
-const lista=j.properties.timeseries;
-const primo=lista.shift();
-return primo.data.instant.details.air_temperature;
-}
-
 async function aggiornaMeteo(){
 try{
-const dati=[];
-for(const l of localita){
-const t=await prendiTemp(l);
-dati.push({nome:l.nome,temp:t});
-}
+const r=await fetch('./dati.json?t='+Date.now());
+if(!r.ok)throw new Error('Attesa primo aggiornamento GitHub...');
+const json=await r.json();
 let tick='',tab='',max={t:-999,n:''},min={t:999,n:''};
-dati.forEach(d=>{
+json.dati.forEach(d=>{
 const s=d.temp.toFixed(1)+'°C';
 tick+=d.nome+': <span>'+s+'</span>';
 tab+='<tr><td><strong>'+d.nome+'</strong></td><td style="text-align:right;font-weight:bold;color:#00529b">'+s+'</td></tr>';
@@ -207,31 +182,16 @@ document.getElementById('min-temp').textContent=min.t.toFixed(1)+'°C';
 document.getElementById('min-city').textContent=min.n;
 document.getElementById('news-min').textContent='Gelo in Abruzzo: minima attuale di '+min.t.toFixed(1)+'°C a '+min.n;
 document.getElementById('news-max').textContent='Valore più mite: massima attuale di '+max.t.toFixed(1)+'°C a '+max.n;
-ultimoOrario=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-secondiMancanti=300;
+document.getElementById('last-update').innerHTML='Dati reali aggiornati automaticamente da GitHub il <strong>'+json.ora+'</strong>';
 }catch(e){
-document.getElementById('last-update').textContent='Errore: '+e.message;
+document.getElementById('last-update').textContent=e.message;
 }
 }
-
-setInterval(()=>{
-if(secondiMancanti>0){
-secondiMancanti--;
-const m=Math.floor(secondiMancanti/60);
-const s=String(secondiMancanti%60).padStart(2,'0');
-if(ultimoOrario!=='--:--'){
-document.getElementById('last-update').innerHTML='Ultimo aggiornamento: <strong>'+ultimoOrario+'</strong> • Prossimo aggiornamento automatico tra <strong>'+m+':'+s+'</strong>';
-}
-}else{
 aggiornaMeteo();
-}
-},1000);
-
-aggiornaMeteo();
+setInterval(aggiornaMeteo,60000);
 </script>
 </body>
 </html>
-
 
 
 
