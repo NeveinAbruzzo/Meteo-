@@ -85,6 +85,45 @@ header{padding:7px 10px;gap:5px}
 .section-desc{font-size:.74rem;margin-bottom:10px}
 .main-split{grid-template-columns:1fr;gap:12px}
 }
+
+
+
+.forum-top{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid #dce4ec;padding:10px 14px;border-radius:4px;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.forum-btn{background:#00529b;color:#fff;border:none;padding:6px 12px;border-radius:3px;font-size:.76rem;font-weight:700;cursor:pointer}
+.forum-btn.red{background:#c84b31}
+.forum-cat{border:1px solid #d1d5db;border-radius:4px;overflow:hidden;margin-bottom:18px;background:#fff}
+.forum-head{display:grid;grid-template-columns:1fr 85px 85px 210px;background:#c84b31;color:#fff;font-size:.72rem;font-weight:800;padding:8px 12px;text-transform:uppercase;letter-spacing:.3px}
+.forum-row{display:grid;grid-template-columns:1fr 85px 85px 210px;border-bottom:1px solid #e5e7eb;padding:10px 12px;align-items:center;font-size:.78rem;transition:.15s}
+.forum-row:hover{background:#f8fafc}
+.forum-room{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.forum-ico{width:32px;height:32px;border-radius:50%;border:1px solid #cbd5e1;display:flex;align-items:center;justify-content:center;color:#00529b;font-weight:bold;flex-shrink:0;background:#f1f5f9}
+.forum-room strong{color:#00529b;font-size:.86rem;display:block;margin-bottom:2px}
+.forum-room p{color:#4b5563;font-size:.74rem;line-height:1.3}
+.forum-stat{text-align:center;font-weight:700;color:#374151}
+.forum-last{font-size:.72rem;color:#4b5563;line-height:1.3}
+.forum-last a{color:#00529b;font-weight:700;text-decoration:none}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center;padding:15px}
+.modal-box{background:#fff;max-width:420px;width:100%;border-radius:5px;padding:18px;box-shadow:0 10px 25px rgba(0,0,0,.2)}
+@media(max-width:768px){
+.forum-head{display:none}
+.forum-row{grid-template-columns:1fr;gap:6px}
+.forum-stat{text-align:left;font-size:.7rem;color:#666}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 </style>
 </head>
 <body>
@@ -108,6 +147,8 @@ header{padding:7px 10px;gap:5px}
 <div class="nav-item" onclick="apriSezione('tabella')">Tutte le Località</div>
 <div class="nav-item" onclick="apriSezione('webcam')">Webcam</div>
 <div class="nav-item" onclick="apriSezione('bollettino')">Comprensori</div>
+<div class="nav-item" onclick="apriSezione('community')">Community</div>
+
 </nav>
 <div class="breadcrumb">
 <span>Home › Previsioni Meteo › Italia › <strong>Abruzzo</strong></span>
@@ -203,11 +244,58 @@ header{padding:7px 10px;gap:5px}
 <div class="cam-link"><strong>Ovindoli Monte Magnola (1.450 - 2.220 m)</strong><span>30 km di piste • Altopiano delle Rocche</span></div>
 <div class="cam-link"><strong>Campo Imperatore (2.130 - 2.233 m)</strong><span>Gran Sasso d'Italia • L'Aquila</span></div>
 </div>
+  
+</div>
+</div>
+<div id="tab-community" class="tab-content">
+<div class="forum-top">
+<div id="forum-user-bar" style="font-size:.8rem;color:#333">Benvenuto ospite! Accedi o registrati per aprire nuove discussioni.</div>
+<div style="display:flex;gap:6px">
+<button class="forum-btn" onclick="apriAuth('login')">Accedi</button>
+<button class="forum-btn red" onclick="apriAuth('reg')">Registrati</button>
+</div>
+</div>
+
+<div class="forum-cat" id="forum-lista-stanze">
+<div class="forum-head">
+<div>Meteorologia</div>
+<div style="text-align:center">Argomenti</div>
+<div style="text-align:center">Messaggi</div>
+<div>Ultimo Messaggio</div>
+</div>
+<div id="forum-stanze-body"></div>
+</div>
+
+<div id="forum-stanza-aperta" style="display:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+<button class="forum-btn" onclick="chiudiStanza()">← Torna alle stanze del Forum</button>
+<button class="forum-btn red" onclick="nuovoPostPrompt()">+ Nuova Discussione</button>
+</div>
+<h3 id="stanza-titolo" style="color:#002b52;margin-bottom:10px;border-left:3px solid #c84b31;padding-left:8px"></h3>
+<div id="stanza-messaggi" style="display:flex;flex-direction:column;gap:8px"></div>
+</div>
 </div>
 </div>
 <footer>Neve in Abruzzo • Dati meteo aggiornati automaticamente</footer>
 </div>
+
+<div class="modal-bg" id="auth-modal">
+<div class="modal-box">
+<h3 id="auth-title" style="color:#002b52;margin-bottom:10px">Registrazione Community</h3>
+<input type="text" id="auth-user" placeholder="Nome utente (es. MeteoAquila)" style="width:100%;padding:8px;margin-bottom:8px;border:1px solid #ccc;border-radius:3px">
+<input type="email" id="auth-email" placeholder="Email" style="width:100%;padding:8px;margin-bottom:8px;border:1px solid #ccc;border-radius:3px">
+<input type="password" id="auth-pass" placeholder="Password (minimo 6 caratteri)" style="width:100%;padding:8px;margin-bottom:12px;border:1px solid #ccc;border-radius:3px">
+<div style="display:flex;justify-content:flex-end;gap:8px">
+<button class="forum-btn" style="background:#64748b" onclick="document.getElementById('auth-modal').style.display='none'">Annulla</button>
+<button class="forum-btn red" onclick="confermaAuth()">Conferma</button>
+</div>
+</div>
+</div>
 <script>
+const SB_HOST = ["myhnrsedacgjxgnmqjlc", "supabase", "co"].join(".");
+const SB_URL = "https://" + SB_HOST;
+const SB_KEY = "sb_publishable_aAldol4hiE3WKd-yqOSAvQ_oEwWsoEZ";
+
 const isMobile=window.innerWidth<=768;
 const oggi=isMobile?new Date().toLocaleDateString('it-IT'):new Date().toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
 document.getElementById('data-oggi').textContent=oggi.charAt(0).toUpperCase()+oggi.slice(1);
@@ -217,7 +305,7 @@ function apriSezione(nome){
 document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
 document.getElementById('tab-'+nome).classList.add('active');
 document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-const idx={home:0,tabella:1,webcam:2,bollettino:3}[nome];
+const idx={home:0,tabella:1,webcam:2,bollettino:3,community:4}[nome];
 if(idx!==undefined){
 document.querySelectorAll('.nav-item')[idx].classList.add('active');
 }
@@ -335,6 +423,136 @@ setInterval(aggiornaMeteo,60000);
 const wSub=["embed","windy","com"].join(".");
 const wPath=["","embed2.html"].join("/");
 document.getElementById("windy-frame").src="https://"+wSub+wPath+"?lat=42.000&lon=12.800&detailLat=42.000&detailLon=12.800&width=650&height=340&zoom=5&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1";
+const STANZE=[
+{id:"previsioni",titolo:"Previsioni meteo e meteorologia",desc:"Discussioni meteorologiche sul tempo previsto nei prossimi giorni, modelli e carte sinottiche.",mod:"NeveinAbruzzo"},
+{id:"nowcasting",titolo:"Nowcasting ABRUZZO e CENTRO-SUD",desc:"Stanza per discutere del nowcasting a breve termine in Abruzzo, Appennino e inviare segnalazioni live.",mod:"NeveinAbruzzo"},
+{id:"webcam",titolo:"Le migliori webcam LIVE",desc:"Segnala e mostra le webcam meteorologicamente più interessanti da montagne e località abruzzesi.",mod:"NeveinAbruzzo"},
+{id:"foto",titolo:"Mostra le tue foto migliori!",desc:"Condividi scatti di nevicate, temporali, galaverna e paesaggi invernali dell'Abruzzo.",mod:"NeveinAbruzzo"},
+{id:"principianti",titolo:"Per imparare: le domande dei principianti",desc:"Spazio dedicato a chi vuole capire carte meteo, termiche a 850hPa, cuscinetto freddo e nivometria.",mod:"NeveinAbruzzo"},
+{id:"lamenti",titolo:"Lamenti e pianti meteo",desc:"Stanza dove sfogare la propria tristezza o sconforto quando l'anticiclone mangia la neve.",mod:"NeveinAbruzzo"}
+];
+
+let utenteForum=JSON.parse(localStorage.getItem("forum_user")||"null");
+let modalMode="reg";
+let stanzaCorrente=null;
+let tuttiPost=[];
+
+function aggiornaBarraUtente(){
+const bar=document.getElementById("forum-user-bar");
+if(utenteForum){
+bar.innerHTML='Ciao <strong>'+utenteForum.nome+'</strong> ('+utenteForum.email+') • <a href="#" onclick="logoutForum();return false" style="color:#c84b31;font-weight:bold">Esci</a>';
+}else{
+bar.innerHTML='Benvenuto ospite! <strong>Registrati</strong> o <strong>Accedi</strong> per aprire discussioni e rispondere.';
+}
+}
+
+function apriAuth(modo){
+modalMode=modo;
+document.getElementById("auth-title").textContent=modo==="reg"?"Registrazione Community":"Accedi al Forum";
+document.getElementById("auth-user").style.display=modo==="reg"?"block":"none";
+document.getElementById("auth-modal").style.display="flex";
+}
+
+async function confermaAuth(){
+const nome=document.getElementById("auth-user").value.trim();
+const email=document.getElementById("auth-email").value.trim();
+const password=document.getElementById("auth-pass").value.trim();
+if(!email||!password||(modalMode==="reg"&&!nome)){alert("Compila tutti i campi.");return;}
+const endpoint=modalMode==="reg"?"/auth/v1/signup":"/auth/v1/token?grant_type=password";
+const body=modalMode==="reg"?{email,password,data:{username:nome}}:{email,password};
+const res=await fetch(SB_URL+endpoint,{
+method:"POST",
+headers:{"apikey":SB_KEY,"Content-Type":"application/json"},
+body:JSON.stringify(body)
+});
+const data=await res.json();
+if(!res.ok){alert("Errore: "+(data.msg||data.error_description||"Credenziali non valide"));return;}
+const userName=(data.user&&data.user.user_metadata&&data.user.user_metadata.username)||nome||email.split("@");
+utenteForum={nome:userName,email:email,token:data.access_token};
+localStorage.setItem("forum_user",JSON.stringify(utenteForum));
+document.getElementById("auth-modal").style.display="none";
+aggiornaBarraUtente();
+}
+
+function logoutForum(){
+utenteForum=null;
+localStorage.removeItem("forum_user");
+aggiornaBarraUtente();
+}
+
+async function caricaForum(){
+aggiornaBarraUtente();
+try{
+const r=await fetch(SB_URL+"/rest/v1/forum_posts?select=*&order=created_at.desc",{
+headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}
+});
+if(r.ok)tuttiPost=await r.json();
+}catch(e){}
+let html="";
+STANZE.forEach(s=>{
+const postsStanza=tuttiPost.filter(p=>p.stanza===s.id);
+const ultimo=postsStanza.length>0?postsStanza:null;
+const lastHtml=ultimo
+?'<a href="#" onclick="apriStanza(\''+s.id+'\');return false">'+ultimo.titolo+'</a><br>da <strong>'+ultimo.autore+'</strong><br><small>'+new Date(ultimo.created_at).toLocaleString("it-IT",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})+'</small>'
+:'<span style="color:#9ca3af">Nessun messaggio ancora</span>';
+html+='<div class="forum-row"><div class="forum-room" onclick="apriStanza(\''+s.id+'\')"><div class="forum-ico">💬</div><div><strong>'+s.titolo+'</strong><p>'+s.desc+'</p><small style="color:#6b7280">Moderatore: '+s.mod+'</small></div></div><div class="forum-stat">'+postsStanza.length+'</div><div class="forum-stat">'+postsStanza.length+'</div><div class="forum-last">'+lastHtml+'</div></div>';
+});
+document.getElementById("forum-stanze-body").innerHTML=html;
+}
+
+function apriStanza(id){
+stanzaCorrente=STANZE.find(s=>s.id===id);
+document.getElementById("forum-lista-stanze").style.display="none";
+document.getElementById("forum-stanza-aperta").style.display="block";
+document.getElementById("stanza-titolo").textContent=stanzaCorrente.titolo;
+mostraMessaggiStanza();
+}
+
+function chiudiStanza(){
+document.getElementById("forum-stanza-aperta").style.display="none";
+document.getElementById("forum-lista-stanze").style.display="block";
+caricaForum();
+}
+
+function mostraMessaggiStanza(){
+const lista=tuttiPost.filter(p=>p.stanza===stanzaCorrente.id);
+const box=document.getElementById("stanza-messaggi");
+if(lista.length===0){
+box.innerHTML='<div style="padding:15px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;color:#64748b">Nessuna discussione presente in questa stanza. Clicca su <strong>+ Nuova Discussione</strong> per iniziare!</div>';
+return;
+}
+box.innerHTML=lista.map(p=>'<div style="background:#fff;border:1px solid #dce4ec;border-left:4px solid #00529b;padding:12px;border-radius:4px"><div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:.75rem;color:#64748b"><span>Autore: <strong style="color:#002b52">'+p.autore+'</strong></span><span>'+new Date(p.created_at).toLocaleString("it-IT")+'</span></div><div style="font-weight:700;color:#c84b31;font-size:.9rem;margin-bottom:4px">'+p.titolo+'</div><div style="font-size:.82rem;color:#222;line-height:1.4">'+p.testo+'</div></div>').join("");
+}
+
+async function nuovoPostPrompt(){
+if(!utenteForum){alert("Devi prima registrarti o accedere per scrivere nel forum!");apriAuth("reg");return;}
+const titolo=prompt("Titolo della discussione (es. Neve in arrivo domenica?):");
+if(!titolo)return;
+const testo=prompt("Scrivi il tuo messaggio:");
+if(!testo)return;
+const r=await fetch(SB_URL+"/rest/v1/forum_posts",{
+method:"POST",
+headers:{
+"apikey":SB_KEY,
+"Authorization":"Bearer "+(utenteForum.token||SB_KEY),
+"Content-Type":"application/json",
+"Prefer":"return=representation"
+},
+body:JSON.stringify({stanza:stanzaCorrente.id,autore:utenteForum.nome,titolo:titolo,testo:testo})
+});
+if(r.ok){
+const nuovo=await r.json();
+tuttiPost.unshift(nuovo);
+mostraMessaggiStanza();
+}else{
+alert("Errore durante la pubblicazione del messaggio.");
+}
+}
+
+caricaForum();
 </script>
 </body>
 </html>
+
+
+
