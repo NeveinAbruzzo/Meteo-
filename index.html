@@ -52,30 +52,43 @@ header{padding:18px 25px;display:flex;justify-content:space-between;align-items:
 .cam-link span{font-size:.78rem;color:#666}
 .live-bar{text-align:center;font-size:.82rem;color:#555;background:#f4f7fa;padding:8px;border-radius:4px;border:1px solid #dce4ec}
 footer{padding:15px 25px;background:#f4f7fa;border-top:1px solid #dce4ec;font-size:.78rem;color:#666;text-align:center;margin-top:30px}
+
+@media(max-width:768px){
+header{padding:10px 12px;gap:6px}
+.logo-badge{font-size:1.1rem;padding:4px 8px}
+.logo-sub{display:none}
+.header-right{width:100%;justify-content:space-between;gap:6px}
+.mini-ext{padding:2px 6px!important;font-size:.68rem!important}
+.mini-ext strong{font-size:.76rem!important}
+#data-oggi{font-size:.7rem!important}
+}
+
+  
 </style>
 </head>
 <body>
 <div class="page-wrap">
 <div class="ticker-wrap"><div class="ticker" id="ticker-box">Caricamento dati meteo Abruzzo...</div></div>
 
+
 <header>
 <div class="logo-box">
 <div class="logo-badge">Neve in Abruzzo<span>.it</span></div>
 <div class="logo-sub">Bollettini neve, webcam e temperature live</div>
 </div>
-<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-<div style="display:flex;gap:8px;align-items:center;font-size:.78rem">
-<div style="background:#fff5f5;border:1px solid #fecaca;border-left:3px solid #e63946;padding:4px 9px;border-radius:4px;line-height:1.2">
-<span style="color:#666;font-weight:600">MAX:</span> <strong id="max-temp" style="color:#e63946;font-size:.9rem">--°C</strong> <span id="max-city" style="color:#444">...</span>
+<div class="header-right" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<div style="display:flex;gap:5px;align-items:center">
+<div class="mini-ext" style="background:#fff5f5;border:1px solid #fecaca;border-left:3px solid #e63946;padding:3px 8px;border-radius:4px;font-size:.75rem;line-height:1.2">
+<span style="color:#666;font-weight:600">MAX:</span> <strong id="max-temp" style="color:#e63946;font-size:.85rem">--°C</strong> <span id="max-city" style="color:#444">...</span>
 </div>
-<div style="background:#f0f9ff;border:1px solid #bae6fd;border-left:3px solid #0088cc;padding:4px 9px;border-radius:4px;line-height:1.2">
-<span style="color:#666;font-weight:600">MIN:</span> <strong id="min-temp" style="color:#0077cc;font-size:.9rem">--°C</strong> <span id="min-city" style="color:#444">...</span>
+<div class="mini-ext" style="background:#f0f9ff;border:1px solid #bae6fd;border-left:3px solid #0088cc;padding:3px 8px;border-radius:4px;font-size:.75rem;line-height:1.2">
+<span style="color:#666;font-weight:600">MIN:</span> <strong id="min-temp" style="color:#0077cc;font-size:.85rem">--°C</strong> <span id="min-city" style="color:#444">...</span>
 </div>
 </div>
-<div id="data-oggi" style="font-weight:bold;color:#00529b;font-size:.85rem"></div>
+<div id="data-oggi" style="font-weight:bold;color:#00529b;font-size:.8rem"></div>
 </div>
 </header>
--
+
 
   
 <nav class="main-nav">
