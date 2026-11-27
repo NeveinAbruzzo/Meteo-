@@ -74,6 +74,15 @@ header{padding:7px 10px;gap:5px}
 .logo-badge{font-size:.88rem;padding:4px 7px}
 .logo-sub{display:none}
 .header-right{gap:5px}
+
+.site-logo{height:44px;width:auto;max-width:210px;object-fit:contain;border-radius:4px;display:block}
+@media(max-width:768px){
+.site-logo{height:30px;max-width:135px}
+}
+
+
+
+ 
 .ext-stack{flex-direction:column;gap:2px}
 .mini-ext{padding:1px 5px;font-size:.6rem}
 #data-oggi{font-size:.62rem}
@@ -90,10 +99,15 @@ header{padding:7px 10px;gap:5px}
 <div class="page-wrap">
 <div class="ticker-wrap"><div class="ticker" id="ticker-box">Caricamento dati meteo Abruzzo...</div></div>
 <header>
+
+
+ 
 <div class="logo-box">
-<div class="logo-badge">Neve in Abruzzo<span>.it</span></div>
+<img src="./logo.png" alt="Neve in Abruzzo" class="site-logo">
 <div class="logo-sub">Bollettini neve, webcam e temperature live</div>
 </div>
+
+ 
 <div class="header-right">
 <div class="ext-stack">
 <div class="mini-ext hot"><span>MAX</span> <strong id="max-temp">--°C</strong> <span id="max-city">...</span></div>
