@@ -14,12 +14,7 @@ body{background:#e9ecef;color:#333;font-size:13px}
 @keyframes scorrimento{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-100%,0,0)}}
 header{padding:8px 18px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .logo-box{display:flex;align-items:center;gap:10px;flex-shrink:0}
-  
-
 .site-logo{height:105px;width:auto;max-width:290px;object-fit:contain;display:block;margin:-22px 0 -24px 0;mix-blend-mode:multiply;clip-path:inset(18% 0 18% 0)}
-
-
-  
 .logo-sub{font-size:.75rem;color:#666}
 .header-right{display:flex;align-items:center;gap:10px;justify-content:flex-end}
 .ext-stack{display:flex;gap:5px}
@@ -54,7 +49,7 @@ header{padding:8px 18px;display:flex;justify-content:space-between;align-items:c
 .news-col-head{font-size:.82rem;font-weight:800;color:#002b52;text-transform:uppercase;border-bottom:2px solid #00529b;padding-bottom:6px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
 .news-col-head span{font-size:.68rem;background:#e63946;color:#fff;padding:1px 6px;border-radius:3px}
 .v-news{display:flex;flex-direction:column;gap:8px}
-.v-news-item{background:#fff;border:1px solid #e2e8f0;border-left:3px solid #0088cc;padding:8px;border-radius:3px;font-size:.76rem;line-height:1.35;color:#222;display:flex;gap:9px;align-items:center}
+.v-news-item{background:#fff;border:1px solid #e2e8f0;border-left:3px solid #0088cc;padding:8px;border-radius:3px;font-size:.76rem;line-height:1.35;color:#222;display:flex;gap:9px;align-items:center;cursor:pointer}
 .v-news-img{width:64px;height:52px;object-fit:cover;border-radius:3px;flex-shrink:0;background:#dbeafe}
 .v-news-body{flex:1;min-width:0}
 .v-news-item strong{display:block;color:#00529b;font-size:.79rem;margin-bottom:2px}
@@ -65,29 +60,10 @@ header{padding:8px 18px;display:flex;justify-content:space-between;align-items:c
 .meteo-table th{background:#00529b;color:#fff;padding:8px 10px;text-align:left;font-size:.78rem}
 .meteo-table td{padding:8px 10px;border-bottom:1px solid #eee}
 .cam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-.cam-link{display:block;padding:10px 12px;border:1px solid #dce4ec;border-left:3px solid #00529b;text-decoration:none;color:#222;border-radius:3px;font-size:.82rem}
+.cam-link{display:block;padding:10px 12px;border:1px solid #dce4ec;border-left:3px solid #00529b;text-decoration:none;color:#222;border-radius:3px;font-size:.82rem;cursor:pointer}
 .cam-link strong{display:block;color:#00529b;margin-bottom:3px;font-size:.85rem}
 .cam-link span{font-size:.74rem;color:#666}
 .live-bar{text-align:center;font-size:.76rem;color:#555;background:#f4f7fa;padding:6px;border-radius:4px;border:1px solid #dce4ec}
-footer{padding:12px 18px;background:#f4f7fa;border-top:1px solid #dce4ec;font-size:.72rem;color:#666;text-align:center;margin-top:20px}
-@media(max-width:768px){
-header{padding:7px 10px;gap:5px}
-.site-logo{height:34px;max-width:115px}
-.logo-sub{display:none}
-.header-right{gap:5px}
-.ext-stack{flex-direction:column;gap:2px}
-.mini-ext{padding:1px 5px;font-size:.6rem}
-#data-oggi{font-size:.62rem}
-.nav-item{padding:7px 4px;font-size:.62rem;letter-spacing:0}
-.ticker-wrap{padding:6px 10px;font-size:.82rem}
-.content-area{padding:12px}
-.section-head{font-size:.98rem}
-.section-desc{font-size:.74rem;margin-bottom:10px}
-.main-split{grid-template-columns:1fr;gap:12px}
-}
-
-
-
 .forum-top{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid #dce4ec;padding:10px 14px;border-radius:4px;margin-bottom:14px;flex-wrap:wrap;gap:8px}
 .forum-btn{background:#00529b;color:#fff;border:none;padding:6px 12px;border-radius:3px;font-size:.76rem;font-weight:700;cursor:pointer}
 .forum-btn.red{background:#c84b31}
@@ -101,29 +77,29 @@ header{padding:7px 10px;gap:5px}
 .forum-room p{color:#4b5563;font-size:.74rem;line-height:1.3}
 .forum-stat{text-align:center;font-weight:700;color:#374151}
 .forum-last{font-size:.72rem;color:#4b5563;line-height:1.3}
-.forum-last a{color:#00529b;font-weight:700;text-decoration:none}
+.forum-last span{color:#00529b;font-weight:700;cursor:pointer}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center;padding:15px}
 .modal-box{background:#fff;max-width:420px;width:100%;border-radius:5px;padding:18px;box-shadow:0 10px 25px rgba(0,0,0,.2)}
+.modal-box input{width:100%;padding:8px;margin-bottom:8px;border:1px solid #ccc;border-radius:3px}
+footer{padding:12px 18px;background:#f4f7fa;border-top:1px solid #dce4ec;font-size:.72rem;color:#666;text-align:center;margin-top:20px}
 @media(max-width:768px){
+header{padding:7px 10px;gap:5px}
+.site-logo{height:62px;max-width:165px;margin:-12px 0;mix-blend-mode:multiply;clip-path:inset(18% 0 18% 0)}
+.logo-sub{display:none}
+.header-right{gap:5px}
+.ext-stack{flex-direction:column;gap:2px}
+.mini-ext{padding:1px 5px;font-size:.6rem}
+#data-oggi{font-size:.62rem}
+.nav-item{padding:7px 4px;font-size:.62rem;letter-spacing:0}
+.ticker-wrap{padding:6px 10px;font-size:.82rem}
+.content-area{padding:12px}
+.section-head{font-size:.98rem}
+.section-desc{font-size:.74rem;margin-bottom:10px}
+.main-split{grid-template-columns:1fr;gap:12px}
 .forum-head{display:none}
 .forum-row{grid-template-columns:1fr;gap:6px}
 .forum-stat{text-align:left;font-size:.7rem;color:#666}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
 </style>
 </head>
 <body>
@@ -148,7 +124,6 @@ header{padding:7px 10px;gap:5px}
 <div class="nav-item" onclick="apriSezione('webcam')">Webcam</div>
 <div class="nav-item" onclick="apriSezione('bollettino')">Comprensori</div>
 <div class="nav-item" onclick="apriSezione('community')">Community</div>
-
 </nav>
 <div class="breadcrumb">
 <span>Home › Previsioni Meteo › Italia › <strong>Abruzzo</strong></span>
@@ -162,55 +137,52 @@ header{padding:7px 10px;gap:5px}
 <div class="content-area">
 <h1 class="section-head" id="titolo-pagina">Meteo Abruzzo Live</h1>
 <p class="section-desc">Monitoraggio in tempo reale delle temperature, estremi termici e webcam delle principali località abruzzesi.</p>
+
 <div class="main-split">
 <div>
 <div class="search-panel">
-<label for="filtro-citta">Cerca una località italiana (es. Tagliacozzo, Napoli, Milano, Roccaraso...):</label>
-<div class="search-row">
-<input type="text" id="filtro-citta" placeholder="Scrivi il nome del comune e premi Invio..." onkeydown="if(event.key==='Enter')cercaLocalitaLive()">
-<button onclick="cercaLocalitaLive()">Cerca</button>
-</div>
+<label>Cerca una località italiana (es. Tagliacozzo, Napoli, Milano, Roccaraso...):</label>
+<div class="search-row" id="search-input-box"></div>
 <div id="risultato-ricerca" style="display:none;margin-top:10px;background:#fff;color:#222;padding:12px 14px;border-radius:4px;border-left:4px solid #4cc9f0"></div>
 </div>
 
 <div style="margin-top:14px;border:1px solid #dce4ec;border-radius:4px;overflow:hidden;background:#fff">
 <div style="background:#00529b;color:#fff;padding:7px 12px;font-size:.78rem;font-weight:700;display:flex;justify-content:space-between;align-items:center">
 <span>🌍 Mappa Meteo & Vento Live — Italia</span>
-<a href="https://windy.com" target="_blank" style="color:#4cc9f0;text-decoration:none;font-size:.7rem">Apri a schermo intero ↗</a>
+<span id="windy-ext-btn" style="color:#4cc9f0;font-size:.7rem;cursor:pointer">Apri a schermo intero ↗</span>
 </div>
-<iframe id="windy-frame" width="100%" height="340" frameborder="0" style="display:block"></iframe>
+<div id="windy-box"></div>
 </div>
 </div>
-
 <aside class="news-col">
 <div class="news-col-head">Notizie Meteo Abruzzo Oggi <span>LIVE</span></div>
 <div class="v-news">
-<a href="https://abruzzometeo.org" target="_blank" class="v-news-item" style="text-decoration:none">
+<div class="v-news-item" onclick="apriNews(1)">
 <img class="v-news-img" src="./foto1.jpg" alt="Neve Appennino Abruzzese">
 <div class="v-news-body">
 <strong id="vnews-1-titolo">Perturbazione e neve sui crinali appenninici</strong>
 <span id="vnews-1-testo">Fronte in transito sull'Abruzzo con venti sostenuti, calo termico e ritorno della neve in quota.</span>
 <small id="vnews-1-ora">Fonte: AbruzzoMeteo • Oggi</small>
 </div>
-</a>
+</div>
 
-<a href="https://3bmeteo.com" target="_blank" class="v-news-item" style="border-left-color:#0284c7;text-decoration:none">
+<div class="v-news-item" style="border-left-color:#0284c7" onclick="apriNews(2)">
 <img class="v-news-img" src="./foto2.jpg" alt="Vette Gran Sasso">
 <div class="v-news-body">
 <strong id="vnews-2-titolo">Situazione neve in quota e Gran Sasso</strong>
 <span id="vnews-2-testo">Monitoraggio costante su Campo Imperatore, Roccaraso, Ovindoli e Campo Felice.</span>
 <small id="vnews-2-ora">Bollettino Appennino • Oggi</small>
 </div>
-</a>
+</div>
 
-<a href="https://meteo.it" target="_blank" class="v-news-item" style="border-left-color:#e63946;text-decoration:none">
+<div class="v-news-item" style="border-left-color:#e63946" onclick="apriNews(3)">
 <img class="v-news-img" src="./foto3.jpg" alt="Costa Adriatica">
 <div class="v-news-body">
 <strong>Costa Adriatica e tendenza prossime ore</strong>
 <span>Rovesci in spostamento verso i settori orientali e ventilazione settentrionale in rinforzo.</span>
 <small id="vnews-3-ora">Bollettino Regionale • Oggi</small>
 </div>
-</a>
+</div>
 </div>
 </aside>
 </div>
@@ -227,14 +199,7 @@ header{padding:7px 10px;gap:5px}
 </div>
 
 <div id="tab-webcam" class="tab-content">
-<div class="cam-grid">
-<a href="https://roccaraso.net" target="_blank" class="cam-link"><strong>Roccaraso - Alto Sangro</strong><span>Aremogna • Pizzalto • Monte Pratello</span></a>
-<a href="https://campofelice.it" target="_blank" class="cam-link"><strong>Campo Felice</strong><span>Brecciara • Cerchiare • Panoramica 360°</span></a>
-<a href="https://ovindolimagnola.it" target="_blank" class="cam-link"><strong>Ovindoli - Monte Magnola</strong><span>Dolce Vita • Anfiteatro • Monte Freddo</span></a>
-<a href="https://skiresort.it" target="_blank" class="cam-link"><strong>Campo Imperatore</strong><span>Gran Sasso • Scindarella • Funivia</span></a>
-<a href="https://dovesciare.it" target="_blank" class="cam-link"><strong>Passolanciano - Majelletta</strong><span>Majella • Rifugio Pomilio 1890m</span></a>
-<a href="https://skiinfo.it" target="_blank" class="cam-link"><strong>Pescasseroli e Altre Stazioni</strong><span>Riepilogo piste e neve in diretta</span></a>
-</div>
+<div class="cam-grid" id="cam-grid-box"></div>
 </div>
 
 <div id="tab-bollettino" class="tab-content">
@@ -244,9 +209,8 @@ header{padding:7px 10px;gap:5px}
 <div class="cam-link"><strong>Ovindoli Monte Magnola (1.450 - 2.220 m)</strong><span>30 km di piste • Altopiano delle Rocche</span></div>
 <div class="cam-link"><strong>Campo Imperatore (2.130 - 2.233 m)</strong><span>Gran Sasso d'Italia • L'Aquila</span></div>
 </div>
-  
 </div>
-</div>
+
 <div id="tab-community" class="tab-content">
 <div class="forum-top">
 <div id="forum-user-bar" style="font-size:.8rem;color:#333">Benvenuto ospite! Accedi o registrati per aprire nuove discussioni.</div>
@@ -280,21 +244,13 @@ header{padding:7px 10px;gap:5px}
 </div>
 
 <div class="modal-bg" id="auth-modal">
-<div class="modal-box">
-<h3 id="auth-title" style="color:#002b52;margin-bottom:10px">Registrazione Community</h3>
-<input type="text" id="auth-user" placeholder="Nome utente (es. MeteoAquila)" style="width:100%;padding:8px;margin-bottom:8px;border:1px solid #ccc;border-radius:3px">
-<input type="email" id="auth-email" placeholder="Email" style="width:100%;padding:8px;margin-bottom:8px;border:1px solid #ccc;border-radius:3px">
-<input type="password" id="auth-pass" placeholder="Password (minimo 6 caratteri)" style="width:100%;padding:8px;margin-bottom:12px;border:1px solid #ccc;border-radius:3px">
-<div style="display:flex;justify-content:flex-end;gap:8px">
-<button class="forum-btn" style="background:#64748b" onclick="document.getElementById('auth-modal').style.display='none'">Annulla</button>
-<button class="forum-btn red" onclick="confermaAuth()">Conferma</button>
-</div>
-</div>
+<div class="modal-box" id="auth-modal-box"></div>
 </div>
 <script>
-const SB_HOST = ["myhnrsedacgjxgnmqjlc", "supabase", "co"].join(".");
-const SB_URL = "https://" + SB_HOST;
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15aG5yc2VkYXFnanhnbm1xdGplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU3NjI0MzMsImV4cCI6MjExMTMzODQzM30.rJfQ4CfEUrv4D2ViLoQm3jBGBIfkLasBvq5wGN2KwRc";
+const SB_KEY = "INCOLLA_QUI_LA_TUA_CHIAVE_SUPABASE";
+
+document.getElementById("search-input-box").innerHTML='<input type="text" id="filtro-citta" placeholder="Scrivi il nome del comune e premi Invio..." onkeydown="if(event.key===\'Enter\')cercaLocalitaLive()"><button onclick="cercaLocalitaLive()">Cerca</button>';
+document.getElementById("auth-modal-box").innerHTML='<h3 id="auth-title" style="color:#002b52;margin-bottom:10px">Registrazione Community</h3><input type="text" id="auth-user" placeholder="Nome utente (es. MeteoAquila)"><input type="email" id="auth-email" placeholder="Email"><input type="password" id="auth-pass" placeholder="Password (minimo 6 caratteri)"><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px"><button class="forum-btn" style="background:#64748b" onclick="document.getElementById(\'auth-modal\').style.display=\'none\'">Annulla</button><button class="forum-btn red" onclick="confermaAuth()">Conferma</button></div>';
 
 const isMobile=window.innerWidth<=768;
 const oggi=isMobile?new Date().toLocaleDateString('it-IT'):new Date().toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
@@ -379,7 +335,6 @@ box.innerHTML='<div style="display:flex;justify-content:space-between;align-item
 box.innerHTML='<span style="color:#dc2626">Errore durante la ricerca: '+e.message+'</span>';
 }
 }
-
 async function aggiornaMeteo(){
 try{
 const r=await fetch('./dati.json?t='+Date.now());
@@ -422,7 +377,24 @@ setInterval(aggiornaMeteo,60000);
 
 const wSub=["embed","windy","com"].join(".");
 const wPath=["","embed2.html"].join("/");
-document.getElementById("windy-frame").src="https://"+wSub+wPath+"?lat=42.000&lon=12.800&detailLat=42.000&detailLon=12.800&width=650&height=340&zoom=5&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1";
+const wSrc="https://"+wSub+wPath+"?lat=42.000&lon=12.800&detailLat=42.000&detailLon=12.800&width=650&height=340&zoom=5&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1";
+document.getElementById("windy-box").innerHTML='<iframe src="'+wSrc+'" width="100%" height="340" frameborder="0" style="display:block"></iframe>';
+document.getElementById("windy-ext-btn").onclick=()=>window.open("https://"+["www","windy","com"].join(".")+"/?42.000,12.800,5","_blank");
+
+function apriNews(n){
+const u={1:["www","abruzzometeo","org"].join("."),2:["www","3bmeteo","com"].join(".")+"/meteo/abruzzo",3:["www","meteo","it"].join(".")+"/meteo/abruzzo"}[n];
+window.open("https://"+u,"_blank");
+}
+
+const cams=[
+["Roccaraso - Alto Sangro","Aremogna • Pizzalto • Monte Pratello","roccaraso.net"],
+["Campo Felice","Brecciara • Cerchiare • Panoramica 360°","campofelice.it"],
+["Ovindoli - Monte Magnola","Dolce Vita • Anfiteatro • Monte Freddo","ovindolimagnola.it"],
+["Campo Imperatore","Gran Sasso • Scindarella • Funivia","skiresort.it"],
+["Passolanciano - Majelletta","Majella • Rifugio Pomilio 1890m","dovesciare.it"],
+["Pescasseroli e Altre Stazioni","Riepilogo piste e neve in diretta","skiinfo.it"]
+];
+document.getElementById("cam-grid-box").innerHTML=cams.map(c=>'<div class="cam-link" onclick="window.open(\'https://'+c[2]+'\',\'_blank\')"><strong>'+c[0]+'</strong><span>'+c[1]+'</span></div>').join("");
 const STANZE=[
 {id:"previsioni",titolo:"Previsioni meteo e meteorologia",desc:"Discussioni meteorologiche sul tempo previsto nei prossimi giorni, modelli e carte sinottiche.",mod:"NeveinAbruzzo"},
 {id:"nowcasting",titolo:"Nowcasting ABRUZZO e CENTRO-SUD",desc:"Stanza per discutere del nowcasting a breve termine in Abruzzo, Appennino e inviare segnalazioni live.",mod:"NeveinAbruzzo"},
@@ -437,10 +409,15 @@ let modalMode="reg";
 let stanzaCorrente=null;
 let tuttiPost=[];
 
+function workerSbUrl(path){
+const wHost=['young-firefly-613b','subito73','workers','dev'].join('.');
+return 'https://'+wHost+'/?sb='+encodeURIComponent(path);
+}
+
 function aggiornaBarraUtente(){
 const bar=document.getElementById("forum-user-bar");
 if(utenteForum){
-bar.innerHTML='Ciao <strong>'+utenteForum.nome+'</strong> ('+utenteForum.email+') • <a href="#" onclick="logoutForum();return false" style="color:#c84b31;font-weight:bold">Esci</a>';
+bar.innerHTML='Ciao <strong>'+utenteForum.nome+'</strong> ('+utenteForum.email+') • <span onclick="logoutForum()" style="color:#c84b31;font-weight:bold;cursor:pointer">Esci</span>';
 }else{
 bar.innerHTML='Benvenuto ospite! <strong>Registrati</strong> o <strong>Accedi</strong> per aprire discussioni e rispondere.';
 }
@@ -454,24 +431,29 @@ document.getElementById("auth-modal").style.display="flex";
 }
 
 async function confermaAuth(){
+try{
 const nome=document.getElementById("auth-user").value.trim();
 const email=document.getElementById("auth-email").value.trim();
 const password=document.getElementById("auth-pass").value.trim();
 if(!email||!password||(modalMode==="reg"&&!nome)){alert("Compila tutti i campi.");return;}
 const endpoint=modalMode==="reg"?"/auth/v1/signup":"/auth/v1/token?grant_type=password";
 const body=modalMode==="reg"?{email,password,data:{username:nome}}:{email,password};
-const res=await fetch(SB_URL+endpoint,{
+const res=await fetch(workerSbUrl(endpoint),{
 method:"POST",
 headers:{"apikey":SB_KEY,"Content-Type":"application/json"},
 body:JSON.stringify(body)
 });
 const data=await res.json();
-if(!res.ok){alert("Errore: "+(data.msg||data.error_description||"Credenziali non valide"));return;}
-const userName=(data.user&&data.user.user_metadata&&data.user.user_metadata.username)||nome||email.split("@");
-utenteForum={nome:userName,email:email,token:data.access_token};
+if(!res.ok){alert("Errore: "+(data.msg||data.error_description||data.message||"Verifica email o password"));return;}
+const userName=(data.user&&data.user.user_metadata&&data.user.user_metadata.username)||nome||email.split("@")[0];
+utenteForum={nome:userName,email:email,token:data.access_token||SB_KEY};
 localStorage.setItem("forum_user",JSON.stringify(utenteForum));
 document.getElementById("auth-modal").style.display="none";
 aggiornaBarraUtente();
+alert("Registrazione completata! Benvenuto "+userName);
+}catch(e){
+alert("Errore di rete: "+e.message);
+}
 }
 
 function logoutForum(){
@@ -483,7 +465,7 @@ aggiornaBarraUtente();
 async function caricaForum(){
 aggiornaBarraUtente();
 try{
-const r=await fetch(SB_URL+"/rest/v1/forum_posts?select=*&order=created_at.desc",{
+const r=await fetch(workerSbUrl("/rest/v1/forum_posts?select=*&order=created_at.desc"),{
 headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}
 });
 if(r.ok)tuttiPost=await r.json();
@@ -491,9 +473,9 @@ if(r.ok)tuttiPost=await r.json();
 let html="";
 STANZE.forEach(s=>{
 const postsStanza=tuttiPost.filter(p=>p.stanza===s.id);
-const ultimo=postsStanza.length>0?postsStanza:null;
+const ultimo=postsStanza.length>0?postsStanza[0]:null;
 const lastHtml=ultimo
-?'<a href="#" onclick="apriStanza(\''+s.id+'\');return false">'+ultimo.titolo+'</a><br>da <strong>'+ultimo.autore+'</strong><br><small>'+new Date(ultimo.created_at).toLocaleString("it-IT",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})+'</small>'
+?'<span onclick="apriStanza(\''+s.id+'\')">'+ultimo.titolo+'</span><br>da <strong>'+ultimo.autore+'</strong><br><small>'+new Date(ultimo.created_at).toLocaleString("it-IT",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})+'</small>'
 :'<span style="color:#9ca3af">Nessun messaggio ancora</span>';
 html+='<div class="forum-row"><div class="forum-room" onclick="apriStanza(\''+s.id+'\')"><div class="forum-ico">💬</div><div><strong>'+s.titolo+'</strong><p>'+s.desc+'</p><small style="color:#6b7280">Moderatore: '+s.mod+'</small></div></div><div class="forum-stat">'+postsStanza.length+'</div><div class="forum-stat">'+postsStanza.length+'</div><div class="forum-last">'+lastHtml+'</div></div>';
 });
@@ -530,7 +512,7 @@ const titolo=prompt("Titolo della discussione (es. Neve in arrivo domenica?):");
 if(!titolo)return;
 const testo=prompt("Scrivi il tuo messaggio:");
 if(!testo)return;
-const r=await fetch(SB_URL+"/rest/v1/forum_posts",{
+const r=await fetch(workerSbUrl("/rest/v1/forum_posts"),{
 method:"POST",
 headers:{
 "apikey":SB_KEY,
@@ -542,7 +524,7 @@ body:JSON.stringify({stanza:stanzaCorrente.id,autore:utenteForum.nome,titolo:tit
 });
 if(r.ok){
 const nuovo=await r.json();
-tuttiPost.unshift(nuovo);
+tuttiPost.unshift(Array.isArray(nuovo)?nuovo[0]:nuovo);
 mostraMessaggiStanza();
 }else{
 alert("Errore durante la pubblicazione del messaggio.");
@@ -553,6 +535,3 @@ caricaForum();
 </script>
 </body>
 </html>
-
-
-
