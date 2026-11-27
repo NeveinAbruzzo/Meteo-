@@ -64,23 +64,24 @@ header{padding:8px 18px;display:flex;justify-content:space-between;align-items:c
 .cam-link strong{display:block;color:#00529b;margin-bottom:3px;font-size:.85rem}
 .cam-link span{font-size:.74rem;color:#666}
 .live-bar{text-align:center;font-size:.76rem;color:#555;background:#f4f7fa;padding:6px;border-radius:4px;border:1px solid #dce4ec}
-.forum-top{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid #dce4ec;padding:10px 14px;border-radius:4px;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-.forum-btn{background:#00529b;color:#fff;border:none;padding:6px 12px;border-radius:3px;font-size:.76rem;font-weight:700;cursor:pointer}
+.forum-top{display:flex;justify-content:space-between;align-items:center;background:#0f172a;color:#f1f5f9;border:1px solid #334155;padding:10px 14px;border-radius:4px;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.forum-btn{background:#0284c7;color:#fff;border:none;padding:6px 12px;border-radius:3px;font-size:.76rem;font-weight:700;cursor:pointer}
 .forum-btn.red{background:#c84b31}
-.forum-cat{border:1px solid #d1d5db;border-radius:4px;overflow:hidden;margin-bottom:18px;background:#fff}
+.forum-cat{border:1px solid #334155;border-radius:4px;overflow:hidden;margin-bottom:18px;background:#0f172a}
 .forum-head{display:grid;grid-template-columns:1fr 85px 85px 210px;background:#c84b31;color:#fff;font-size:.72rem;font-weight:800;padding:8px 12px;text-transform:uppercase;letter-spacing:.3px}
-.forum-row{display:grid;grid-template-columns:1fr 85px 85px 210px;border-bottom:1px solid #e5e7eb;padding:10px 12px;align-items:center;font-size:.78rem;transition:.15s}
-.forum-row:hover{background:#f8fafc}
+.forum-row{display:grid;grid-template-columns:1fr 85px 85px 210px;border-bottom:1px solid #1e293b;padding:10px 12px;align-items:center;font-size:.78rem;transition:.15s;background:#0f172a;color:#e2e8f0}
+.forum-row:hover{background:#1e293b}
 .forum-room{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
-.forum-ico{width:32px;height:32px;border-radius:50%;border:1px solid #cbd5e1;display:flex;align-items:center;justify-content:center;color:#00529b;font-weight:bold;flex-shrink:0;background:#f1f5f9}
-.forum-room strong{color:#00529b;font-size:.86rem;display:block;margin-bottom:2px}
-.forum-room p{color:#4b5563;font-size:.74rem;line-height:1.3}
-.forum-stat{text-align:center;font-weight:700;color:#374151}
-.forum-last{font-size:.72rem;color:#4b5563;line-height:1.3}
-.forum-last span{color:#00529b;font-weight:700;cursor:pointer}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center;padding:15px}
-.modal-box{background:#fff;max-width:420px;width:100%;border-radius:5px;padding:18px;box-shadow:0 10px 25px rgba(0,0,0,.2)}
-.modal-box input{width:100%;padding:8px;margin-bottom:8px;border:1px solid #ccc;border-radius:3px}
+.forum-ico{width:32px;height:32px;border-radius:50%;border:1px solid #334155;display:flex;align-items:center;justify-content:center;color:#38bdf8;font-weight:bold;flex-shrink:0;background:#1e293b}
+.forum-room strong{color:#38bdf8;font-size:.86rem;display:block;margin-bottom:2px}
+.forum-room p{color:#cbd5e1;font-size:.74rem;line-height:1.3}
+.forum-stat{text-align:center;font-weight:700;color:#f8fafc}
+.forum-last{font-size:.72rem;color:#94a3b8;line-height:1.3}
+.forum-last span{color:#38bdf8;font-weight:700;cursor:pointer}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:999;align-items:center;justify-content:center;padding:15px}
+.modal-box{background:#0f172a;color:#f1f5f9;border:1px solid #334155;max-width:420px;width:100%;border-radius:5px;padding:18px;box-shadow:0 10px 25px rgba(0,0,0,.4)}
+.modal-box input{width:100%;padding:8px;margin-bottom:8px;border:1px solid #334155;background:#1e293b;color:#fff;border-radius:3px}
+
 footer{padding:12px 18px;background:#f4f7fa;border-top:1px solid #dce4ec;font-size:.72rem;color:#666;text-align:center;margin-top:20px}
 @media(max-width:768px){
 header{padding:7px 10px;gap:5px}
@@ -231,6 +232,8 @@ header{padding:7px 10px;gap:5px}
 </div>
 
 <div id="forum-stanza-aperta" style="display:none">
+  <div id="forum-stanza-aperta" style="display:none;background:#0f172a;padding:14px;border-radius:5px;border:1px solid #334155">
+
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
 <button class="forum-btn" onclick="chiudiStanza()">← Torna alle stanze del Forum</button>
 <button class="forum-btn red" onclick="nuovoPostPrompt()">+ Nuova Discussione</button>
@@ -500,7 +503,7 @@ function mostraMessaggiStanza(){
 const principali=tuttiPost.filter(p=>p.stanza===stanzaCorrente.id && (!p.parent_id || p.parent_id===0));
 const box=document.getElementById("stanza-messaggi");
 if(principali.length===0){
-box.innerHTML='<div style="padding:15px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;color:#64748b">Nessuna discussione presente in questa stanza.</div>';
+box.innerHTML='<div style="padding:15px;background:#1e293b;border:1px solid #334155;border-radius:4px;color:#94a3b8">Nessuna discussione presente in questa stanza.</div>';
 return;
 }
 const isAdmin=utenteForum && utenteForum.ruolo==="admin";
@@ -509,11 +512,12 @@ const delBtn=isAdmin?'<button onclick="eliminaPost('+p.id+')" style="background:
 const replies=tuttiPost.filter(r=>r.parent_id===p.id).reverse();
 const repliesHtml=replies.map(r=>{
 const delRep=isAdmin?'<button onclick="eliminaPost('+r.id+')" style="background:#dc2626;color:#fff;border:none;padding:1px 6px;border-radius:3px;font-size:.64rem;cursor:pointer;margin-left:6px">🗑</button>':'';
-return '<div style="margin-top:8px;margin-left:18px;background:#f8fafc;border:1px solid #e2e8f0;border-left:3px solid #0088cc;padding:8px 10px;border-radius:3px"><div style="display:flex;justify-content:space-between;font-size:.7rem;color:#64748b;margin-bottom:3px"><span>↳ Risposta di <strong style="color:#002b52">'+r.autore+'</strong></span><span>'+new Date(r.created_at).toLocaleString("it-IT")+delRep+'</span></div><div style="font-size:.8rem;color:#222">'+r.testo+'</div></div>';
+return '<div style="margin-top:8px;margin-left:18px;background:#0f172a;border:1px solid #334155;border-left:3px solid #38bdf8;padding:8px 10px;border-radius:3px"><div style="display:flex;justify-content:space-between;font-size:.7rem;color:#94a3b8;margin-bottom:3px"><span>↳ Risposta di <strong style="color:#38bdf8">'+r.autore+'</strong></span><span>'+new Date(r.created_at).toLocaleString("it-IT")+delRep+'</span></div><div style="font-size:.8rem;color:#e2e8f0">'+r.testo+'</div></div>';
 }).join("");
-return '<div style="background:#fff;border:1px solid #dce4ec;border-left:4px solid #00529b;padding:12px;border-radius:4px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:.75rem;color:#64748b"><span>Autore: <strong style="color:#002b52">'+p.autore+'</strong></span><span>'+new Date(p.created_at).toLocaleString("it-IT")+delBtn+'</span></div><div style="font-weight:700;color:#c84b31;font-size:.9rem;margin-bottom:4px">'+p.titolo+'</div><div style="font-size:.82rem;color:#222;line-height:1.4;margin-bottom:8px">'+p.testo+'</div><button onclick="rispondiPost('+p.id+')" style="background:#00529b;color:#fff;border:none;padding:4px 10px;border-radius:3px;font-size:.72rem;font-weight:700;cursor:pointer">💬 Rispondi ('+replies.length+')</button>'+repliesHtml+'</div>';
+return '<div style="background:#1e293b;border:1px solid #334155;border-left:4px solid #38bdf8;padding:12px;border-radius:4px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:.75rem;color:#94a3b8"><span>Autore: <strong style="color:#38bdf8">'+p.autore+'</strong></span><span>'+new Date(p.created_at).toLocaleString("it-IT")+delBtn+'</span></div><div style="font-weight:700;color:#fb7185;font-size:.92rem;margin-bottom:4px">'+p.titolo+'</div><div style="font-size:.83rem;color:#f1f5f9;line-height:1.45;margin-bottom:8px">'+p.testo+'</div><button onclick="rispondiPost('+p.id+')" style="background:#0284c7;color:#fff;border:none;padding:4px 10px;border-radius:3px;font-size:.72rem;font-weight:700;cursor:pointer">💬 Rispondi ('+replies.length+')</button>'+repliesHtml+'</div>';
 }).join("");
 }
+
 
 async function rispondiPost(parentId){
 if(!utenteForum){alert("Devi prima registrarti o accedere per rispondere!");apriAuth("reg");return;}
