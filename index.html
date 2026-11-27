@@ -114,11 +114,12 @@ header{padding:7px 10px;gap:5px}
 <p class="section-desc">Monitoraggio in tempo reale delle temperature, estremi termici e webcam delle principali località abruzzesi.</p>
 
 <div class="search-panel">
-<label for="filtro-citta">Scrivi una località abruzzese per vedere subito la temperatura attuale:</label>
+<label for="filtro-citta">Cerca una località italiana (es. Tagliacozzo, Castel di Sangro, Giulianova, Roccaraso...):</label>
 <div class="search-row">
-<input type="text" id="filtro-citta" placeholder="Es. Roccaraso, L'Aquila, Campo Imperatore, Pescara..." onkeyup="filtraTabella()">
-<button onclick="apriSezione('tabella')">Cerca</button>
+<input type="text" id="filtro-citta" placeholder="Scrivi il nome del comune o località e premi Invio..." onkeydown="if(event.key==='Enter')cercaLocalitaLive()">
+<button onclick="cercaLocalitaLive()">Cerca</button>
 </div>
+<div id="risultato-ricerca" style="display:none;margin-top:10px;background:#fff;color:#222;padding:12px 14px;border-radius:4px;border-left:4px solid #4cc9f0"></div>
 </div>
 
 <div id="tab-home" class="tab-content active">
@@ -171,12 +172,16 @@ document.querySelectorAll('.nav-item')[idx].classList.add('active');
 }
 }
 
-function filtraTabella(){
-const q=document.getElementById('filtro-citta').value.toLowerCase();
-apriSezione('tabella');
-document.querySelectorAll('#tabella-body tr').forEach(tr=>{
-tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';
-});
+function descriviMeteo(c){
+if(c===undefined||c===null)return'☀ Condizioni variabili';
+if(c===0)return'☀ Cielo sereno';
+if(c>=1&&c<=3)return'⛅ Poco nuvoloso / Nuvoloso';
+if(c===45||c===48)return'🌫 Nebbia o foschia';
+if(c>=51&&c<=67)return'🌧 Pioggia';
+if((c>=71&&c<=77)||c===85||c===86)return'❄ Neve in corso';
+if(c>=80&&c<=82)return'🌦 Rovesci di pioggia';
+if(c>=95)return'⛈ Temporale';
+return'🌤 Variabile';
 }
 
 function coloreTemp(t){
@@ -199,6 +204,28 @@ if(t<=25)return'#c2410c';
 return'#dc2626';
 }
 
+async function cercaLocalitaLive(){
+const q=document.getElementById('filtro-citta').value.trim();
+const box=document.getElementById('risultato-ricerca');
+if(!q)return;
+box.style.display='block';
+box.innerHTML='<span style="color:#00529b;font-weight:600">Ricerca dati meteo per "'+q+'" in corso...</span>';
+try{
+const r=await fetch('https://workers.dev);
+const d=await r.json();
+if(d.errore){
+box.innerHTML='<span style="color:#dc2626;font-weight:600">Nessuna località trovata per "'+q+'". Controlla il nome e riprova.</span>';
+return;
+}
+const col=coloreTempTabella(d.attuale);
+const desc=descriviMeteo(d.code);
+const neveTxt=d.neve>0?' • ❄ Neve prevista: <strong>'+d.neve+' cm</strong>':'';
+box.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-bottom:1px solid #eee;padding-bottom:8px;margin-bottom:8px"><div><strong style="font-size:1.05rem;color:#002b52">'+d.nome+'</strong> <span style="font-size:.76rem;color:#666">('+d.regione+(d.quota?' • '+d.quota+'m':'')+')</span><div style="font-size:.85rem;color:#333;margin-top:2px">'+desc+'</div></div><div style="font-size:1.5rem;font-weight:800;color:'+col+'">'+d.attuale.toFixed(1)+'°C</div></div><div style="display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:#444"><span>Min/Max oggi: <strong style="color:#0077cc">'+d.min.toFixed(1)+'°C</strong> / <strong style="color:#e63946">'+d.max.toFixed(1)+'°C</strong></span><span>💨 Vento: <strong>'+d.vento+' km/h</strong></span><span>💧 Umidità: <strong>'+d.umidita+'%</strong></span><span>☔ Pioggia oggi: <strong>'+d.pioggia+' mm</strong>'+neveTxt+'</span></div>';
+}catch(e){
+box.innerHTML='<span style="color:#dc2626">Errore durante la ricerca: '+e.message+'</span>';
+}
+}
+
 async function aggiornaMeteo(){
 try{
 const r=await fetch('./dati.json?t='+Date.now());
@@ -210,8 +237,9 @@ if(d.temp===null||d.temp===undefined)return;
 const s=d.temp.toFixed(1)+'°C';
 const col=coloreTemp(d.temp);
 const colTab=coloreTempTabella(d.temp);
+const desc=descriviMeteo(d.code);
 tick+='<strong>'+d.nome+'</strong>: <span style="color:'+col+'">'+s+'</span>';
-tab+='<tr><td><strong>'+d.nome+'</strong></td><td style="text-align:right;font-weight:bold;color:'+colTab+'">'+s+'</td></tr>';
+tab+='<tr><td><strong>'+d.nome+'</strong> <span style="font-size:.75rem;color:#666">('+desc+')</span></td><td style="text-align:right;font-weight:bold;color:'+colTab+'">'+s+'</td></tr>';
 if(d.temp>max.t)max={t:d.temp,n:d.nome};
 if(d.temp<min.t)min={t:d.temp,n:d.nome};
 });
