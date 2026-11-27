@@ -18,7 +18,7 @@ header{padding:18px 25px;display:flex;justify-content:space-between;align-items:
 .logo-badge span{color:#4cc9f0}
 .logo-sub{font-size:.8rem;color:#666}
 .main-nav{display:flex;background:#00529b;border-bottom:3px solid #003b70;flex-wrap:wrap}
-.nav-item{flex:1;text-align:center;padding:12px 10px;color:#fff;font-weight:bold;font-size:.82rem;text-transform:uppercase;cursor:pointer;border-right:1px solid rgba(255,255,255,.15)}
+.nav-item{flex:1;text-align:center;padding:13px 10px;color:#fff;font-weight:bold;font-size:.84rem;text-transform:uppercase;cursor:pointer;border-right:1px solid rgba(255,255,255,.15);transition:.2s}
 .nav-item:hover{background:#0066c0}
 .nav-item.active{background:#0088cc;color:#fff;box-shadow:inset 0 -3px 0 #4cc9f0}
 .breadcrumb{padding:10px 25px;font-size:.78rem;color:#777;border-bottom:1px solid #eee}
@@ -29,12 +29,8 @@ header{padding:18px 25px;display:flex;justify-content:space-between;align-items:
 .content-area{padding:22px 25px}
 .section-head{border-left:4px solid #00529b;padding-left:12px;margin-bottom:8px;font-size:1.35rem;font-weight:700;color:#002b52}
 .section-desc{color:#666;font-size:.88rem;margin-bottom:20px}
-.search-panel{background:#00447c;border-radius:4px;overflow:hidden;margin-bottom:25px}
-.sub-tabs{display:flex;background:#002b52;border-bottom:2px solid #0088cc}
-.sub-tab{padding:10px 18px;color:#fff;font-weight:bold;font-size:.8rem;text-transform:uppercase;cursor:pointer}
-.sub-tab.active{background:#0088cc;color:#fff}
-.search-body{padding:18px 20px;color:#fff}
-.search-body label{display:block;font-weight:bold;margin-bottom:10px;font-size:.95rem}
+.search-panel{background:#00447c;border-radius:4px;padding:18px 20px;color:#fff;margin-bottom:25px}
+.search-panel label{display:block;font-weight:bold;margin-bottom:10px;font-size:.95rem}
 .search-row{display:flex;gap:8px}
 .search-row input{flex:1;padding:10px 12px;border:none;border-radius:3px;font-size:.9rem}
 .search-row button{background:#0088cc;color:#fff;border:none;padding:0 20px;font-weight:bold;border-radius:3px;cursor:pointer;text-transform:uppercase}
@@ -68,10 +64,10 @@ footer{padding:15px 25px;background:#f4f7fa;border-top:1px solid #dce4ec;font-si
 <div id="data-oggi" style="font-weight:bold;color:#00529b;font-size:.85rem"></div>
 </header>
 <nav class="main-nav">
-<div class="nav-item active" onclick="apriSezione('home')">Home</div>
-<div class="nav-item" onclick="apriSezione('tabella')">Temperature Live</div>
-<div class="nav-item" onclick="apriSezione('webcam')">Webcam Piste</div>
-<div class="nav-item" onclick="apriSezione('bollettino')">Stazioni Sci</div>
+<div class="nav-item active" onclick="apriSezione('home')">Estremi Termici</div>
+<div class="nav-item" onclick="apriSezione('tabella')">Tutte le Località</div>
+<div class="nav-item" onclick="apriSezione('webcam')">Webcam</div>
+<div class="nav-item" onclick="apriSezione('bollettino')">Comprensori</div>
 </nav>
 <div class="breadcrumb">Home › Previsioni Meteo › Italia › <strong>Abruzzo</strong></div>
 <div class="news-strip">
@@ -84,18 +80,10 @@ footer{padding:15px 25px;background:#f4f7fa;border-top:1px solid #dce4ec;font-si
 <p class="section-desc">Monitoraggio in tempo reale delle temperature, estremi termici e webcam delle principali località abruzzesi.</p>
 
 <div class="search-panel">
-<div class="sub-tabs">
-<div class="sub-tab active" onclick="apriSezione('home')">Estremi Termici</div>
-<div class="sub-tab" onclick="apriSezione('tabella')">Tutte le Località</div>
-<div class="sub-tab" onclick="apriSezione('webcam')">Webcam</div>
-<div class="sub-tab" onclick="apriSezione('bollettino')">Comprensori</div>
-</div>
-<div class="search-body">
 <label for="filtro-citta">Scrivi una località abruzzese per vedere subito la temperatura attuale:</label>
 <div class="search-row">
 <input type="text" id="filtro-citta" placeholder="Es. Roccaraso, L'Aquila, Campo Imperatore, Pescara..." onkeyup="filtraTabella()">
 <button onclick="apriSezione('tabella')">Cerca</button>
-</div>
 </div>
 </div>
 
@@ -134,8 +122,9 @@ footer{padding:15px 25px;background:#f4f7fa;border-top:1px solid #dce4ec;font-si
 </div>
 </div>
 </div>
-<footer>Neve in Abruzzo • Dati meteo aggiornati automaticamente in tempo reale</footer>
+<footer>Neve in Abruzzo • Dati meteo aggiornati automaticamente</footer>
 </div>
+
 <script>
 const oggi=new Date().toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
 document.getElementById('data-oggi').textContent=oggi.charAt(0).toUpperCase()+oggi.slice(1);
@@ -145,11 +134,9 @@ function apriSezione(nome){
 document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
 document.getElementById('tab-'+nome).classList.add('active');
 document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-document.querySelectorAll('.sub-tab').forEach(s=>s.classList.remove('active'));
 const idx={home:0,tabella:1,webcam:2,bollettino:3}[nome];
 if(idx!==undefined){
 document.querySelectorAll('.nav-item')[idx].classList.add('active');
-document.querySelectorAll('.sub-tab')[idx].classList.add('active');
 }
 }
 
@@ -161,33 +148,21 @@ tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';
 });
 }
 
-const localita=[
-{nome:"L'Aquila",lat:42.35,lon:13.40},{nome:"Pescara",lat:42.46,lon:14.21},
-{nome:"Chieti",lat:42.35,lon:14.17},{nome:"Teramo",lat:42.66,lon:13.70},
-{nome:"Roccaraso",lat:41.85,lon:14.08},{nome:"Pescocostanzo",lat:41.89,lon:14.07},
-{nome:"Scanno",lat:41.90,lon:13.88},{nome:"Villetta Barrea",lat:41.78,lon:13.94},
-{nome:"Campo Imperatore",lat:42.44,lon:13.56},{nome:"Ovindoli",lat:42.14,lon:13.52},
-{nome:"Campo Felice",lat:42.22,lon:13.43},{nome:"Avezzano",lat:42.03,lon:13.43},
-{nome:"Sulmona",lat:42.05,lon:13.93},{nome:"Lanciano",lat:42.23,lon:14.39},
-{nome:"Vasto",lat:42.11,lon:14.71}
-];
-
 async function aggiornaMeteo(){
 try{
-const lats=localita.map(l=>l.lat).join(',');
-const lons=localita.map(l=>l.lon).join(',');
-const target=`https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`;
-const proxy=`https://allorigins.win{encodeURIComponent(target)}`;
-const r=await fetch(proxy);
-const dati=await r.json();
+const r=await fetch('./dati.json?t='+Date.now());
+if(!r.ok)throw new Error('In attesa del file dati.json');
+const json=await r.json();
 let tick='',tab='',max={t:-999,n:''},min={t:999,n:''};
-localita.forEach((l,i)=>{
-const t=dati.at(i).current.temperature_2m,s=t.toFixed(1)+'°C';
-tick+=l.nome+': <span>'+s+'</span>';
-tab+='<tr><td><strong>'+l.nome+'</strong></td><td style="text-align:right;font-weight:bold;color:#00529b">'+s+'</td></tr>';
-if(t>max.t)max={t,n:l.nome};
-if(t<min.t)min={t,n:l.nome};
+json.dati.forEach(d=>{
+if(d.temp===null||d.temp===undefined)return;
+const s=d.temp.toFixed(1)+'°C';
+tick+=d.nome+': <span>'+s+'</span>';
+tab+='<tr><td><strong>'+d.nome+'</strong></td><td style="text-align:right;font-weight:bold;color:#00529b">'+s+'</td></tr>';
+if(d.temp>max.t)max={t:d.temp,n:d.nome};
+if(d.temp<min.t)min={t:d.temp,n:d.nome};
 });
+if(max.n===''){throw new Error('Dati meteo ancora vuoti in dati.json');}
 document.getElementById('ticker-box').innerHTML=tick;
 document.getElementById('tabella-body').innerHTML=tab;
 document.getElementById('max-temp').textContent=max.t.toFixed(1)+'°C';
@@ -196,19 +171,13 @@ document.getElementById('min-temp').textContent=min.t.toFixed(1)+'°C';
 document.getElementById('min-city').textContent=min.n;
 document.getElementById('news-min').textContent='Gelo in Abruzzo: minima attuale di '+min.t.toFixed(1)+'°C a '+min.n;
 document.getElementById('news-max').textContent='Valore più mite: massima attuale di '+max.t.toFixed(1)+'°C a '+max.n;
-const ora=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
-document.getElementById('last-update').innerHTML='Dati aggiornati alle ore <strong>'+ora+'</strong> (aggiornamento automatico ogni 5 minuti)';
+document.getElementById('last-update').innerHTML='Dati reali aggiornati il <strong>'+json.ora+'</strong>';
 }catch(e){
-document.getElementById('last-update').textContent='Errore proxy: '+e.message;
+document.getElementById('last-update').textContent=e.message;
 }
 }
 aggiornaMeteo();
-setInterval(aggiornaMeteo,300000);
+setInterval(aggiornaMeteo,60000);
 </script>
 </body>
 </html>
-
-
-
-
-
