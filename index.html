@@ -159,9 +159,7 @@ document.querySelectorAll('.nav-item')[idx].classList.add('active');
 }
 }
 
-
-
-  function iconaMeteo(c){
+function iconaMeteo(c){
 if(c===undefined||c===null)return'☀';
 if(c===0)return'☀';
 if(c===1)return'🌤';
@@ -181,25 +179,6 @@ if(c===0)return'☀ Cielo sereno';
 if(c===1)return'🌤 Poco nuvoloso';
 if(c===2)return'⛅ Parzialmente nuvoloso';
 if(c===3)return'☁ Nuvoloso / Coperto';
-if(c===45||c===48)return'🌫 Nebbia o foschia';
-if(c>=51&&c<=67)return'🌧 Pioggia';
-if((c>=71&&c<=77)||c===85||c===86)return'❄ Neve in corso';
-if(c>=80&&c<=82)return'🌦 Rovesci di pioggia';
-if(c>=95)return'⛈ Temporale';
-return'🌤 Variabile';
-}
-
-
-
-
-
-
-
-  
-function descriviMeteo(c){
-if(c===undefined||c===null)return'☀ Condizioni variabili';
-if(c===0)return'☀ Cielo sereno';
-if(c>=1&&c<=3)return'⛅ Poco nuvoloso / Nuvoloso';
 if(c===45||c===48)return'🌫 Nebbia o foschia';
 if(c>=51&&c<=67)return'🌧 Pioggia';
 if((c>=71&&c<=77)||c===85||c===86)return'❄ Neve in corso';
@@ -263,7 +242,8 @@ const s=d.temp.toFixed(1)+'°C';
 const col=coloreTemp(d.temp);
 const colTab=coloreTempTabella(d.temp);
 const desc=descriviMeteo(d.code);
-tick+='<strong>'+d.nome+'</strong>: <span style="color:'+col+'">'+s+'</span>';
+const ico=iconaMeteo(d.code);
+tick+=ico+' <strong>'+d.nome+'</strong>: <span style="color:'+col+'">'+s+'</span>';
 tab+='<tr><td><strong>'+d.nome+'</strong> <span style="font-size:.75rem;color:#666">('+desc+')</span></td><td style="text-align:right;font-weight:bold;color:'+colTab+'">'+s+'</td></tr>';
 if(d.temp>max.t)max={t:d.temp,n:d.nome};
 if(d.temp<min.t)min={t:d.temp,n:d.nome};
@@ -287,3 +267,4 @@ setInterval(aggiornaMeteo,60000);
 </script>
 </body>
 </html>
+
