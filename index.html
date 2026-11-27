@@ -126,7 +126,15 @@ footer{padding:15px 25px;background:#f4f7fa;border-top:1px solid #dce4ec;font-si
 <footer>Neve in Abruzzo • Dati meteo aggiornati automaticamente</footer>
 </div>
 
-<script>
+
+
+
+
+
+
+
+
+  <script>
 const oggi=new Date().toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
 document.getElementById('data-oggi').textContent=oggi.charAt(0).toUpperCase()+oggi.slice(1);
 document.getElementById('titolo-pagina').textContent='Meteo Abruzzo '+oggi;
@@ -149,6 +157,26 @@ tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';
 });
 }
 
+function coloreTemp(t){
+if(t<=-5)return'#e879f9';
+if(t<=0)return'#c084fc';
+if(t<=5)return'#38bdf8';
+if(t<=12)return'#34d399';
+if(t<=18)return'#facc15';
+if(t<=25)return'#fb923c';
+return'#f87171';
+}
+
+function coloreTempTabella(t){
+if(t<=-5)return'#86198f';
+if(t<=0)return'#6b21a8';
+if(t<=5)return'#0284c7';
+if(t<=12)return'#047857';
+if(t<=18)return'#b45309';
+if(t<=25)return'#c2410c';
+return'#dc2626';
+}
+
 async function aggiornaMeteo(){
 try{
 const r=await fetch('./dati.json?t='+Date.now());
@@ -158,8 +186,10 @@ let tick='',tab='',max={t:-999,n:''},min={t:999,n:''};
 json.dati.forEach(d=>{
 if(d.temp===null||d.temp===undefined)return;
 const s=d.temp.toFixed(1)+'°C';
-tick+=d.nome+': <span>'+s+'</span>';
-tab+='<tr><td><strong>'+d.nome+'</strong></td><td style="text-align:right;font-weight:bold;color:#00529b">'+s+'</td></tr>';
+const col=coloreTemp(d.temp);
+const colTab=coloreTempTabella(d.temp);
+tick+='<strong>'+d.nome+'</strong>: <span style="color:'+col+'">'+s+'</span>';
+tab+='<tr><td><strong>'+d.nome+'</strong></td><td style="text-align:right;font-weight:bold;color:'+colTab+'">'+s+'</td></tr>';
 if(d.temp>max.t)max={t:d.temp,n:d.nome};
 if(d.temp<min.t)min={t:d.temp,n:d.nome};
 });
@@ -182,3 +212,4 @@ setInterval(aggiornaMeteo,60000);
 </script>
 </body>
 </html>
+
