@@ -177,17 +177,23 @@ let ultimoOrario='--:--';
 
 async function aggiornaMeteo(){
 try{
-const nocache=Date.now();
-const req=localita.map(l=>fetch(`https://open-meteo.com{l.lat}&longitude=${l.lon}&current_weather=true&_=${nocache}`).then(r=>r.json()));
-const res=await Promise.all(req);
+const lats=localita.map(l=>l.lat).join(',');
+const lons=localita.map(l=>l.lon).join(',');
+const url=`https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`;
+const r=await fetch(url);
+if(!r.ok)throw new Error('HTTP '+r.status);
+const dati=await r.json();
+const lista=Array.isArray(dati)?dati:[dati];
+
 let tick='',tab='',max={t:-999,n:''},min={t:999,n:''};
-res.forEach((d,i)=>{
-const n=localita[i].nome,t=d.current_weather.temperature,s=t.toFixed(1)+'°C';
+lista.forEach((d,i)=>{
+const n=localita[i].nome,t=d.current.temperature_2m,s=t.toFixed(1)+'°C';
 tick+=`${n}: <span>${s}</span>`;
 tab+=`<tr><td><strong>${n}</strong></td><td style="text-align:right;font-weight:bold;color:#00529b">${s}</td></tr>`;
 if(t>max.t)max={t,n};
 if(t<min.t)min={t,n};
 });
+
 document.getElementById('ticker-box').innerHTML=tick;
 document.getElementById('tabella-body').innerHTML=tab;
 document.getElementById('max-temp').textContent=max.t.toFixed(1)+'°C';
@@ -199,7 +205,7 @@ document.getElementById('news-max').textContent=`Valore più mite: massima attua
 ultimoOrario=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 secondiMancanti=300;
 }catch(e){
-document.getElementById('last-update').textContent='Errore caricamento dati: '+e.message;
+document.getElementById('last-update').innerHTML=`Errore rete (${e.message}). Verifica che la VPN o l'ad-blocker non blocchino <code>://open-meteo.com</code>.`;
 }
 }
 
@@ -220,3 +226,5 @@ aggiornaMeteo();
 </script>
 </body>
 </html>
+
+
