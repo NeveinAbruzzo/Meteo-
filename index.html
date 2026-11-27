@@ -12,8 +12,22 @@ body{background:#e9ecef;color:#333;font-size:13px}
 .ticker{display:inline-block;padding-left:100%;animation:scorrimento 40s linear infinite}
 .ticker span{font-weight:800;margin-right:20px;padding:1px 6px;border-radius:4px;background:rgba(255,255,255,.08)}
 @keyframes scorrimento{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-100%,0,0)}}
-header{padding:8px 18px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.logo-box{display:flex;align-items:center;gap:10px;flex-shrink:0}
+
+  
+ 
+
+
+  header {
+  padding: 14px 18px; /* Aumenta spazio sopra e sotto */
+  min-height: 115px;  /* Allunga verticalmente l'area dell'header */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+  
+  .logo-box{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .site-logo{height:105px;width:auto;max-width:290px;object-fit:contain;display:block;margin:-22px 0 -24px 0;mix-blend-mode:multiply;clip-path:inset(18% 0 18% 0)}
 .logo-sub{font-size:.75rem;color:#666}
 .header-right{display:flex;align-items:center;gap:10px;justify-content:flex-end}
