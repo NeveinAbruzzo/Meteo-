@@ -467,12 +467,14 @@ if(r.ok)tuttiPost=await r.json();
 }catch(e){}
 let html="";
 STANZE.forEach(s=>{
-const postsStanza=tuttiPost.filter(p=>p.stanza===s.id);
-const ultimo=postsStanza.length>0?postsStanza:null;
+const argomentiStanza=tuttiPost.filter(p=>p.stanza===s.id && (!p.parent_id || p.parent_id===0));
+const messaggiStanza=tuttiPost.filter(p=>p.stanza===s.id);
+const ultimo=messaggiStanza.length>0?messaggiStanza:null;
+const titoloUltimo=ultimo?(ultimo.titolo||"Risposta nella discussione"):"";
 const lastHtml=ultimo
-?'<span onclick="apriStanza(\''+s.id+'\')">'+ultimo.titolo+'</span><br>da <strong>'+ultimo.autore+'</strong><br><small>'+new Date(ultimo.created_at).toLocaleString("it-IT",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})+'</small>'
+?'<span onclick="apriStanza(\''+s.id+'\')">'+titoloUltimo+'</span><br>da <strong>'+ultimo.autore+'</strong><br><small>'+new Date(ultimo.created_at).toLocaleString("it-IT",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})+'</small>'
 :'<span style="color:#9ca3af">Nessun messaggio ancora</span>';
-html+='<div class="forum-row"><div class="forum-room" onclick="apriStanza(\''+s.id+'\')"><div class="forum-ico">💬</div><div><strong>'+s.titolo+'</strong><p>'+s.desc+'</p><small style="color:#6b7280">Moderatore: '+s.mod+'</small></div></div><div class="forum-stat">'+postsStanza.length+'</div><div class="forum-stat">'+postsStanza.length+'</div><div class="forum-last">'+lastHtml+'</div></div>';
+html+='<div class="forum-row"><div class="forum-room" onclick="apriStanza(\''+s.id+'\')"><div class="forum-ico">💬</div><div><strong>'+s.titolo+'</strong><p>'+s.desc+'</p><small style="color:#6b7280">Moderatore: '+s.mod+'</small></div></div><div class="forum-stat">'+argomentiStanza.length+'</div><div class="forum-stat">'+messaggiStanza.length+'</div><div class="forum-last">'+lastHtml+'</div></div>';
 });
 document.getElementById("forum-stanze-body").innerHTML=html;
 }
@@ -495,17 +497,37 @@ caricaForum();
 }
 
 function mostraMessaggiStanza(){
-const lista=tuttiPost.filter(p=>p.stanza===stanzaCorrente.id);
+const principali=tuttiPost.filter(p=>p.stanza===stanzaCorrente.id && (!p.parent_id || p.parent_id===0));
 const box=document.getElementById("stanza-messaggi");
-if(lista.length===0){
+if(principali.length===0){
 box.innerHTML='<div style="padding:15px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;color:#64748b">Nessuna discussione presente in questa stanza.</div>';
 return;
 }
 const isAdmin=utenteForum && utenteForum.ruolo==="admin";
-box.innerHTML=lista.map(p=>{
+box.innerHTML=principali.map(p=>{
 const delBtn=isAdmin?'<button onclick="eliminaPost('+p.id+')" style="background:#dc2626;color:#fff;border:none;padding:2px 8px;border-radius:3px;font-size:.68rem;cursor:pointer;margin-left:8px">🗑 Elimina</button>':'';
-return '<div style="background:#fff;border:1px solid #dce4ec;border-left:4px solid #00529b;padding:12px;border-radius:4px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:.75rem;color:#64748b"><span>Autore: <strong style="color:#002b52">'+p.autore+'</strong></span><span>'+new Date(p.created_at).toLocaleString("it-IT")+delBtn+'</span></div><div style="font-weight:700;color:#c84b31;font-size:.9rem;margin-bottom:4px">'+p.titolo+'</div><div style="font-size:.82rem;color:#222;line-height:1.4">'+p.testo+'</div></div>';
+const replies=tuttiPost.filter(r=>r.parent_id===p.id).reverse();
+const repliesHtml=replies.map(r=>{
+const delRep=isAdmin?'<button onclick="eliminaPost('+r.id+')" style="background:#dc2626;color:#fff;border:none;padding:1px 6px;border-radius:3px;font-size:.64rem;cursor:pointer;margin-left:6px">🗑</button>':'';
+return '<div style="margin-top:8px;margin-left:18px;background:#f8fafc;border:1px solid #e2e8f0;border-left:3px solid #0088cc;padding:8px 10px;border-radius:3px"><div style="display:flex;justify-content:space-between;font-size:.7rem;color:#64748b;margin-bottom:3px"><span>↳ Risposta di <strong style="color:#002b52">'+r.autore+'</strong></span><span>'+new Date(r.created_at).toLocaleString("it-IT")+delRep+'</span></div><div style="font-size:.8rem;color:#222">'+r.testo+'</div></div>';
 }).join("");
+return '<div style="background:#fff;border:1px solid #dce4ec;border-left:4px solid #00529b;padding:12px;border-radius:4px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:.75rem;color:#64748b"><span>Autore: <strong style="color:#002b52">'+p.autore+'</strong></span><span>'+new Date(p.created_at).toLocaleString("it-IT")+delBtn+'</span></div><div style="font-weight:700;color:#c84b31;font-size:.9rem;margin-bottom:4px">'+p.titolo+'</div><div style="font-size:.82rem;color:#222;line-height:1.4;margin-bottom:8px">'+p.testo+'</div><button onclick="rispondiPost('+p.id+')" style="background:#00529b;color:#fff;border:none;padding:4px 10px;border-radius:3px;font-size:.72rem;font-weight:700;cursor:pointer">💬 Rispondi ('+replies.length+')</button>'+repliesHtml+'</div>';
+}).join("");
+}
+
+async function rispondiPost(parentId){
+if(!utenteForum){alert("Devi prima registrarti o accedere per rispondere!");apriAuth("reg");return;}
+const testo=prompt("Scrivi la tua risposta:");
+if(!testo)return;
+const q=new URLSearchParams({forum:"nuovo",stanza:stanzaCorrente.id,autore:utenteForum.nome,titolo:"",testo:testo,parent_id:parentId});
+const wHost=['young-firefly-613b','subito73','workers','dev'].join('.');
+const r=await fetch('https://'+wHost+'/?'+q.toString());
+if(r.ok){
+const nuovo=await r.json();
+if(nuovo.errore){alert("Errore: "+nuovo.errore);return;}
+tuttiPost.unshift(nuovo);
+mostraMessaggiStanza();
+}
 }
 
 async function eliminaPost(id){
@@ -514,7 +536,7 @@ const q=new URLSearchParams({forum:"elimina",id:id});
 const wHost=['young-firefly-613b','subito73','workers','dev'].join('.');
 const r=await fetch('https://'+wHost+'/?'+q.toString());
 if(r.ok){
-tuttiPost=tuttiPost.filter(p=>p.id!==id);
+tuttiPost=tuttiPost.filter(p=>p.id!==id && p.parent_id!==id);
 mostraMessaggiStanza();
 }
 }
@@ -525,7 +547,7 @@ const titolo=prompt("Titolo della discussione (es. Neve in arrivo domenica?):");
 if(!titolo)return;
 const testo=prompt("Scrivi il tuo messaggio:");
 if(!testo)return;
-const q=new URLSearchParams({forum:"nuovo",stanza:stanzaCorrente.id,autore:utenteForum.nome,titolo,testo});
+const q=new URLSearchParams({forum:"nuovo",stanza:stanzaCorrente.id,autore:utenteForum.nome,titolo:titolo,testo:testo,parent_id:0});
 const wHost=['young-firefly-613b','subito73','workers','dev'].join('.');
 const r=await fetch('https://'+wHost+'/?'+q.toString());
 if(r.ok){
