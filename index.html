@@ -12,10 +12,9 @@ body{background:#e9ecef;color:#333;font-size:13px}
 .ticker{display:inline-block;padding-left:100%;animation:scorrimento 40s linear infinite}
 .ticker span{font-weight:800;margin-right:20px;padding:1px 6px;border-radius:4px;background:rgba(255,255,255,.08)}
 @keyframes scorrimento{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-100%,0,0)}}
-header{padding:10px 18px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.logo-box{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.-badge{background:#00529b;color:#fff;font-weight:900;font-size:1.2rem;padding:5px 10px;border-radius:4px;white-space:nowrap}
-.-badge span{color:#4cc9f0}
+header{padding:8px 18px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.logo-box{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.site-logo{height:52px;width:auto;max-width:170px;object-fit:contain;display:block}
 .logo-sub{font-size:.75rem;color:#666}
 .header-right{display:flex;align-items:center;gap:10px;justify-content:flex-end}
 .ext-stack{display:flex;gap:5px}
@@ -30,12 +29,9 @@ header{padding:10px 18px;display:flex;justify-content:space-between;align-items:
 .nav-item:hover{background:#0066c0}
 .nav-item.active{background:#0088cc;color:#fff;box-shadow:inset 0 -3px 0 #4cc9f0}
 .breadcrumb{padding:7px 18px;font-size:.72rem;color:#777;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-
- .live-pill{display:inline-flex;align-items:center;gap:5px;background:#002b52;color:#ffffff;border:1px solid #00447c;padding:3px 9px;border-radius:3px;font-size:.64rem;font-weight:800;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap}
+.live-pill{display:inline-flex;align-items:center;gap:5px;background:#002b52;color:#ffffff;border:1px solid #00447c;padding:3px 9px;border-radius:3px;font-size:.64rem;font-weight:800;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap}
 .live-dot{width:6px;height:6px;background:#ff4d4d;border-radius:50%;animation:lampeggio 1.2s infinite}
-
-
-  @keyframes lampeggio{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes lampeggio{0%,100%{opacity:1}50%{opacity:.2}}
 .news-strip{background:#f4f7fa;padding:10px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;border-bottom:1px solid #dce4ec}
 .news-card{background:#fff;border:1px solid #dce4ec;padding:7px 9px;display:flex;gap:8px;align-items:center;border-radius:3px}
 .news-icon{width:36px;height:36px;background:#00529b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1rem;border-radius:3px;flex-shrink:0}
@@ -71,18 +67,9 @@ header{padding:10px 18px;display:flex;justify-content:space-between;align-items:
 footer{padding:12px 18px;background:#f4f7fa;border-top:1px solid #dce4ec;font-size:.72rem;color:#666;text-align:center;margin-top:20px}
 @media(max-width:768px){
 header{padding:7px 10px;gap:5px}
-.logo-badge{font-size:.88rem;padding:4px 7px}
+.site-logo{height:34px;max-width:115px}
 .logo-sub{display:none}
 .header-right{gap:5px}
-
-.site-logo{height:44px;width:auto;max-width:210px;object-fit:contain;border-radius:4px;display:block}
-@media(max-width:768px){
-.site-logo{height:30px;max-width:135px}
-}
-
-
-
- 
 .ext-stack{flex-direction:column;gap:2px}
 .mini-ext{padding:1px 5px;font-size:.6rem}
 #data-oggi{font-size:.62rem}
@@ -99,30 +86,8 @@ header{padding:7px 10px;gap:5px}
 <div class="page-wrap">
 <div class="ticker-wrap"><div class="ticker" id="ticker-box">Caricamento dati meteo Abruzzo...</div></div>
 <header>
-
-
- 
-<div style="height:68px;width:190px;overflow:hidden;display:flex;align-items:center;justify-content:center">
-<img src="./logo.jpg" alt="Neve in Abruzzo" style="width:100%;height:140px;object-fit:contain;transform:scale(1.25)">
-</div>
-
-
-<div class="logo-sub">Bollettini neve, webcam e temperature live</div>
-</div>
-
- 
-<div class="header-right">
-<div class="ext-stack">
-<div class="mini-ext hot"><span>MAX</span> <strong id="max-temp">--°C</strong> <span id="max-city">...</span></div>
-<div class="mini-ext cold"><span>MIN</span> <strong id="min-temp">--°C</strong> <span id="min-city">...</span></div>
-</div>
-<div id="data-oggi"></div>
-</div>
-
- 
-<header>
 <div class="logo-box">
-<img src="./logo.jpg" alt="Neve in Abruzzo" style="height:54px;width:auto;max-width:180px;object-fit:contain;display:block">
+<img src="./logo.jpg" alt="Neve in Abruzzo" class="site-logo">
 <div class="logo-sub">Bollettini neve, webcam e temperature live</div>
 </div>
 <div class="header-right">
@@ -149,11 +114,8 @@ header{padding:7px 10px;gap:5px}
 <div class="news-card"><div class="news-icon" style="background:#003b70">📷</div><div class="news-text">Webcam in diretta da Roccaraso, Campo Felice e Ovindoli</div></div>
 </div>
 <div class="content-area">
-
-
 <h1 class="section-head" id="titolo-pagina">Meteo Abruzzo Live</h1>
 <p class="section-desc">Monitoraggio in tempo reale delle temperature, estremi termici e webcam delle principali località abruzzesi.</p>
-
 <div class="main-split">
 <div>
 <div class="search-panel">
@@ -164,20 +126,16 @@ header{padding:7px 10px;gap:5px}
 </div>
 <div id="risultato-ricerca" style="display:none;margin-top:10px;background:#fff;color:#222;padding:12px 14px;border-radius:4px;border-left:4px solid #4cc9f0"></div>
 </div>
-</div>
 
 <div style="margin-top:14px;border:1px solid #dce4ec;border-radius:4px;overflow:hidden;background:#fff">
 <div style="background:#00529b;color:#fff;padding:7px 12px;font-size:.78rem;font-weight:700;display:flex;justify-content:space-between;align-items:center">
-<span>🌍 Mappa Meteo & Vento Live — Abruzzo</span>
+<span>🌍 Mappa Meteo & Vento Live — Italia</span>
 <a href="https://windy.com" target="_blank" style="color:#4cc9f0;text-decoration:none;font-size:.7rem">Apri a schermo intero ↗</a>
 </div>
 <iframe id="windy-frame" width="100%" height="340" frameborder="0" style="display:block"></iframe>
 </div>
+</div>
 
-
- 
-
- 
 <aside class="news-col">
 <div class="news-col-head">Notizie Meteo Abruzzo Oggi <span>LIVE</span></div>
 <div class="v-news">
@@ -209,15 +167,7 @@ header{padding:7px 10px;gap:5px}
 </a>
 </div>
 </aside>
-
-
-
-  
 </div>
-
-
-  
-
 
 <div id="tab-home" class="tab-content active">
 <div class="live-bar" id="last-update">Connessione alle stazioni meteo...</div>
@@ -252,7 +202,6 @@ header{padding:7px 10px;gap:5px}
 </div>
 <footer>Neve in Abruzzo • Dati meteo aggiornati automaticamente</footer>
 </div>
-
 <script>
 const isMobile=window.innerWidth<=768;
 const oggi=isMobile?new Date().toLocaleDateString('it-IT'):new Date().toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
@@ -378,12 +327,9 @@ document.getElementById('last-update').textContent=e.message;
 aggiornaMeteo();
 setInterval(aggiornaMeteo,60000);
 
-const wSub = ["embed", "windy", "com"].join(".");
-const wPath = ["", "embed2.html"].join("/");
-document.getElementById("windy-frame").src = "https://" + wSub + wPath + "?lat=42.000&lon=12.800&detailLat=42.000&detailLon=12.800&width=650&height=340&zoom=5&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1";
-
-
- 
+const wSub=["embed","windy","com"].join(".");
+const wPath=["","embed2.html"].join("/");
+document.getElementById("windy-frame").src="https://"+wSub+wPath+"?lat=42.000&lon=12.800&detailLat=42.000&detailLon=12.800&width=650&height=340&zoom=5&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1";
 </script>
 </body>
 </html>
