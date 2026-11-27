@@ -161,18 +161,30 @@ tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';
 });
 }
 
+const localita=[
+{nome:"L'Aquila",lat:42.35,lon:13.40},{nome:"Pescara",lat:42.46,lon:14.21},
+{nome:"Chieti",lat:42.35,lon:14.17},{nome:"Teramo",lat:42.66,lon:13.70},
+{nome:"Roccaraso",lat:41.85,lon:14.08},{nome:"Pescocostanzo",lat:41.89,lon:14.07},
+{nome:"Scanno",lat:41.90,lon:13.88},{nome:"Villetta Barrea",lat:41.78,lon:13.94},
+{nome:"Campo Imperatore",lat:42.44,lon:13.56},{nome:"Ovindoli",lat:42.14,lon:13.52},
+{nome:"Campo Felice",lat:42.22,lon:13.43},{nome:"Avezzano",lat:42.03,lon:13.43},
+{nome:"Sulmona",lat:42.05,lon:13.93},{nome:"Lanciano",lat:42.23,lon:14.39},
+{nome:"Vasto",lat:42.11,lon:14.71}
+];
+
 async function aggiornaMeteo(){
 try{
-const r=await fetch('./dati.json?t='+Date.now());
-if(!r.ok)throw new Error('Attesa primo aggiornamento GitHub...');
-const json=await r.json();
+const lats=localita.map(l=>l.lat).join(',');
+const lons=localita.map(l=>l.lon).join(',');
+const r=await fetch(`https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`);
+const dati=await r.json();
 let tick='',tab='',max={t:-999,n:''},min={t:999,n:''};
-json.dati.forEach(d=>{
-const s=d.temp.toFixed(1)+'°C';
-tick+=d.nome+': <span>'+s+'</span>';
-tab+='<tr><td><strong>'+d.nome+'</strong></td><td style="text-align:right;font-weight:bold;color:#00529b">'+s+'</td></tr>';
-if(d.temp>max.t)max={t:d.temp,n:d.nome};
-if(d.temp<min.t)min={t:d.temp,n:d.nome};
+localita.forEach((l,i)=>{
+const t=dati.at(i).current.temperature_2m,s=t.toFixed(1)+'°C';
+tick+=l.nome+': <span>'+s+'</span>';
+tab+='<tr><td><strong>'+l.nome+'</strong></td><td style="text-align:right;font-weight:bold;color:#00529b">'+s+'</td></tr>';
+if(t>max.t)max={t,n:l.nome};
+if(t<min.t)min={t,n:l.nome};
 });
 document.getElementById('ticker-box').innerHTML=tick;
 document.getElementById('tabella-body').innerHTML=tab;
@@ -182,16 +194,18 @@ document.getElementById('min-temp').textContent=min.t.toFixed(1)+'°C';
 document.getElementById('min-city').textContent=min.n;
 document.getElementById('news-min').textContent='Gelo in Abruzzo: minima attuale di '+min.t.toFixed(1)+'°C a '+min.n;
 document.getElementById('news-max').textContent='Valore più mite: massima attuale di '+max.t.toFixed(1)+'°C a '+max.n;
-document.getElementById('last-update').innerHTML='Dati reali aggiornati automaticamente da GitHub il <strong>'+json.ora+'</strong>';
+const ora=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+document.getElementById('last-update').innerHTML='Dati aggiornati alle ore <strong>'+ora+'</strong> (aggiornamento automatico ogni 5 minuti)';
 }catch(e){
-document.getElementById('last-update').textContent=e.message;
+document.getElementById('last-update').textContent='Disattiva la VPN sul browser per caricare i dati live ('+e.message+')';
 }
 }
 aggiornaMeteo();
-setInterval(aggiornaMeteo,60000);
+setInterval(aggiornaMeteo,300000);
 </script>
 </body>
 </html>
+
 
 
 
