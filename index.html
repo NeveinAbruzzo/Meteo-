@@ -176,10 +176,12 @@ let secondiMancanti=300;
 let ultimoOrario='--:--';
 
 async function prendiTemp(l){
-const r=await fetch(`https://met.no{l.lat}&lon=${l.lon}`);
+const r=await fetch('https://met.no);
 if(!r.ok)throw new Error('HTTP '+r.status);
 const j=await r.json();
-return j.properties.timeseries[0].data.instant.details.air_temperature;
+const lista=j.properties.timeseries;
+const primo=lista.shift();
+return primo.data.instant.details.air_temperature;
 }
 
 async function aggiornaMeteo(){
@@ -192,8 +194,8 @@ dati.push({nome:l.nome,temp:t});
 let tick='',tab='',max={t:-999,n:''},min={t:999,n:''};
 dati.forEach(d=>{
 const s=d.temp.toFixed(1)+'°C';
-tick+=`${d.nome}: <span>${s}</span>`;
-tab+=`<tr><td><strong>${d.nome}</strong></td><td style="text-align:right;font-weight:bold;color:#00529b">${s}</td></tr>`;
+tick+=d.nome+': <span>'+s+'</span>';
+tab+='<tr><td><strong>'+d.nome+'</strong></td><td style="text-align:right;font-weight:bold;color:#00529b">'+s+'</td></tr>';
 if(d.temp>max.t)max={t:d.temp,n:d.nome};
 if(d.temp<min.t)min={t:d.temp,n:d.nome};
 });
@@ -203,8 +205,8 @@ document.getElementById('max-temp').textContent=max.t.toFixed(1)+'°C';
 document.getElementById('max-city').textContent=max.n;
 document.getElementById('min-temp').textContent=min.t.toFixed(1)+'°C';
 document.getElementById('min-city').textContent=min.n;
-document.getElementById('news-min').textContent=`Gelo in Abruzzo: minima attuale di ${min.t.toFixed(1)}°C a ${min.n}`;
-document.getElementById('news-max').textContent=`Valore più mite: massima attuale di ${max.t.toFixed(1)}°C a ${max.n}`;
+document.getElementById('news-min').textContent='Gelo in Abruzzo: minima attuale di '+min.t.toFixed(1)+'°C a '+min.n;
+document.getElementById('news-max').textContent='Valore più mite: massima attuale di '+max.t.toFixed(1)+'°C a '+max.n;
 ultimoOrario=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 secondiMancanti=300;
 }catch(e){
@@ -218,7 +220,7 @@ secondiMancanti--;
 const m=Math.floor(secondiMancanti/60);
 const s=String(secondiMancanti%60).padStart(2,'0');
 if(ultimoOrario!=='--:--'){
-document.getElementById('last-update').innerHTML=`Ultimo aggiornamento: <strong>${ultimoOrario}</strong> • Prossimo aggiornamento automatico tra <strong>${m}:${s}</strong>`;
+document.getElementById('last-update').innerHTML='Ultimo aggiornamento: <strong>'+ultimoOrario+'</strong> • Prossimo aggiornamento automatico tra <strong>'+m+':'+s+'</strong>';
 }
 }else{
 aggiornaMeteo();
