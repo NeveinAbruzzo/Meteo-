@@ -417,9 +417,11 @@ return 'https://'+wHost+'/?forum='+azione;
 function aggiornaBarraUtente(){
 const bar=document.getElementById("forum-user-bar");
 if(utenteForum){
-bar.innerHTML='Ciao <strong>'+utenteForum.nome+'</strong> ('+utenteForum.email+') • <span onclick="logoutForum()" style="color:#c84b31;font-weight:bold;cursor:pointer">Esci</span>';
+const r=(utenteForum.ruolo||"utente").toUpperCase();
+const badgeCol=r==="ADMIN"?"#c84b31":(r==="MOD"?"#0284c7":"#64748b");
+bar.innerHTML='Ciao <strong>'+utenteForum.nome+'</strong> <span style="background:'+badgeCol+';color:#fff;padding:1px 6px;border-radius:3px;font-size:.66rem;font-weight:800">'+r+'</span> • <span onclick="logoutForum()" style="color:#c84b31;font-weight:bold;cursor:pointer">Esci</span>';
 }else{
-bar.innerHTML='Benvenuto ospite! <strong>Registrati</strong> o <strong>Accedi</strong> per aprire discussioni e rispondere.';
+bar.innerHTML='Benvenuto ospite! <strong>Registrati</strong> o <strong>Accedi</strong> per partecipare alle discussioni.';
 }
 }
 
@@ -441,11 +443,11 @@ const wHost=['young-firefly-613b','subito73','workers','dev'].join('.');
 const res=await fetch('https://'+wHost+'/?'+q.toString());
 const data=await res.json();
 if(data.errore){alert("Errore: "+data.errore);return;}
-utenteForum={nome:data.nome,email:data.email};
+utenteForum={nome:data.nome,email:data.email,ruolo:data.ruolo||"utente"};
 localStorage.setItem("forum_user",JSON.stringify(utenteForum));
 document.getElementById("auth-modal").style.display="none";
 aggiornaBarraUtente();
-alert("Benvenuto "+data.nome+"! Ora puoi aprire discussioni nel forum.");
+alert("Benvenuto "+data.nome+" ("+utenteForum.ruolo.toUpperCase()+")!");
 }catch(e){
 alert("Errore: "+e.message);
 }
@@ -480,6 +482,9 @@ stanzaCorrente=STANZE.find(s=>s.id===id);
 document.getElementById("forum-lista-stanze").style.display="none";
 document.getElementById("forum-stanza-aperta").style.display="block";
 document.getElementById("stanza-titolo").textContent=stanzaCorrente.titolo;
+const btnNuovo=document.querySelector("#forum-stanza-aperta .forum-btn.red");
+const puoCreare=utenteForum && (utenteForum.ruolo==="admin" || utenteForum.ruolo==="mod");
+btnNuovo.style.display=puoCreare?"inline-block":"none";
 mostraMessaggiStanza();
 }
 
@@ -493,10 +498,25 @@ function mostraMessaggiStanza(){
 const lista=tuttiPost.filter(p=>p.stanza===stanzaCorrente.id);
 const box=document.getElementById("stanza-messaggi");
 if(lista.length===0){
-box.innerHTML='<div style="padding:15px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;color:#64748b">Nessuna discussione presente in questa stanza. Clicca su <strong>+ Nuova Discussione</strong> per iniziare!</div>';
+box.innerHTML='<div style="padding:15px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;color:#64748b">Nessuna discussione presente in questa stanza.</div>';
 return;
 }
-box.innerHTML=lista.map(p=>'<div style="background:#fff;border:1px solid #dce4ec;border-left:4px solid #00529b;padding:12px;border-radius:4px"><div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:.75rem;color:#64748b"><span>Autore: <strong style="color:#002b52">'+p.autore+'</strong></span><span>'+new Date(p.created_at).toLocaleString("it-IT")+'</span></div><div style="font-weight:700;color:#c84b31;font-size:.9rem;margin-bottom:4px">'+p.titolo+'</div><div style="font-size:.82rem;color:#222;line-height:1.4">'+p.testo+'</div></div>').join("");
+const isAdmin=utenteForum && utenteForum.ruolo==="admin";
+box.innerHTML=lista.map(p=>{
+const delBtn=isAdmin?'<button onclick="eliminaPost('+p.id+')" style="background:#dc2626;color:#fff;border:none;padding:2px 8px;border-radius:3px;font-size:.68rem;cursor:pointer;margin-left:8px">🗑 Elimina</button>':'';
+return '<div style="background:#fff;border:1px solid #dce4ec;border-left:4px solid #00529b;padding:12px;border-radius:4px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:.75rem;color:#64748b"><span>Autore: <strong style="color:#002b52">'+p.autore+'</strong></span><span>'+new Date(p.created_at).toLocaleString("it-IT")+delBtn+'</span></div><div style="font-weight:700;color:#c84b31;font-size:.9rem;margin-bottom:4px">'+p.titolo+'</div><div style="font-size:.82rem;color:#222;line-height:1.4">'+p.testo+'</div></div>';
+}).join("");
+}
+
+async function eliminaPost(id){
+if(!confirm("Vuoi davvero eliminare questo messaggio?"))return;
+const q=new URLSearchParams({forum:"elimina",id:id});
+const wHost=['young-firefly-613b','subito73','workers','dev'].join('.');
+const r=await fetch('https://'+wHost+'/?'+q.toString());
+if(r.ok){
+tuttiPost=tuttiPost.filter(p=>p.id!==id);
+mostraMessaggiStanza();
+}
 }
 
 async function nuovoPostPrompt(){
