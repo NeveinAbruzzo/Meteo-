@@ -95,3 +95,84 @@
             </tbody>
         </table>
     </section>
+
+        <script>
+        // Elenco località con coordinate geografiche
+        const localita = [
+            { nome: "L'Aquila", lat: 42.3506, lon: 13.3995 },
+            { nome: "Pescara", lat: 42.4618, lon: 14.2161 },
+            { nome: "Chieti", lat: 42.3512, lon: 14.1675 },
+            { nome: "Teramo", lat: 42.6589, lon: 13.7044 },
+            { nome: "Roccaraso", lat: 41.8469, lon: 14.0792 },
+            { nome: "Pescocostanzo", lat: 41.8883, lon: 14.0664 },
+            { nome: "Scanno", lat: 41.9022, lon: 13.8803 },
+            { nome: "Villetta Barrea", lat: 41.7769, lon: 13.9389 },
+            { nome: "Campo Imperatore", lat: 42.4431, lon: 13.5586 },
+            { nome: "Ovindoli", lat: 42.1381, lon: 13.5169 },
+            { nome: "Campo Felice", lat: 42.2219, lon: 13.4475 },
+            { nome: "Avezzano", lat: 42.0312, lon: 13.4264 },
+            { nome: "Sulmona", lat: 42.0494, lon: 13.9258 },
+            { nome: "Lanciano", lat: 42.2272, lon: 14.3903 },
+            { nome: "Vasto", lat: 42.1117, lon: 14.7064 }
+        ];
+
+        // Gestione cambio schede
+        function cambiaScheda(idScheda, btn) {
+            document.querySelectorAll('.sezione').forEach(sez => sez.classList.remove('attiva'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('sez-' + idScheda).classList.add('attiva');
+            btn.classList.add('active');
+        }
+
+        // Recupero dati meteo reali da Open-Meteo
+        async function aggiornaMeteo() {
+            const lats = localita.map(l => l.lat).join(',');
+            const lons = localita.map(l => l.lon).join(',');
+            const url = `https://open-meteo.com{lats}&longitude=${lons}&current_weather=true`;
+
+            try {
+                const response = await fetch(url);
+                const dati = await response.json();
+
+                let maxTemp = -Infinity, minTemp = Infinity;
+                let maxLoc = '', minLoc = '';
+                let tickerHTML = '';
+                let tabellaHTML = '';
+
+                dati.forEach((item, index) => {
+                    const nome = localita[index].nome;
+                    const temp = item.current_weather.temperature;
+                    const tempFormattata = temp.toFixed(1) + '°C';
+
+                    // Calcolo estremi
+                    if (temp > maxTemp) { maxTemp = temp; maxLoc = nome; }
+                    if (temp < minTemp) { minTemp = temp; minLoc = nome; }
+
+                    // Costruzione ticker e tabella
+                    tickerHTML += `<div class="ticker-item">${nome}: <span>${tempFormattata}</span></div>`;
+                    tabellaHTML += `<tr><td>${nome}</td><td class="temp-col">${tempFormattata}</td></tr>`;
+                });
+
+                // Aggiornamento interfaccia
+                document.getElementById('ticker-container').innerHTML = tickerHTML;
+                document.getElementById('tabella-body').innerHTML = tabellaHTML;
+                document.getElementById('max-temp').textContent = maxTemp.toFixed(1) + '°C';
+                document.getElementById('max-loc').textContent = maxLoc;
+                document.getElementById('min-temp').textContent = minTemp.toFixed(1) + '°C';
+                document.getElementById('min-loc').textContent = minLoc;
+
+                const ora = new Date().toLocaleString('it-IT', { dateStyle: 'short', timeStyle: 'short' });
+                document.getElementById('last-update').textContent = `Aggiornato automaticamente il ${ora}`;
+
+            } catch (errore) {
+                console.error("Errore nel recupero dati:", errore);
+                document.getElementById('last-update').textContent = "Errore durante l'aggiornamento dei dati meteo.";
+            }
+        }
+
+        // Avvio immediato e aggiornamento automatico ogni 15 minuti
+        aggiornaMeteo();
+        setInterval(aggiornaMeteo, 900000);
+    </script>
+</body>
+</html>
