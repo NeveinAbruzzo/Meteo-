@@ -175,25 +175,28 @@ const localita=[
 let secondiMancanti=300;
 let ultimoOrario='--:--';
 
+async function prendiTemp(l){
+const r=await fetch(`https://met.no{l.lat}&lon=${l.lon}`);
+if(!r.ok)throw new Error('HTTP '+r.status);
+const j=await r.json();
+return j.properties.timeseries[0].data.instant.details.air_temperature;
+}
+
 async function aggiornaMeteo(){
 try{
-const lats=localita.map(l=>l.lat).join(',');
-const lons=localita.map(l=>l.lon).join(',');
-const url=`https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`;
-const r=await fetch(url);
-if(!r.ok)throw new Error('HTTP '+r.status);
-const dati=await r.json();
-const lista=Array.isArray(dati)?dati:[dati];
-
+const dati=[];
+for(const l of localita){
+const t=await prendiTemp(l);
+dati.push({nome:l.nome,temp:t});
+}
 let tick='',tab='',max={t:-999,n:''},min={t:999,n:''};
-lista.forEach((d,i)=>{
-const n=localita[i].nome,t=d.current.temperature_2m,s=t.toFixed(1)+'°C';
-tick+=`${n}: <span>${s}</span>`;
-tab+=`<tr><td><strong>${n}</strong></td><td style="text-align:right;font-weight:bold;color:#00529b">${s}</td></tr>`;
-if(t>max.t)max={t,n};
-if(t<min.t)min={t,n};
+dati.forEach(d=>{
+const s=d.temp.toFixed(1)+'°C';
+tick+=`${d.nome}: <span>${s}</span>`;
+tab+=`<tr><td><strong>${d.nome}</strong></td><td style="text-align:right;font-weight:bold;color:#00529b">${s}</td></tr>`;
+if(d.temp>max.t)max={t:d.temp,n:d.nome};
+if(d.temp<min.t)min={t:d.temp,n:d.nome};
 });
-
 document.getElementById('ticker-box').innerHTML=tick;
 document.getElementById('tabella-body').innerHTML=tab;
 document.getElementById('max-temp').textContent=max.t.toFixed(1)+'°C';
@@ -205,7 +208,7 @@ document.getElementById('news-max').textContent=`Valore più mite: massima attua
 ultimoOrario=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 secondiMancanti=300;
 }catch(e){
-document.getElementById('last-update').innerHTML=`Errore rete (${e.message}). Verifica che la VPN o l'ad-blocker non blocchino <code>://open-meteo.com</code>.`;
+document.getElementById('last-update').textContent='Errore: '+e.message;
 }
 }
 
@@ -226,5 +229,7 @@ aggiornaMeteo();
 </script>
 </body>
 </html>
+
+
 
 
