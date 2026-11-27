@@ -8,51 +8,53 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
 body{background:#e9ecef;color:#333;font-size:14px}
 .page-wrap{max-width:980px;margin:0 auto;background:#fff;min-height:100vh;box-shadow:0 0 15px rgba(0,0,0,.08)}
-.ticker-wrap{background:#004a87;color:#fff;padding:6px 15px;font-size:.82rem;overflow:hidden;white-space:nowrap}
+.ticker-wrap{background:#002b52;color:#fff;padding:6px 15px;font-size:.82rem;overflow:hidden;white-space:nowrap}
 .ticker{display:inline-block;padding-left:100%;animation:scorrimento 35s linear infinite}
-.ticker span{color:#ffcc00;font-weight:bold;margin-right:18px}
+.ticker span{color:#4cc9f0;font-weight:bold;margin-right:18px}
 @keyframes scorrimento{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-100%,0,0)}}
 header{padding:18px 25px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 .logo-box{display:flex;align-items:center;gap:10px}
-.logo-badge{background:#f36f21;color:#fff;font-weight:900;font-size:1.4rem;padding:6px 12px;border-radius:4px}
-.logo-badge span{color:#ffcc00}
+.logo-badge{background:#00529b;color:#fff;font-weight:900;font-size:1.4rem;padding:6px 12px;border-radius:4px}
+.logo-badge span{color:#4cc9f0}
 .logo-sub{font-size:.8rem;color:#666}
-.main-nav{display:flex;background:#f36f21;border-bottom:3px solid #d95b12;flex-wrap:wrap}
-.nav-item{flex:1;text-align:center;padding:12px 10px;color:#fff;font-weight:bold;font-size:.82rem;text-transform:uppercase;cursor:pointer;border-right:1px solid rgba(255,255,255,.2)}
-.nav-item.active{background:#f9b233;color:#222}
+.main-nav{display:flex;background:#00529b;border-bottom:3px solid #003b70;flex-wrap:wrap}
+.nav-item{flex:1;text-align:center;padding:12px 10px;color:#fff;font-weight:bold;font-size:.82rem;text-transform:uppercase;cursor:pointer;border-right:1px solid rgba(255,255,255,.15)}
+.nav-item:hover{background:#0066c0}
+.nav-item.active{background:#0088cc;color:#fff;box-shadow:inset 0 -3px 0 #4cc9f0}
 .breadcrumb{padding:10px 25px;font-size:.78rem;color:#777;border-bottom:1px solid #eee}
-.news-strip{background:#f4f6f8;padding:15px 25px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px;border-bottom:1px solid #ddd}
-.news-card{background:#fff;border:1px solid #e0e0e0;padding:10px;display:flex;gap:10px;align-items:center;border-radius:3px}
-.news-icon{width:50px;height:50px;background:#005b96;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.2rem;border-radius:3px;flex-shrink:0}
+.news-strip{background:#f4f7fa;padding:15px 25px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px;border-bottom:1px solid #dce4ec}
+.news-card{background:#fff;border:1px solid #dce4ec;padding:10px;display:flex;gap:10px;align-items:center;border-radius:3px}
+.news-icon{width:50px;height:50px;background:#00529b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.2rem;border-radius:3px;flex-shrink:0}
 .news-text{font-size:.8rem;font-weight:600;color:#222;line-height:1.3}
 .content-area{padding:22px 25px}
-.section-head{border-left:4px solid #f36f21;padding-left:12px;margin-bottom:8px;font-size:1.35rem;font-weight:700}
+.section-head{border-left:4px solid #00529b;padding-left:12px;margin-bottom:8px;font-size:1.35rem;font-weight:700;color:#002b52}
 .section-desc{color:#666;font-size:.88rem;margin-bottom:20px}
-.search-panel{background:#00529b;border-radius:4px;overflow:hidden;margin-bottom:25px}
-.sub-tabs{display:flex;background:#003f77;border-bottom:2px solid #f9b233}
+.search-panel{background:#00447c;border-radius:4px;overflow:hidden;margin-bottom:25px}
+.sub-tabs{display:flex;background:#002b52;border-bottom:2px solid #0088cc}
 .sub-tab{padding:10px 18px;color:#fff;font-weight:bold;font-size:.8rem;text-transform:uppercase;cursor:pointer}
-.sub-tab.active{background:#f9b233;color:#222}
+.sub-tab.active{background:#0088cc;color:#fff}
 .search-body{padding:18px 20px;color:#fff}
 .search-body label{display:block;font-weight:bold;margin-bottom:10px;font-size:.95rem}
 .search-row{display:flex;gap:8px}
 .search-row input{flex:1;padding:10px 12px;border:none;border-radius:3px;font-size:.9rem}
-.search-row button{background:#f36f21;color:#fff;border:none;padding:0 20px;font-weight:bold;border-radius:3px;cursor:pointer;text-transform:uppercase}
+.search-row button{background:#0088cc;color:#fff;border:none;padding:0 20px;font-weight:bold;border-radius:3px;cursor:pointer;text-transform:uppercase}
 .tab-content{display:none}
 .tab-content.active{display:block}
 .records-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-bottom:20px}
-.rec-box{border:1px solid #ddd;border-top:4px solid #f36f21;padding:15px;border-radius:4px;text-align:center;background:#fafafa}
-.rec-box.cold{border-top-color:#0077cc}
+.rec-box{border:1px solid #dce4ec;border-top:4px solid #e63946;padding:15px;border-radius:4px;text-align:center;background:#f9fbfd}
+.rec-box.cold{border-top-color:#0088cc}
 .rec-title{font-size:.75rem;text-transform:uppercase;color:#666;font-weight:bold}
-.rec-val{font-size:2rem;font-weight:800;margin:5px 0;color:#d9381e}
+.rec-val{font-size:2rem;font-weight:800;margin:5px 0;color:#e63946}
 .rec-box.cold .rec-val{color:#0077cc}
 .meteo-table{width:100%;border-collapse:collapse}
 .meteo-table th{background:#00529b;color:#fff;padding:10px;text-align:left}
 .meteo-table td{padding:10px;border-bottom:1px solid #eee}
 .cam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.cam-link{display:block;padding:14px;border:1px solid #ddd;border-left:4px solid #f36f21;text-decoration:none;color:#222;border-radius:3px}
+.cam-link{display:block;padding:14px;border:1px solid #dce4ec;border-left:4px solid #00529b;text-decoration:none;color:#222;border-radius:3px}
 .cam-link strong{display:block;color:#00529b;margin-bottom:4px}
 .cam-link span{font-size:.78rem;color:#666}
-footer{padding:15px 25px;background:#f4f6f8;border-top:1px solid #ddd;font-size:.78rem;color:#666;text-align:center;margin-top:30px}
+.live-bar{text-align:center;font-size:.82rem;color:#555;background:#f4f7fa;padding:8px;border-radius:4px;border:1px solid #dce4ec}
+footer{padding:15px 25px;background:#f4f7fa;border-top:1px solid #dce4ec;font-size:.78rem;color:#666;text-align:center;margin-top:30px}
 </style>
 </head>
 <body>
@@ -73,9 +75,9 @@ footer{padding:15px 25px;background:#f4f6f8;border-top:1px solid #ddd;font-size:
 </nav>
 <div class="breadcrumb">Home › Previsioni Meteo › Italia › <strong>Abruzzo</strong></div>
 <div class="news-strip">
-<div class="news-card"><div class="news-icon">❄</div><div class="news-text" id="news-min">Rilevamento minima in Abruzzo...</div></div>
-<div class="news-card"><div class="news-icon" style="background:#f36f21">☀</div><div class="news-text" id="news-max">Rilevamento massima in Abruzzo...</div></div>
-<div class="news-card"><div class="news-icon" style="background:#2b8a3e">📷</div><div class="news-text">Webcam in diretta da Roccaraso, Campo Felice e Ovindoli</div></div>
+<div class="news-card"><div class="news-icon" style="background:#0088cc">❄</div><div class="news-text" id="news-min">Rilevamento minima in Abruzzo...</div></div>
+<div class="news-card"><div class="news-icon">☀</div><div class="news-text" id="news-max">Rilevamento massima in Abruzzo...</div></div>
+<div class="news-card"><div class="news-icon" style="background:#003b70">📷</div><div class="news-text">Webcam in diretta da Roccaraso, Campo Felice e Ovindoli</div></div>
 </div>
 <div class="content-area">
 <h1 class="section-head" id="titolo-pagina">Meteo Abruzzo Live</h1>
@@ -102,7 +104,7 @@ footer{padding:15px 25px;background:#f4f6f8;border-top:1px solid #ddd;font-size:
 <div class="rec-box"><div class="rec-title">Temperatura Più Alta</div><div class="rec-val" id="max-temp">--°C</div><div id="max-city">Caricamento...</div></div>
 <div class="rec-box cold"><div class="rec-title">Temperatura Più Bassa</div><div class="rec-val" id="min-temp">--°C</div><div id="min-city">Caricamento...</div></div>
 </div>
-<p id="last-update" style="font-size:.8rem;color:#666;text-align:center">Connessione alle stazioni meteo...</p>
+<div class="live-bar" id="last-update">Connessione alle stazioni meteo...</div>
 </div>
 
 <div id="tab-tabella" class="tab-content">
@@ -132,7 +134,7 @@ footer{padding:15px 25px;background:#f4f6f8;border-top:1px solid #ddd;font-size:
 </div>
 </div>
 </div>
-<footer>Neve in Abruzzo • Dati meteo aggiornati automaticamente via Open-Meteo</footer>
+<footer>Neve in Abruzzo • Dati meteo aggiornati automaticamente in tempo reale</footer>
 </div>
 <script>
 const oggi=new Date().toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
@@ -170,9 +172,13 @@ const localita=[
 {nome:"Vasto",lat:42.11,lon:14.71}
 ];
 
+let secondiMancanti=300;
+let ultimoOrario='--:--';
+
 async function aggiornaMeteo(){
 try{
-const req=localita.map(l=>fetch(`https://open-meteo.com{l.lat}&longitude=${l.lon}&current_weather=true`).then(r=>r.json()));
+const nocache=Date.now();
+const req=localita.map(l=>fetch(`https://open-meteo.com{l.lat}&longitude=${l.lon}&current_weather=true&_=${nocache}`).then(r=>r.json()));
 const res=await Promise.all(req);
 let tick='',tab='',max={t:-999,n:''},min={t:999,n:''};
 res.forEach((d,i)=>{
@@ -190,15 +196,27 @@ document.getElementById('min-temp').textContent=min.t.toFixed(1)+'°C';
 document.getElementById('min-city').textContent=min.n;
 document.getElementById('news-min').textContent=`Gelo in Abruzzo: minima attuale di ${min.t.toFixed(1)}°C a ${min.n}`;
 document.getElementById('news-max').textContent=`Valore più mite: massima attuale di ${max.t.toFixed(1)}°C a ${max.n}`;
-const ora=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
-document.getElementById('last-update').textContent=`Dati aggiornati alle ore ${ora}`;
+ultimoOrario=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+secondiMancanti=300;
 }catch(e){
 document.getElementById('last-update').textContent='Errore caricamento dati: '+e.message;
 }
 }
+
+setInterval(()=>{
+if(secondiMancanti>0){
+secondiMancanti--;
+const m=Math.floor(secondiMancanti/60);
+const s=String(secondiMancanti%60).padStart(2,'0');
+if(ultimoOrario!=='--:--'){
+document.getElementById('last-update').innerHTML=`Ultimo aggiornamento: <strong>${ultimoOrario}</strong> • Prossimo aggiornamento automatico tra <strong>${m}:${s}</strong>`;
+}
+}else{
 aggiornaMeteo();
-setInterval(aggiornaMeteo,600000);
+}
+},1000);
+
+aggiornaMeteo();
 </script>
 </body>
 </html>
-
