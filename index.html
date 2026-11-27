@@ -90,15 +90,15 @@ const localita=[
 {nome:"Vasto",lat:42.11,lon:14.71}
 ];
 async function aggiornaMeteo(){
-const lats=localita.map(l=>l.lat).join(',');
-const lons=localita.map(l=>l.lon).join(',');
-const url=`https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m&timezone=Europe%2FRome`;
 try{
-const res=await fetch(url);
-const dati=await res.json();
+const richieste=localita.map(l=>
+fetch(`https://open-meteo.com{l.lat}&longitude=${l.lon}&current_weather=true`)
+.then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+);
+const risultati=await Promise.all(richieste);
 let tickerHTML='',tabellaHTML='',max={temp:-999,nome:''},min={temp:999,nome:''};
-dati.forEach((item,i)=>{
-const nome=localita[i].nome,temp=item.current.temperature_2m,tStr=temp.toFixed(1)+'°C';
+risultati.forEach((item,i)=>{
+const nome=localita[i].nome,temp=item.current_weather.temperature,tStr=temp.toFixed(1)+'°C';
 tickerHTML+=`<div class="ticker-item">${nome}: <span>${tStr}</span></div>`;
 tabellaHTML+=`<tr><td>${nome}</td><td class="temp-col">${tStr}</td></tr>`;
 if(temp>max.temp)max={temp,nome};
@@ -113,11 +113,12 @@ document.getElementById('min-city').textContent=min.nome;
 const ora=new Date().toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
 document.getElementById('last-update').textContent=`Aggiornato automaticamente il ${ora}`;
 }catch(e){
-document.getElementById('last-update').textContent='Errore nel caricamento dei dati meteo.';
+document.getElementById('last-update').textContent='Errore: '+e.message;
 }
 }
 aggiornaMeteo();
 setInterval(aggiornaMeteo,600000);
 </script>
+
 </body>
 </html>
