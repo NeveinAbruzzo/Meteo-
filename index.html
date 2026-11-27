@@ -8,14 +8,10 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
 body{background:#e9ecef;color:#333;font-size:14px}
 .page-wrap{max-width:1280px;margin:0 auto;background:#fff;min-height:100vh;box-shadow:0 0 15px rgba(0,0,0,.08)}
-.ticker-wrap{background:#002b52;color:#fff;padding:6px 15px;font-size:.82rem;overflow:hidden;white-space:nowrap}
-.ticker{display:inline-block;padding-left:100%;animation:scorrimento 35s linear infinite}
-.ticker span{color:#4cc9f0;font-weight:bold;margin-right:18px}
-
+.ticker-wrap{background:#002b52;color:#fff;padding:10px 15px;font-size:1.05rem;overflow:hidden;white-space:nowrap;border-bottom:1px solid #00447c}
+.ticker{display:inline-block;padding-left:100%;animation:scorrimento 40s linear infinite}
+.ticker span{font-weight:800;margin-right:24px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.08)}
 @keyframes scorrimento{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-100%,0,0)}}
-
-
-  
 header{padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .logo-box{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .logo-badge{background:#00529b;color:#fff;font-weight:900;font-size:1.35rem;padding:6px 12px;border-radius:4px;white-space:nowrap}
@@ -29,7 +25,34 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 .mini-ext.cold{background:#f0f9ff;border:1px solid #bae6fd;border-left:3px solid #0088cc}
 .mini-ext.cold strong{color:#0077cc}
 #data-oggi{font-weight:bold;color:#00529b;font-size:.82rem;white-space:nowrap}
-
+.main-nav{display:flex;background:#00529b;border-bottom:3px solid #003b70;flex-wrap:wrap}
+.nav-item{flex:1;text-align:center;padding:13px 10px;color:#fff;font-weight:bold;font-size:.84rem;text-transform:uppercase;cursor:pointer;border-right:1px solid rgba(255,255,255,.15);transition:.2s}
+.nav-item:hover{background:#0066c0}
+.nav-item.active{background:#0088cc;color:#fff;box-shadow:inset 0 -3px 0 #4cc9f0}
+.breadcrumb{padding:10px 25px;font-size:.78rem;color:#777;border-bottom:1px solid #eee}
+.news-strip{background:#f4f7fa;padding:15px 25px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px;border-bottom:1px solid #dce4ec}
+.news-card{background:#fff;border:1px solid #dce4ec;padding:10px;display:flex;gap:10px;align-items:center;border-radius:3px}
+.news-icon{width:50px;height:50px;background:#00529b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.2rem;border-radius:3px;flex-shrink:0}
+.news-text{font-size:.8rem;font-weight:600;color:#222;line-height:1.3}
+.content-area{padding:22px 25px}
+.section-head{border-left:4px solid #00529b;padding-left:12px;margin-bottom:8px;font-size:1.35rem;font-weight:700;color:#002b52}
+.section-desc{color:#666;font-size:.88rem;margin-bottom:20px}
+.search-panel{background:#00447c;border-radius:4px;padding:18px 20px;color:#fff;margin-bottom:25px}
+.search-panel label{display:block;font-weight:bold;margin-bottom:10px;font-size:.95rem}
+.search-row{display:flex;gap:8px}
+.search-row input{flex:1;padding:10px 12px;border:none;border-radius:3px;font-size:.9rem}
+.search-row button{background:#0088cc;color:#fff;border:none;padding:0 20px;font-weight:bold;border-radius:3px;cursor:pointer;text-transform:uppercase}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.meteo-table{width:100%;border-collapse:collapse}
+.meteo-table th{background:#00529b;color:#fff;padding:10px;text-align:left}
+.meteo-table td{padding:10px;border-bottom:1px solid #eee}
+.cam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.cam-link{display:block;padding:14px;border:1px solid #dce4ec;border-left:4px solid #00529b;text-decoration:none;color:#222;border-radius:3px}
+.cam-link strong{display:block;color:#00529b;margin-bottom:4px}
+.cam-link span{font-size:.78rem;color:#666}
+.live-bar{text-align:center;font-size:.82rem;color:#555;background:#f4f7fa;padding:8px;border-radius:4px;border:1px solid #dce4ec}
+footer{padding:15px 25px;background:#f4f7fa;border-top:1px solid #dce4ec;font-size:.78rem;color:#666;text-align:center;margin-top:30px}
 @media(max-width:768px){
 header{padding:8px 10px;gap:6px}
 .logo-badge{font-size:.95rem;padding:5px 7px}
@@ -39,15 +62,11 @@ header{padding:8px 10px;gap:6px}
 .mini-ext{padding:1px 5px;font-size:.63rem}
 #data-oggi{font-size:.66rem}
 }
-
-  
 </style>
 </head>
 <body>
 <div class="page-wrap">
 <div class="ticker-wrap"><div class="ticker" id="ticker-box">Caricamento dati meteo Abruzzo...</div></div>
-
-
 <header>
 <div class="logo-box">
 <div class="logo-badge">Neve in Abruzzo<span>.it</span></div>
@@ -61,9 +80,6 @@ header{padding:8px 10px;gap:6px}
 <div id="data-oggi"></div>
 </div>
 </header>
-
-
-  
 <nav class="main-nav">
 <div class="nav-item active" onclick="apriSezione('home')">Estremi Termici</div>
 <div class="nav-item" onclick="apriSezione('tabella')">Tutte le Località</div>
@@ -71,7 +87,12 @@ header{padding:8px 10px;gap:6px}
 <div class="nav-item" onclick="apriSezione('bollettino')">Comprensori</div>
 </nav>
 <div class="breadcrumb">Home › Previsioni Meteo › Italia › <strong>Abruzzo</strong></div>
-<div class="news-strip">
+
+
+
+
+
+  <div class="news-strip">
 <div class="news-card"><div class="news-icon" style="background:#0088cc">❄</div><div class="news-text" id="news-min">Rilevamento minima in Abruzzo...</div></div>
 <div class="news-card"><div class="news-icon">☀</div><div class="news-text" id="news-max">Rilevamento massima in Abruzzo...</div></div>
 <div class="news-card"><div class="news-icon" style="background:#003b70">📷</div><div class="news-text">Webcam in diretta da Roccaraso, Campo Felice e Ovindoli</div></div>
@@ -91,9 +112,6 @@ header{padding:8px 10px;gap:6px}
 <div id="tab-home" class="tab-content active">
 <div class="live-bar" id="last-update">Connessione alle stazioni meteo...</div>
 </div>
-
-
-  
 
 <div id="tab-tabella" class="tab-content">
 <table class="meteo-table">
@@ -125,16 +143,9 @@ header{padding:8px 10px;gap:6px}
 <footer>Neve in Abruzzo • Dati meteo aggiornati automaticamente</footer>
 </div>
 
-
-
-
-
-
-
-
-
-  <script>
-const oggi=new Date().toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+<script>
+const isMobile=window.innerWidth<=768;
+const oggi=isMobile?new Date().toLocaleDateString('it-IT'):new Date().toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
 document.getElementById('data-oggi').textContent=oggi.charAt(0).toUpperCase()+oggi.slice(1);
 document.getElementById('titolo-pagina').textContent='Meteo Abruzzo '+oggi;
 
@@ -211,4 +222,3 @@ setInterval(aggiornaMeteo,60000);
 </script>
 </body>
 </html>
-
