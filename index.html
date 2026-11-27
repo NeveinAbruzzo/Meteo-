@@ -176,7 +176,9 @@ async function aggiornaMeteo(){
 try{
 const lats=localita.map(l=>l.lat).join(',');
 const lons=localita.map(l=>l.lon).join(',');
-const r=await fetch(`https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`);
+const target=`https://open-meteo.com{lats}&longitude=${lons}&current=temperature_2m`;
+const proxy=`https://allorigins.win{encodeURIComponent(target)}`;
+const r=await fetch(proxy);
 const dati=await r.json();
 let tick='',tab='',max={t:-999,n:''},min={t:999,n:''};
 localita.forEach((l,i)=>{
@@ -197,7 +199,7 @@ document.getElementById('news-max').textContent='Valore più mite: massima attua
 const ora=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
 document.getElementById('last-update').innerHTML='Dati aggiornati alle ore <strong>'+ora+'</strong> (aggiornamento automatico ogni 5 minuti)';
 }catch(e){
-document.getElementById('last-update').textContent='Disattiva la VPN sul browser per caricare i dati live ('+e.message+')';
+document.getElementById('last-update').textContent='Errore proxy: '+e.message;
 }
 }
 aggiornaMeteo();
@@ -205,6 +207,7 @@ setInterval(aggiornaMeteo,300000);
 </script>
 </body>
 </html>
+
 
 
 
