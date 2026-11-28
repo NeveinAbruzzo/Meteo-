@@ -231,6 +231,74 @@ header{padding:7px 10px;gap:5px}
 
 
 
+
+/* Contenitore della barra località sotto il menu blu */
+#webcam-dropdown {
+  max-width: 1140px;
+  margin: 8px auto 12px auto;
+  padding: 4px 10px;
+}
+
+/* Disposizione su una singola riga orizzontale */
+.dropdown-grid {
+  display: flex;
+  flex-wrap: nowrap; /* Forza tutti i tasti su una sola riga */
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  overflow-x: auto; /* Permette di scorrere lateralmente su schermi stretti */
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+/* Estetica compatta dei singoli tasti in linea */
+.dropdown-grid a {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap; /* Evita che il nome della località vada a capo su 2 righe */
+  flex-shrink: 0;      /* Impedisce ai tasti di schiacciarsi */
+  background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
+  color: #0b4f8a;
+  border: 1px solid #bae6fd;
+  border-bottom: 2px solid #0284c7;
+  border-radius: 16px;
+  padding: 5px 11px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(11, 79, 138, 0.08);
+  transition: all 0.2s ease;
+}
+
+/* Piccolo pallino rosso LIVE a sinistra del nome */
+.dropdown-grid a::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+/* Effetto al passaggio del mouse */
+.dropdown-grid a:hover {
+  background: #0b4f8a;
+  color: #ffffff;
+  border-color: #0b4f8a;
+  border-bottom-color: #38bdf8;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(11, 79, 138, 0.2);
+}
+
+.dropdown-grid a:hover::before {
+  background-color: #38bdf8;
+}
+
+
+
+  
+
   
 
   
