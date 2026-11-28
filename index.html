@@ -362,6 +362,18 @@ iframe[src*="windy"] {
 }
 
 
+/* Mostra il logo intero senza tagliarlo in basso */
+header img, .header img, .logo img, .brand img {
+  height: auto !important;
+  max-height: 75px !important; /* Regola questo valore (es. 65px o 85px) in base a quanto lo vuoi grande */
+  width: auto !important;
+  object-fit: contain !important;
+}
+
+header, .header, .logo, .brand {
+  height: auto !important;
+  overflow: visible !important;
+}
 
   
   
