@@ -453,6 +453,60 @@ img.site-logo {
 }
 
 
+
+
+
+
+/* Tasto e menu a tendina Acquisto Skipass */
+.skipass-dropdown {
+  position: relative;
+}
+
+.skipass-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 245px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-top: 3px solid #0284c7;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 10px 22px rgba(0, 43, 82, 0.22);
+  z-index: 9999;
+  text-align: left;
+}
+
+/* Apre al passaggio del mouse su PC o quando ha classe .aperto su mobile */
+.skipass-dropdown:hover .skipass-menu,
+.skipass-dropdown.aperto .skipass-menu {
+  display: block;
+}
+
+.skipass-menu a {
+  display: block;
+  padding: 10px 14px;
+  color: #002b52;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: none;
+  text-decoration: none;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.skipass-menu a:last-child {
+  border-bottom: none;
+}
+
+.skipass-menu a:hover {
+  background-color: #e0f2fe;
+  color: #00529b;
+}
+
+
+
+
   
 
   
@@ -490,7 +544,24 @@ img.site-logo {
 <div class="nav-item" onclick="apriSezione('radar')">Radar Live</div>
 <div class="nav-item" onclick="apriSezione('community')">Community</div>
 <div class="nav-item" onclick="document.getElementById('siti-esterni-footer').scrollIntoView({behavior: 'smooth'})">Siti esterni</div>
+<div class="nav-item skipass-dropdown">
+  <span>Acquisto Skipass ▾</span>
+  <div class="skipass-menu">
+    <a href="https://dahu.online" target="_blank" rel="noopener">🎟 Roccaraso - Alto Sangro</a>
+    <a href="https://axess.shop" target="_blank" rel="noopener">🎟 Campo Felice</a>
+    <a href="https://ovindolimagnola.it" target="_blank" rel="noopener">🎟 Ovindoli - Monte Magnola</a>
+    <a href="https://axess.shop" target="_blank" rel="noopener">🎟 Campo Imperatore</a>
+    <a href="https://majellettawe.it" target="_blank" rel="noopener">🎟 Passolanciano - Majelletta</a>
+    <a href="https://pescasseroliski.com" target="_blank" rel="noopener">🎟 Pescasseroli</a>
+    <a href="https://pratiditivo.it" target="_blank" rel="noopener">🎟 Prati di Tivo</a>
+    <a href="https://vallefura.it" target="_blank" rel="noopener">🎟 Pescocostanzo - Vallefura</a>
+  </div>
+</div>
 
+
+
+
+  
 </nav>
 
 
@@ -1156,6 +1227,20 @@ document.getElementById("radar-box").innerHTML='<iframe src="https://'+rSub+rPat
 </script>
 
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const tastoSkipass = document.querySelector('.skipass-dropdown');
+    if (tastoSkipass) {
+      tastoSkipass.addEventListener('click', function (e) {
+        e.stopPropagation();
+        tastoSkipass.classList.toggle('aperto');
+      });
+      document.addEventListener('click', function () {
+        tastoSkipass.classList.remove('aperto');
+      });
+    }
+  });
+</script>
 
 
   
