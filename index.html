@@ -302,6 +302,68 @@ iframe[src*="windy"] {
 
   
 
+
+/* Sezione Siti Esterni in stile AbruzzoMeteo */
+.footer-siti-esterni {
+  background-color: #2b2d30;
+  color: #ffffff;
+  padding: 25px 20px;
+  margin-top: 30px;
+  font-family: sans-serif;
+}
+
+.footer-siti-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.footer-col {
+  min-width: 240px;
+  max-width: 320px;
+}
+
+.footer-col h4 {
+  display: inline-block;
+  background-color: #0284c7; /* Etichetta azzurra come nello screenshot */
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 5px 12px;
+  margin: 0 0 12px 0;
+  border-radius: 2px;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 2px solid #0284c7; /* Riga azzurra sotto il titolo */
+}
+
+.footer-col ul li {
+  border-bottom: 1px solid #3f4246;
+}
+
+.footer-col ul li a {
+  display: block;
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 13.5px;
+  padding: 9px 4px;
+  transition: color 0.2s, padding-left 0.2s;
+}
+
+.footer-col ul li a:hover {
+  color: #38bdf8;
+  padding-left: 8px;
+}
+
+
+
+  
   
 
   
@@ -338,7 +400,8 @@ iframe[src*="windy"] {
 <div class="nav-item" onclick="apriSezione('bollettino')">Comprensori</div>
 <div class="nav-item" onclick="apriSezione('radar')">Radar Live</div>
 <div class="nav-item" onclick="apriSezione('community')">Community</div>
-<div class="nav-item" onclick="apriSezione('siti esterni')">siti esterni</div>
+<div class="nav-item" onclick="document.getElementById('siti-esterni-footer').scrollIntoView({behavior: 'smooth'})">Siti esterni</div>
+
 </nav>
 
 
@@ -913,6 +976,22 @@ document.getElementById("radar-box").innerHTML='<iframe src="https://'+rSub+rPat
 
 
   
+<section id="siti-esterni-footer" class="footer-siti-esterni">
+  <div class="footer-siti-container">
+    <div class="footer-col">
+      <h4>Siti Esterni</h4>
+      <ul>
+        <li><a href="https://protezionecivile.gov.it" target="_blank" rel="noopener">Protezione Civile</a></li>
+        <li><a href="https://meteoam.it" target="_blank" rel="noopener">Meteo Aeronautica Militare</a></li>
+        <li><a href="https://regione.abruzzo.it" target="_blank" rel="noopener">Regione Abruzzo</a></li>
+        <li><a href="https://meteoalarm.org" target="_blank" rel="noopener">Meteoalarm</a></li>
+        <li><a href="https://ingv.it" target="_blank" rel="noopener">INGV</a></li>
+        <li><a href="https://chietimeteo.it" target="_blank" rel="noopener">Chieti Meteo</a></li>
+        <li><a href="https://caputfrigoris.it" target="_blank" rel="noopener">Caput Frigoris</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
 
 
 
