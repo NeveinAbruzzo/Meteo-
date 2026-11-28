@@ -714,5 +714,70 @@ const rPath=["","embed2.html"].join("/");
 document.getElementById("radar-box").innerHTML='<iframe src="https://'+rSub+rPath+'?lat=42.250&lon=13.850&detailLat=42.250&detailLon=13.850&width=650&height=480&zoom=6&level=surface&overlay=radar&product=radar&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1&play=1" width="100%" height="480" frameborder="0" style="display:block"></iframe>';
 </script>
 
+
+
+<script>
+  function apriWebcamSuWindy(localita, url, tipo) {
+    // Chiude il menu a tendina
+    const menu = document.getElementById('webcam-dropdown');
+    if (menu) menu.classList.remove('aperto');
+
+    // Trova l'iframe di Windy nella pagina
+    const windyIframe = document.querySelector('iframe[src*="windy"]');
+    if (!windyIframe) {
+      window.open(url, '_blank');
+      return;
+    }
+
+    const contenitoreWindy = windyIframe.parentElement;
+    contenitoreWindy.style.position = 'relative';
+
+    // Crea o recupera il pannello della webcam sopra Windy
+    let pannello = document.getElementById('pannello-webcam-windy');
+    if (!pannello) {
+      pannello = document.createElement('div');
+      pannello.id = 'pannello-webcam-windy';
+      pannello.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index:999; display:flex; flex-direction:column; border-radius:8px; overflow:hidden;';
+      contenitoreWindy.appendChild(pannello);
+    }
+
+    // Crea il contenuto (barra superiore + immagine o finestra pagina)
+    const mediaHtml = (tipo === 'immagine')
+      ? `<img src="${url}?t=${Date.now()}" style="width:100%; height:100%; object-fit:contain; background:#000;" alt="${localita}">`
+      : `<iframe src="${url}" style="width:100%; height:100%; border:none; background:#fff;"></iframe>`;
+
+    pannello.innerHTML = `
+      <div style="background:#0b4f8a; color:#fff; padding:8px 14px; display:flex; justify-content:space-between; align-items:center; font-family:sans-serif; font-size:14px;">
+        <strong>📷 Webcam Live: ${localita}</strong>
+        <button onclick="chiudiWebcamSuWindy()" style="background:#e63946; color:#fff; border:none; padding:5px 12px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:12px;">
+          ✕ Torna alla Mappa Windy
+        </button>
+      </div>
+      <div style="flex:1; width:100%; height:100%; overflow:hidden;">
+        ${mediaHtml}
+      </div>
+    `;
+
+    pannello.style.display = 'flex';
+    contenitoreWindy.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function chiudiWebcamSuWindy() {
+    const pannello = document.getElementById('pannello-webcam-windy');
+    if (pannello) {
+      pannello.style.display = 'none';
+      pannello.innerHTML = ''; // Ferma lo stream quando si chiude
+    }
+  }
+</script>
+
+
+  
+
+
+
+
+
+  
 </body>
 </html>
