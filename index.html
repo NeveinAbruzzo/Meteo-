@@ -362,26 +362,30 @@ iframe[src*="windy"] {
 }
 
 
-/* Mostra il logo intero senza tagliarlo in basso */
-header img, .header img, .logo img, .brand img {
-  height: auto !important;
-  max-height: 75px !important; /* Regola questo valore (es. 65px o 85px) in base a quanto lo vuoi grande */
+/* 1. Rimuove le regole precedenti e lascia il logo grande ma intero */
+header img, .header img, .logo img, .brand img, .top-bar img {
+  height: 95px !important;      /* Mantienilo grande (puoi alzarlo a 105px o 110px) */
+  max-height: none !important;
   width: auto !important;
-  object-fit: contain !important;
+  object-fit: contain !important; /* Impedisce il taglio in basso */
 }
 
-header, .header, .logo, .brand {
+/* 2. Allarga l'altezza del contenitore superiore per far entrare tutto il logo */
+header, .header, .logo, .brand, .top-bar {
   height: auto !important;
+  min-height: 100px !important;
   overflow: visible !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
-  /* Ingrandisce il sottotitolo accanto al logo */
-header span, header p, header small, 
-.header span, .header p, .header small, 
-.logo span, .logo p, .subtitle, .tagline {
-  font-size: 16px !important; /* Aumenta o diminuisci questo numero a piacere */
+/* 3. Ingrandisce solo il testo accanto al logo senza toccare le temperature a destra */
+header img + span, header img + p, header img + div,
+.logo img + span, .logo img + p, .logo img + div,
+.brand img + span, .brand img + p, .brand img + div {
+  font-size: 17px !important;
   font-weight: 600 !important;
-  color: #334155 !important;
+  color: #1e293b !important;
 }
 
   
