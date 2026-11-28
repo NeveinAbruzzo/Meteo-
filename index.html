@@ -521,11 +521,49 @@ img.site-logo {
 <span>Home › Previsioni Meteo › Italia › <strong>Abruzzo</strong></span>
 <span class="live-pill"><span class="live-dot"></span>Dati LIVE  </span>
 </div>
+
+
+
+
+
+  
 <div class="news-strip">
-<div class="news-card"><div class="news-icon" style="background:#0088cc">❄</div><div class="news-text" id="news-min">Rilevamento minima in Abruzzo...</div></div>
-<div class="news-card"><div class="news-icon">☀</div><div class="news-text" id="news-max">Rilevamento massima in Abruzzo...</div></div>
-<div class="news-card"><div class="news-icon" style="background:#003b70">📷</div><div class="news-text">Webcam in diretta da Roccaraso, Campo Felice e Ovindoli</div></div>
+  <div class="news-card">
+    <div class="news-icon">❄</div>
+    <div class="news-text">
+      <div style="color:#00529b; font-size:11px; text-transform:uppercase;">Pescasseroli</div>
+      <div id="neve-pescasseroli" style="font-size:14px; font-weight:800; color:#0f172a;">Altezza neve: -- cm</div>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="news-icon">❄</div>
+    <div class="news-text">
+      <div style="color:#00529b; font-size:11px; text-transform:uppercase;">Roccaraso</div>
+      <div id="neve-roccaraso" style="font-size:14px; font-weight:800; color:#0f172a;">Altezza neve: -- cm</div>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="news-icon">❄</div>
+    <div class="news-text">
+      <div style="color:#00529b; font-size:11px; text-transform:uppercase;">Pizzalto</div>
+      <div id="neve-pizzalto" style="font-size:14px; font-weight:800; color:#0f172a;">Altezza neve: -- cm</div>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="news-icon">❄</div>
+    <div class="news-text">
+      <div style="color:#00529b; font-size:11px; text-transform:uppercase;">Pescocostanzo</div>
+      <div id="neve-pescocostanzo" style="font-size:14px; font-weight:800; color:#0f172a;">Altezza neve: -- cm</div>
+    </div>
+  </div>
 </div>
+
+
+
+  
 <div class="content-area">
 <h1 class="section-head" id="titolo-pagina">Meteo Abruzzo Live</h1>
 <p class="section-desc">Monitoraggio in tempo reale delle temperature, estremi termici e webcam delle principali località abruzzesi.</p>
@@ -785,8 +823,22 @@ document.getElementById('max-temp').textContent=max.t.toFixed(1)+'°C';
 document.getElementById('max-city').textContent=max.n;
 document.getElementById('min-temp').textContent=min.t.toFixed(1)+'°C';
 document.getElementById('min-city').textContent=min.n;
-document.getElementById('news-min').textContent='Gelo in Abruzzo: minima attuale di '+min.t.toFixed(1)+'°C a '+min.n;
-document.getElementById('news-max').textContent='Valore più mite: massima attuale di '+max.t.toFixed(1)+'°C a '+max.n;
+
+  
+const aggiornaNeve = (idHtml, nomeLoc) => {
+  const loc = json.dati.find(x => x.nome.toLowerCase().includes(nomeLoc));
+  const el = document.getElementById(idHtml);
+  if (el && loc) {
+    el.textContent = loc.neve ? `Altezza neve: ${loc.neve}` : `Temp. attuale: ${loc.temp.toFixed(1)}°C`;
+  }
+};
+
+  
+aggiornaNeve('neve-pescasseroli', 'pescasseroli');
+aggiornaNeve('neve-roccaraso', 'roccaraso');
+aggiornaNeve('neve-pizzalto', 'pizzalto');
+aggiornaNeve('neve-pescocostanzo', 'pescocostanzo');
+
 document.getElementById('last-update').innerHTML='Dati reali aggiornati il <strong>'+json.ora+'</strong>';
 document.getElementById('vnews-1-testo').textContent='Escursione termica regionale tra '+min.t.toFixed(1)+'°C ('+min.n+') e '+max.t.toFixed(1)+'°C ('+max.n+').';
 document.getElementById('vnews-1-ora').textContent='Rilevamento del '+json.ora;
