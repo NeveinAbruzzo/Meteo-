@@ -387,6 +387,55 @@ iframe[src*="windy"] {
 }
 
 
+/* Allarga in verticale l'intera fascia bianca dell'intestazione */
+header {
+  height: auto !important;
+  min-height: 115px !important; /* Aumenta lo spazio verticale */
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+  overflow: visible !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+/* Assicura che il contenitore del logo non tagli l'immagine */
+.logo-box {
+  height: auto !important;
+  overflow: visible !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+/* Mostra il logo intero mantenendo le sue proporzioni naturali */
+img.site-logo {
+  height: 90px !important; /* Puoi portarlo a 100px o 110px se vuoi */
+  width: auto !important;
+  max-height: none !important;
+  max-width: none !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+/* Ingrandisce il sottotitolo accanto al logo */
+.logo-sub {
+  font-size: 16.5px !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  line-height: 1.3 !important;
+}
+
+
+
+
+
+
+
+
+
+  
+
   
 </style>
 
