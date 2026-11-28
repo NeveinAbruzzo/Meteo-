@@ -434,6 +434,23 @@ img.site-logo {
 
 
 
+/* Effetto lampeggiante per il simbolo della neve */
+.neve-lampeggiante {
+  display: inline-block;
+  animation: lampeggioNeve 1s infinite ease-in-out;
+  text-shadow: 0 0 8px #38bdf8, 0 0 14px #ffffff;
+}
+
+@keyframes lampeggioNeve {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  50% {
+    opacity: 0.25;
+    transform: scale(0.95);
+  }
+}
 
 
   
@@ -1065,6 +1082,26 @@ document.getElementById("radar-box").innerHTML='<iframe src="https://'+rSub+rPat
   </div>
 </section>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const tickerBox = document.getElementById('ticker-box');
+    if (!tickerBox) return;
+
+    function attivaLampeggioNeve() {
+      // Cerca il simbolo della neve dentro gli elementi del ticker e lo avvolge nello span animato
+      tickerBox.querySelectorAll('span').forEach(function (el) {
+        if ((el.textContent.includes('❄️') || el.textContent.includes('❄')) && !el.querySelector('.neve-lampeggiante')) {
+          el.innerHTML = el.innerHTML.replace(/(❄️|❄)/g, '<i class="neve-lampeggiante" style="font-style:normal;">$1</i>');
+        }
+      });
+    }
+
+    // Esegue subito e controlla automaticamente ogni volta che il ticker si aggiorna con i dati reali
+    attivaLampeggioNeve();
+    const osservatore = new MutationObserver(attivaLampeggioNeve);
+    osservatore.observe(tickerBox, { childList: true, subtree: true });
+  });
+</script>
 
 
 
