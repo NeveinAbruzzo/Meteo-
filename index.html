@@ -166,6 +166,95 @@ header{padding:7px 10px;gap:5px}
 
 
 
+/* Contenitore del menu a tendina */
+#webcam-dropdown {
+  display: none;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
+  border: 1px solid #cbd5e1;
+  border-top: 3px solid #0b4f8a;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 12px 28px rgba(11, 79, 138, 0.18);
+  max-width: 1140px;
+  margin: 4px auto 15px auto;
+  padding: 20px;
+  z-index: 1000;
+}
+
+#webcam-dropdown.aperto {
+  display: block;
+  animation: comparsaMenu 0.2s ease-out;
+}
+
+@keyframes comparsaMenu {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Griglia a 5 colonne su PC (si adatta da sola su smartphone) */
+.dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+/* Stile dei singoli tasti delle località */
+.dropdown-grid a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  color: #0b4f8a;
+  border: 1px solid #bae6fd;
+  border-left: 4px solid #0284c7;
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 2px 5px rgba(2, 132, 199, 0.06);
+  transition: all 0.2s ease;
+}
+
+/* Pallino rosso "LIVE" automatico a destra di ogni tasto */
+.dropdown-grid a::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  flex-shrink: 0;
+  margin-left: 8px;
+  transition: transform 0.2s ease;
+}
+
+/* Effetto al passaggio del mouse (Hover) */
+.dropdown-grid a:hover {
+  background: linear-gradient(135deg, #0b4f8a 0%, #0284c7 100%);
+  color: #ffffff;
+  border-color: #0b4f8a;
+  border-left-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(11, 79, 138, 0.22);
+}
+
+.dropdown-grid a:hover::after {
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  transform: scale(1.2);
+}
+
+
+
+
+
+
+
+
+
+  
+
   
 </style>
 
