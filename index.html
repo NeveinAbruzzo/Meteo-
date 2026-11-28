@@ -362,33 +362,30 @@ iframe[src*="windy"] {
 }
 
 
-/* 1. Rimuove le regole precedenti e lascia il logo grande ma intero */
-header img, .header img, .logo img, .brand img, .top-bar img {
-  height: 95px !important;      /* Mantienilo grande (puoi alzarlo a 105px o 110px) */
-  max-height: none !important;
+
+/* Mostra il logo grande e intero senza tagliarlo */
+.site-logo {
+  height: 95px !important; /* Puoi alzarlo a 105px o 110px se lo vuoi ancora più grande */
   width: auto !important;
-  object-fit: contain !important; /* Impedisce il taglio in basso */
+  max-height: none !important;
+  object-fit: contain !important;
 }
 
-/* 2. Allarga l'altezza del contenitore superiore per far entrare tutto il logo */
-header, .header, .logo, .brand, .top-bar {
-  height: auto !important;
-  min-height: 100px !important;
-  overflow: visible !important;
+.logo-box {
   display: flex !important;
   align-items: center !important;
+  gap: 15px !important;
+  height: auto !important;
+  overflow: visible !important;
 }
 
-/* 3. Ingrandisce solo il testo accanto al logo senza toccare le temperature a destra */
-header img + span, header img + p, header img + div,
-.logo img + span, .logo img + p, .logo img + div,
-.brand img + span, .brand img + p, .brand img + div {
-  font-size: 17px !important;
+/* Ingrandisce solo "Bollettini neve, webcam e temperature live" */
+.logo-sub {
+  font-size: 16.5px !important;
   font-weight: 600 !important;
   color: #1e293b !important;
 }
 
-  
 
   
 </style>
